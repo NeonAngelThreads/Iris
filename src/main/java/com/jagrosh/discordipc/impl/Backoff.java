@@ -2,35 +2,33 @@ package com.jagrosh.discordipc.impl;
 
 import java.util.Random;
 
+/* compiled from: 0.java */
+/* loaded from: mio-yarn.jar:com/jagrosh/discordipc/impl/Backoff.class */
 public class Backoff {
-   public final long minAmount;
-   public final long maxAmount;
-   public long current;
-   public int fails;
-   public final Random randGenerator;
+    public final long minAmount;
+    public final long maxAmount;
+    public long current;
+    public int fails = 0;
+    public final Random randGenerator = new Random();
 
-   public Backoff(long var1, long var3) {
-      super();
-      this.minAmount = var1;
-      this.maxAmount = var3;
-      this.current = var1;
-      this.fails = 0;
-      this.randGenerator = new Random();
-   }
+    public Backoff(long j, long j2) {
+        this.minAmount = j;
+        this.maxAmount = j2;
+        this.current = j;
+    }
 
-   public void reset() {
-      this.fails = 0;
-      this.current = this.minAmount;
-   }
+    public void reset() {
+        this.fails = 0;
+        this.current = this.minAmount;
+    }
 
-   public long nextDelay() {
-      this.fails++;
-      double var1 = (double)this.current * 2.0 * this.rand01();
-      this.current = Math.min(this.current + (long)var1, this.maxAmount);
-      return this.current;
-   }
+    public long nextDelay() {
+        this.fails++;
+        this.current = Math.min(this.current + ((long) (this.current * 2.0d * rand01())), this.maxAmount);
+        return this.current;
+    }
 
-   public double rand01() {
-      return this.randGenerator.nextDouble();
-   }
+    public double rand01() {
+        return this.randGenerator.nextDouble();
+    }
 }

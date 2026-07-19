@@ -1,11 +1,9 @@
 package com.jagrosh.discordipc.impl;
 
+/* compiled from: 0.java */
+/* loaded from: mio-yarn.jar:com/jagrosh/discordipc/impl/ExtendedLong.class */
 public class ExtendedLong {
-   public ExtendedLong() {
-      super();
-   }
-
-   public static int hashCode(long var0) {
-      return (int)(var0 ^ var0 >>> 32);
-   }
+    public static int hashCode(long j) {
+        return (int) (j ^ (j >>> 32));
+    }
 }

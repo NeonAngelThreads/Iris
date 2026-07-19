@@ -1,6 +1,6 @@
 package me.mioclient.mixin;
 
-import me.mioclient.api.Class_0549;
+import me.mioclient.ParticlesHelper;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.world.ClientWorld;
 import org.spongepowered.asm.mixin.Mixin;
@@ -11,43 +11,35 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+/* compiled from: 0.java */
 @Mixin({Particle.class})
-public class MixinParticle implements Class_0549 {
-   @Shadow
-   protected float alpha;
-   @Unique
-   private float mio$initialAlpha;
+/* loaded from: mio-yarn.jar:me/mioclient/mixin/MixinParticle.class */
+public class MixinParticle implements ParticlesHelper {
 
-   public MixinParticle() {
-      super();
-   }
+    @Shadow
+    protected float field_3841;
 
-   @Inject(
-      method = {"<init>(Lnet/minecraft/client/world/ClientWorld;DDD)V"},
-      at = {@At("TAIL")}
-   )
-   private void init(ClientWorld var1, double var2, double var4, double var6, CallbackInfo var8) {
-      this.mio$initialAlpha = this.alpha;
-   }
+    @Unique
+    private float mio$initialAlpha;
 
-   @ModifyVariable(
-      method = {"setAlpha"},
-      at = @At("HEAD"),
-      ordinal = 0,
-      argsOnly = true
-   )
-   private float setAlpha(float var1) {
-      return var1 * this.mio$initialAlpha;
-   }
+    @Inject(method = {"<init>(Lnet/minecraft/client/world/ClientWorld;DDD)V"}, at = {@At("TAIL")})
+    private void init(ClientWorld clientWorld, double d, double d2, double d3, CallbackInfo callbackInfo) {
+        this.mio$initialAlpha = this.field_3841;
+    }
 
-   @Override
-   public void mio$setInitialAlpha(float var1) {
-      this.mio$initialAlpha = var1;
-      this.alpha = var1;
-   }
+    @ModifyVariable(method = {"setAlpha"}, at = @At("HEAD"), ordinal = 0, argsOnly = true)
+    private float setAlpha(float f) {
+        return f * this.mio$initialAlpha;
+    }
 
-   @Override
-   public float mio$getInitialAlpha() {
-      return this.mio$initialAlpha;
-   }
+    @Override // me.mioclient.ParticlesHelper
+    public void mio$setInitialAlpha(float f) {
+        this.mio$initialAlpha = f;
+        this.field_3841 = f;
+    }
+
+    @Override // me.mioclient.ParticlesHelper
+    public float mio$getInitialAlpha() {
+        return this.mio$initialAlpha;
+    }
 }

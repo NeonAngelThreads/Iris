@@ -1,24 +1,21 @@
 package me.mioclient.mixin;
 
-import me.mioclient.api.Class_0037;
-import me.mioclient.api.Class_1366;
+import me.mioclient.Helper_11;
+import me.mioclient.MixinPalettedContainerHelper;
 import net.minecraft.world.chunk.PalettedContainer;
-import net.minecraft.world.chunk.PalettedContainer.Data;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
+/* compiled from: 0.java */
 @Mixin({PalettedContainer.class})
-public class MixinPalettedContainer<T> implements Class_1366<T> {
-   @Shadow
-   private volatile Data<T> data;
+/* loaded from: mio-yarn.jar:me/mioclient/mixin/MixinPalettedContainer.class */
+public class MixinPalettedContainer<T> implements Helper_11<T> {
 
-   public MixinPalettedContainer() {
-      super();
-   }
+    @Shadow
+    private volatile PalettedContainer.Data<T> field_34560;
 
-   @Override
-   @SuppressWarnings({"rawtypes", "unchecked"})
-   public Class_0037<T> mio$data() {
-      return (Class_0037<T>)(Object)this.data;
-   }
+    @Override // me.mioclient.Helper_11
+    public MixinPalettedContainerHelper<T> mio$data() {
+        return (MixinPalettedContainerHelper<T>)(Object) this.field_34560;
+    }
 }

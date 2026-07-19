@@ -2,19 +2,19 @@ package me.mioclient.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReceiver;
-import me.mioclient.Hub;
-import me.mioclient.api.Class_0687;
-import me.mioclient.api.MioAPI;
-import me.mioclient.enum_.PreType;
-import me.mioclient.event.Event_51;
-import me.mioclient.internal.Constants;
-import me.mioclient.internal.Class_0396;
-import me.mioclient.module.movement.ElytraFlyModule;
-import me.mioclient.module.movement.NoSlowModule;
-import me.mioclient.module.movement.VelocityModule;
-import me.mioclient.module.player.FreecamModule;
-import me.mioclient.module.render.FreeLookModule;
-import me.mioclient.module.render.NoRenderModule;
+import me.mioclient.BaritoneHelper_3;
+import me.mioclient.CameraYawHelper;
+import me.mioclient.FreecamHelper;
+import me.mioclient.KeyPearlMode;
+import me.mioclient.SearchHelper_3;
+import me.mioclient.SearchHelper_4;
+import me.mioclient.event.MoveEvent_2;
+import me.mioclient.module.movement.ElytraFly;
+import me.mioclient.module.movement.NoSlow;
+import me.mioclient.module.movement.Velocity;
+import me.mioclient.module.player.Freecam;
+import me.mioclient.module.render.FreeLook;
+import me.mioclient.module.render.NoRender;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -35,223 +35,166 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+/* compiled from: 0.java */
 @Mixin({Entity.class})
-public abstract class MixinEntity implements Class_0687 {
-   private static NoSlowModule noslow = Hub.field_2595.method_78(NoSlowModule.class);
-   private static ElytraFlyModule elytrafly = Hub.field_2595.method_78(ElytraFlyModule.class);
-   private static FreecamModule freecam = Hub.field_2595.method_78(FreecamModule.class);
-   @Shadow
-   private float yaw;
-   @Shadow
-   private float pitch;
-   private static VelocityModule velo = Hub.field_2595.method_78(VelocityModule.class);
-   private static FreeLookModule fl = Hub.field_2595.method_78(FreeLookModule.class);
-   private static NoRenderModule norender = Hub.field_2595.method_78(NoRenderModule.class);
-   @Unique
-   private float cameraPitch;
-   @Unique
-   private float cameraYaw;
-   @Unique
-   private Vec3d mio$prevVelocity;
+/* loaded from: mio-yarn.jar:me/mioclient/mixin/MixinEntity.class */
+public abstract class MixinEntity implements CameraYawHelper {
 
-   public MixinEntity() {
-      super();
-   }
+    @Shadow
+    private float field_6031;
 
-   @Shadow
-   private Vec3d adjustMovementForCollisions(Vec3d var1) {
-      return null;
-   }
+    @Shadow
+    private float field_5965;
 
-   @Shadow
-   public abstract void move(MovementType var1, Vec3d var2);
+    @Unique
+    private float cameraPitch;
 
-   @Shadow
-   @Override
-   public abstract boolean equals(Object var1);
+    @Unique
+    private float cameraYaw;
 
-   @Shadow
-   public abstract void setPosition(Vec3d var1);
+    @Unique
+    private Vec3d mio$prevVelocity;
+    private static NoSlow noslow = (NoSlow) BaritoneHelper_3.baritoneHelper_4.getModule117(NoSlow.class);
+    private static ElytraFly elytrafly = (ElytraFly) BaritoneHelper_3.baritoneHelper_4.getModule117(ElytraFly.class);
+    private static Freecam freecam = (Freecam) BaritoneHelper_3.baritoneHelper_4.getModule117(Freecam.class);
+    private static Velocity velo = (Velocity) BaritoneHelper_3.baritoneHelper_4.getModule117(Velocity.class);
+    private static FreeLook fl = (FreeLook) BaritoneHelper_3.baritoneHelper_4.getModule117(FreeLook.class);
+    private static NoRender norender = (NoRender) BaritoneHelper_3.baritoneHelper_4.getModule117(NoRender.class);
 
-   @Shadow
-   public abstract void setPosition(double var1, double var3, double var5);
+    @Shadow
+    private Vec3d method_17835(Vec3d vec3d) {
+        return null;
+    }
 
-   @Shadow
-   protected abstract void setRotation(float var1, float var2);
+    @Shadow
+    public abstract void method_5784(MovementType movementType, Vec3d vec3d);
 
-   @Shadow
-   public abstract Vec3d getVelocity();
+    @Shadow
+    public abstract boolean equals(Object obj);
 
-   @Shadow
-   public abstract boolean isInPose(EntityPose var1);
+    @Shadow
+    public abstract void method_33574(Vec3d vec3d);
 
-   @ModifyReceiver(
-      method = {"getVelocityMultiplier"},
-      at = {@At(
-         value = "INVOKE",
-         target = "Lnet/minecraft/block/Block;getVelocityMultiplier()F"
-      )},
-      require = 0
-   )
-   private Block getVelocityMultiplierHook(Block var1) {
-      if ((Entity)(Object)this != MinecraftClient.getInstance().player) {
-         return var1;
-      } else {
-         return noslow.isToggled() && noslow.field_1698.getValue() ? Blocks.STONE : var1;
-      }
-   }
+    @Shadow
+    public abstract void method_5814(double d, double d2, double d3);
 
-   @Inject(
-      method = {"pushAwayFrom"},
-      at = {@At("HEAD")},
-      cancellable = true
-   )
-   private void pushAwayFromHook(Entity var1, CallbackInfo var2) {
-      if (this.equals(MinecraftClient.getInstance().player) && velo.isToggled() && velo.field_2514.getValue()) {
-         var2.cancel();
-      }
-   }
+    @Shadow
+    protected abstract void method_5710(float f, float f2);
 
-   @Redirect(
-      method = {"updateMovementInFluid"},
-      at = @At(
-         value = "INVOKE",
-         target = "Lnet/minecraft/fluid/FluidState;getVelocity(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/util/math/Vec3d;"
-      )
-   )
-   private Vec3d updateMovementInFluidHook(FluidState var1, BlockView var2, BlockPos var3) {
-      return velo.isToggled() && velo.field_2515.getValue() ? Vec3d.ZERO : var1.getVelocity(var2, var3);
-   }
+    @Shadow
+    public abstract Vec3d method_18798();
 
-   @Redirect(
-      method = {"move"},
-      at = @At(
-         value = "INVOKE",
-         target = "Lnet/minecraft/entity/Entity;adjustMovementForCollisions(Lnet/minecraft/util/math/Vec3d;)Lnet/minecraft/util/math/Vec3d;"
-      )
-   )
-   private Vec3d moveHook(Entity var1, Vec3d var2) {
-      if ((Entity)(Object)this != MinecraftClient.getInstance().player) {
-         return this.adjustMovementForCollisions(var2);
-      } else {
-         Event_51 var3 = new Event_51(PreType.PRE, 0.6F);
-         MioAPI.field_4220.method_36(var3);
-         Class_0396.method_9((LivingEntity)(Object)this, var3.method_575());
-         Vec3d var4 = this.adjustMovementForCollisions(var2);
-         if (var4 != null) {
-            MioAPI.field_4220.method_36(new Event_51(PreType.POST, (float)var4.y));
-         }
+    @Shadow
+    public abstract boolean method_41328(EntityPose entityPose);
 
-         return var4;
-      }
-   }
+    @ModifyReceiver(method = {"getVelocityMultiplier"}, at = {@At(value = "INVOKE", target = "Lnet/minecraft/block/Block;getVelocityMultiplier()F")}, require = 0)
+    private Block getVelocityMultiplierHook(Block block) {
+        return ((Object) this) != MinecraftClient.getInstance().player ? block : (noslow.isToggled() && noslow.soulSand.getValue().booleanValue()) ? Blocks.STONE : block;
+    }
 
-   @Inject(
-      method = {"getPose"},
-      at = {@At("HEAD")},
-      cancellable = true
-   )
-   private void getPoseHook(CallbackInfoReturnable<EntityPose> var1) {
-      if ((Entity)(Object)this == MinecraftClient.getInstance().player) {
-         if (elytrafly.method_1178() || elytrafly.method_1183()) {
-            var1.setReturnValue(EntityPose.STANDING);
-            var1.cancel();
-         }
-      }
-   }
+    @Inject(method = {"pushAwayFrom"}, at = {@At("HEAD")}, cancellable = true)
+    private void pushAwayFromHook(Entity entity, CallbackInfo callbackInfo) {
+        if (equals(MinecraftClient.getInstance().player) && velo.isToggled() && velo.push.getValue().booleanValue()) {
+            callbackInfo.cancel();
+        }
+    }
 
-   @Inject(
-      method = {"changeLookDirection"},
-      at = {@At("HEAD")},
-      cancellable = true
-   )
-   public void changeCameraLookDirection(double var1, double var3, CallbackInfo var5) {
-      if (!freecam.isToggled()) {
-         if (fl.isToggled() && this.equals(MinecraftClient.getInstance().player)) {
-            double var6 = var3 * 0.15;
-            double var8 = var1 * 0.15;
-            this.cameraPitch = MathHelper.clamp(this.cameraPitch + (float)var6, (float)(-Constants.field_685), (float)Constants.field_685);
-            this.cameraYaw += (float)var8;
-            var5.cancel();
-         }
-      }
-   }
+    @Redirect(method = {"updateMovementInFluid"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;getVelocity(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/util/math/Vec3d;"))
+    private Vec3d updateMovementInFluidHook(FluidState fluidState, BlockView blockView, BlockPos blockPos) {
+        return (velo.isToggled() && velo.liquids.getValue().booleanValue()) ? Vec3d.ZERO : fluidState.getVelocity(blockView, blockPos);
+    }
 
-   @Inject(
-      method = {"lerpPosAndRotation"},
-      at = {@At("HEAD")},
-      cancellable = true
-   )
-   private void lerpPosAndRotationHook(int var1, double var2, double var4, double var6, double var8, double var10, CallbackInfo var12) {
-      if (norender.isToggled() && norender.field_749.getValue()) {
-         this.setPosition(var2, var4, var6);
-         this.setRotation((float)var8, (float)var10);
-         var12.cancel();
-      }
-   }
+    @Redirect(method = {"move"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;adjustMovementForCollisions(Lnet/minecraft/util/math/Vec3d;)Lnet/minecraft/util/math/Vec3d;"))
+    private Vec3d moveHook(Entity entity, Vec3d vec3d) {
+        if (((Object) this) != MinecraftClient.getInstance().player) {
+            return method_17835(vec3d);
+        }
+        MoveEvent_2 moveEvent_2 = new MoveEvent_2(KeyPearlMode.Pre, 0.6f);
+        SearchHelper_4.baritoneHelper.getObject1794(moveEvent_2);
+        SearchHelper_3.do649((LivingEntity)(Object) this, moveEvent_2.get990());
+        Vec3d method_17835 = method_17835(vec3d);
+        if (method_17835 != null) {
+            SearchHelper_4.baritoneHelper.getObject1794(new MoveEvent_2(KeyPearlMode.Post, (float) method_17835.y));
+        }
+        return method_17835;
+    }
 
-   @ModifyExpressionValue(
-      method = {"getCameraPosVec"},
-      at = {@At(
-         value = "INVOKE",
-         target = "Lnet/minecraft/entity/Entity;getStandingEyeHeight()F"
-      )}
-   )
-   private float getHeightHook(float var1) {
-      return norender.isToggled() && norender.field_721.getValue() && this.isInPose(EntityPose.CROUCHING) ? 1.54F : var1;
-   }
+    @Inject(method = {"getPose"}, at = {@At("HEAD")}, cancellable = true)
+    private void getPoseHook(CallbackInfoReturnable<EntityPose> callbackInfoReturnable) {
+        if (((Object) this) != MinecraftClient.getInstance().player) {
+            return;
+        }
+        if (elytrafly.is949() || elytrafly.is956()) {
+            callbackInfoReturnable.setReturnValue(EntityPose.STANDING);
+            callbackInfoReturnable.cancel();
+        }
+    }
 
-   @Inject(
-      method = {"baseTick"},
-      at = {@At(
-         value = "INVOKE",
-         target = "Lnet/minecraft/util/profiler/Profiler;push(Ljava/lang/String;)V",
-         ordinal = 0,
-         shift = Shift.AFTER
-      )}
-   )
-   private void baseTick(CallbackInfo var1) {
-      this.mio$prevVelocity = this.getVelocity();
-   }
+    @Inject(method = {"changeLookDirection"}, at = {@At("HEAD")}, cancellable = true)
+    public void changeCameraLookDirection(double d, double d2, CallbackInfo callbackInfo) {
+        if (!freecam.isToggled() && fl.isToggled() && equals(MinecraftClient.getInstance().player)) {
+            this.cameraPitch = MathHelper.clamp(this.cameraPitch + ((float) (d2 * 0.15d)), -FreecamHelper.num2, FreecamHelper.num2);
+            this.cameraYaw += (float) (d * 0.15d);
+            callbackInfo.cancel();
+        }
+    }
 
-   @Inject(
-      method = {"<init>"},
-      at = {@At("TAIL")}
-   )
-   private void init(EntityType var1, World var2, CallbackInfo var3) {
-      this.mio$prevVelocity = Vec3d.ZERO;
-   }
+    @Inject(method = {"lerpPosAndRotation"}, at = {@At("HEAD")}, cancellable = true)
+    private void lerpPosAndRotationHook(int i, double d, double d2, double d3, double d4, double d5, CallbackInfo callbackInfo) {
+        if (norender.isToggled() && norender.interpolation.getValue().booleanValue()) {
+            method_5814(d, d2, d3);
+            method_5710((float) d4, (float) d5);
+            callbackInfo.cancel();
+        }
+    }
 
-   @Unique
-   @Override
-   public float getCameraPitch() {
-      return this.cameraPitch;
-   }
+    @ModifyExpressionValue(method = {"getCameraPosVec"}, at = {@At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getStandingEyeHeight()F")})
+    private float getHeightHook(float f) {
+        if (norender.isToggled() && norender.newSneaking.getValue().booleanValue() && method_41328(EntityPose.CROUCHING)) {
+            return 1.54f;
+        }
+        return f;
+    }
 
-   @Unique
-   @Override
-   public float getCameraYaw() {
-      return this.cameraYaw;
-   }
+    @Inject(method = {"baseTick"}, at = {@At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;push(Ljava/lang/String;)V", ordinal = 0, shift = At.Shift.AFTER)})
+    private void baseTick(CallbackInfo callbackInfo) {
+        this.mio$prevVelocity = method_18798();
+    }
 
-   @Unique
-   @Override
-   public void setCameraPitch(float var1) {
-      this.cameraPitch = var1;
-   }
+    @Inject(method = {"<init>"}, at = {@At("TAIL")})
+    private void init(EntityType entityType, World world, CallbackInfo callbackInfo) {
+        this.mio$prevVelocity = Vec3d.ZERO;
+    }
 
-   @Unique
-   @Override
-   public void setCameraYaw(float var1) {
-      this.cameraYaw = var1;
-   }
+    @Override // me.mioclient.CameraYawHelper
+    @Unique
+    public float getCameraPitch() {
+        return this.cameraPitch;
+    }
 
-   @Override
-   public Vec3d mio$getPrevVelocity() {
-      return this.mio$prevVelocity;
-   }
+    @Override // me.mioclient.CameraYawHelper
+    @Unique
+    public float getCameraYaw() {
+        return this.cameraYaw;
+    }
+
+    @Override // me.mioclient.CameraYawHelper
+    @Unique
+    public void setCameraPitch(float f) {
+        this.cameraPitch = f;
+    }
+
+    @Override // me.mioclient.CameraYawHelper
+    @Unique
+    public void setCameraYaw(float f) {
+        this.cameraYaw = f;
+    }
+
+    @Override // me.mioclient.CameraYawHelper
+    public Vec3d mio$getPrevVelocity() {
+        return this.mio$prevVelocity;
+    }
 }

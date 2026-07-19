@@ -1,11 +1,11 @@
 package me.mioclient.mixin;
 
-import me.mioclient.Hub;
-import me.mioclient.api.MioAPI;
-import me.mioclient.event.Event_16;
-import me.mioclient.event.Event_56;
+import me.mioclient.BaritoneHelper_3;
+import me.mioclient.SearchHelper_4;
+import me.mioclient.event.TickEvent_2;
+import me.mioclient.event.TickHookPreEvent;
 import me.mioclient.mixin.ducks.DuckKeyBinding;
-import me.mioclient.module.movement.NoSlowModule;
+import me.mioclient.module.movement.NoSlow;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.input.Input;
 import net.minecraft.client.input.KeyboardInput;
@@ -20,53 +20,33 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+/* compiled from: 0.java */
 @Mixin({KeyboardInput.class})
+/* loaded from: mio-yarn.jar:me/mioclient/mixin/MixinKeyboardInput.class */
 public class MixinKeyboardInput extends Input {
-   private static NoSlowModule noslow = Hub.field_2595.method_78(NoSlowModule.class);
-   @Shadow
-   @Final
-   private GameOptions settings;
+    private static NoSlow noslow = (NoSlow) BaritoneHelper_3.baritoneHelper_4.getModule117(NoSlow.class);
 
-   public MixinKeyboardInput() {
-      super();
-   }
+    @Shadow
+    @Final
+    private GameOptions field_3902;
 
-   @Inject(
-      method = {"tick"},
-      at = {@At("HEAD")},
-      cancellable = true
-   )
-   private void tickHookPre(boolean var1, float var2, CallbackInfo var3) {
-      Event_56 var4 = new Event_56((KeyboardInput)(Object)this, var1 ? var2 : -1.0F);
-      MioAPI.field_4220.method_36(var4);
-      if (var4.method_464()) {
-         Event_16 var5 = new Event_16(var4.method_276(), var4.method_277());
-         MioAPI.field_4220.method_36(var5);
-         var3.cancel();
-      }
-   }
+    @Inject(method = {"tick"}, at = {@At("HEAD")}, cancellable = true)
+    private void tickHookPre(boolean z, float f, CallbackInfo callbackInfo) {
+        TickHookPreEvent tickHookPreEvent = new TickHookPreEvent((KeyboardInput)(Object) this, z ? f : -1.0f);
+        SearchHelper_4.baritoneHelper.getObject1794(tickHookPreEvent);
+        if (tickHookPreEvent.is2403()) {
+            SearchHelper_4.baritoneHelper.getObject1794(new TickEvent_2(tickHookPreEvent.getInput806(), tickHookPreEvent.get807()));
+            callbackInfo.cancel();
+        }
+    }
 
-   @Inject(
-      method = {"tick"},
-      at = {@At("TAIL")},
-      cancellable = true
-   )
-   private void tickHook(boolean var1, float var2, CallbackInfo var3) {
-      Event_16 var4 = new Event_16((KeyboardInput)(Object)this, var1 ? var2 : -1.0F);
-      MioAPI.field_4220.method_36(var4);
-   }
+    @Inject(method = {"tick"}, at = {@At("TAIL")}, cancellable = true)
+    private void tickHook(boolean z, float f, CallbackInfo callbackInfo) {
+        SearchHelper_4.baritoneHelper.getObject1794(new TickEvent_2((KeyboardInput)(Object) this, z ? f : -1.0f));
+    }
 
-   @Redirect(
-      method = {"tick"},
-      at = @At(
-         value = "INVOKE",
-         target = "Lnet/minecraft/client/option/KeyBinding;isPressed()Z"
-      ),
-      require = 0
-   )
-   private boolean tickHook2(KeyBinding var1) {
-      return noslow.isToggled() && noslow.method_569() && noslow.field_1685.getValue() && var1 != this.settings.sneakKey
-         ? GLFW.glfwGetKey(MinecraftClient.getInstance().getWindow().getHandle(), ((DuckKeyBinding)var1).getKey().getCode()) == 1
-         : var1.isPressed();
-   }
+    @Redirect(method = {"tick"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;isPressed()Z"), require = 0)
+    private boolean tickHook2(KeyBinding keyBinding) {
+        return (noslow.isToggled() && noslow.is2669() && noslow.guiMove.getValue().booleanValue() && keyBinding != this.field_3902.sneakKey) ? GLFW.glfwGetKey(MinecraftClient.getInstance().getWindow().getHandle(), ((DuckKeyBinding) keyBinding).getKey().getCode()) == 1 : keyBinding.isPressed();
+    }
 }

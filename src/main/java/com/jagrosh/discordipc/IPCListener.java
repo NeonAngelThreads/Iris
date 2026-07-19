@@ -4,20 +4,22 @@ import com.google.gson.JsonObject;
 import com.jagrosh.discordipc.entities.Packet;
 import com.jagrosh.discordipc.entities.User;
 
+/* compiled from: 0.java */
+/* loaded from: mio-yarn.jar:com/jagrosh/discordipc/IPCListener.class */
 public interface IPCListener {
-   void onPacketSent(IPCClient var1, Packet var2);
+    void onPacketSent(IPCClient iPCClient, Packet packet);
 
-   void onPacketReceived(IPCClient var1, Packet var2);
+    void onPacketReceived(IPCClient iPCClient, Packet packet);
 
-   void onActivityJoin(IPCClient var1, String var2);
+    void onActivityJoin(IPCClient iPCClient, String str);
 
-   void onActivitySpectate(IPCClient var1, String var2);
+    void onActivitySpectate(IPCClient iPCClient, String str);
 
-   void onActivityJoinRequest(IPCClient var1, String var2, User var3);
+    void onActivityJoinRequest(IPCClient iPCClient, String str, User user);
 
-   void onReady(IPCClient var1);
+    void onReady(IPCClient iPCClient);
 
-   void onClose(IPCClient var1, JsonObject var2);
+    void onClose(IPCClient iPCClient, JsonObject jsonObject);
 
-   void onDisconnect(IPCClient var1, Throwable var2);
+    void onDisconnect(IPCClient iPCClient, Throwable th);
 }

@@ -2,114 +2,112 @@ package com.jagrosh.discordipc.entities;
 
 import com.jagrosh.discordipc.impl.ExtendedLong;
 
+/* compiled from: 0.java */
+/* loaded from: mio-yarn.jar:com/jagrosh/discordipc/entities/User.class */
 public class User {
-   public final String username;
-   public final String nickname;
-   public final String discriminator;
-   public final long id;
-   public final String avatar;
+    public final String username;
+    public final String nickname;
+    public final String discriminator;
+    public final long id;
+    public final String avatar;
 
-   public User(String var1, String var2, String var3, long var4, String var6) {
-      super();
-      this.username = var1;
-      this.nickname = var2;
-      this.discriminator = var3;
-      this.id = var4;
-      this.avatar = var6;
-   }
+    /* compiled from: 0.java */
+    /* loaded from: mio-yarn.jar:com/jagrosh/discordipc/entities/User$DefaultAvatar.class */
+    public enum DefaultAvatar {
+        BLURPLE("6debd47ed13483642cf09e832ed0bc1b"),
+        GREY("322c936a8c8be1b803cd94861bdfa868"),
+        GREEN("dd4dbc0016779df1378e7812eabaa04d"),
+        ORANGE("0e291f67c9274a1abdddeb3fd919cbaa"),
+        RED("1cbd08c76f8af6dddce02c5138971129");
 
-   public String getName() {
-      return this.username;
-   }
+        public final String text;
 
-   public String getNickname() {
-      return this.nickname;
-   }
+        DefaultAvatar(String str) {
+            this.text = str;
+        }
 
-   public String getEffectiveName() {
-      return this.nickname == null ? this.username : this.nickname;
-   }
+        @Override // java.lang.Enum
+        public String toString() {
+            return this.text;
+        }
+    }
 
-   public String getDiscriminator() {
-      return this.discriminator;
-   }
+    public User(String str, String str2, String str3, long j, String str4) {
+        this.username = str;
+        this.nickname = str2;
+        this.discriminator = str3;
+        this.id = j;
+        this.avatar = str4;
+    }
 
-   public long getIdLong() {
-      return this.id;
-   }
+    public String getName() {
+        return this.username;
+    }
 
-   public String getId() {
-      return Long.toString(this.id);
-   }
+    public String getNickname() {
+        return this.nickname;
+    }
 
-   public String getAvatarId() {
-      return this.avatar;
-   }
+    public String getEffectiveName() {
+        return this.nickname == null ? this.username : this.nickname;
+    }
 
-   public String getAvatarUrl() {
-      return this.getAvatarId() == null
-         ? null
-         : "https://cdn.discordapp.com/avatars/" + this.getId() + "/" + this.getAvatarId() + (this.getAvatarId().startsWith("a_") ? ".gif" : ".png");
-   }
+    public String getDiscriminator() {
+        return this.discriminator;
+    }
 
-   public String getDefaultAvatarId() {
-      return User.DefaultAvatar.values()[(this.getDiscriminator().equals("0") ? (int)this.getIdLong() >> 22 : Integer.parseInt(this.getDiscriminator()))
-            % User.DefaultAvatar.values().length]
-         .toString();
-   }
+    public long getIdLong() {
+        return this.id;
+    }
 
-   public String getDefaultAvatarUrl() {
-      return "https://discord.com/assets/" + this.getDefaultAvatarId() + ".png";
-   }
+    public String getId() {
+        return Long.toString(this.id);
+    }
 
-   public String getEffectiveAvatarUrl() {
-      return this.getAvatarUrl() == null ? this.getDefaultAvatarUrl() : this.getAvatarUrl();
-   }
+    public String getAvatarId() {
+        return this.avatar;
+    }
 
-   public boolean isBot() {
-      return false;
-   }
+    public String getAvatarUrl() {
+        if (getAvatarId() == null) {
+            return null;
+        }
+        return "https://cdn.discordapp.com/avatars/" + getId() + "/" + getAvatarId() + (getAvatarId().startsWith("a_") ? ".gif" : ".png");
+    }
 
-   public String getAsMention() {
-      return "<@" + this.id + '>';
-   }
+    public String getDefaultAvatarId() {
+        return DefaultAvatar.values()[(getDiscriminator().equals("0") ? ((int) getIdLong()) >> 22 : Integer.parseInt(getDiscriminator())) % DefaultAvatar.values().length].toString();
+    }
 
-   @Override
-   public boolean equals(Object var1) {
-      if (!(var1 instanceof User)) {
-         return false;
-      } else {
-         User var2 = (User)var1;
-         return this == var2 || this.id == var2.id;
-      }
-   }
+    public String getDefaultAvatarUrl() {
+        return "https://discord.com/assets/" + getDefaultAvatarId() + ".png";
+    }
 
-   @Override
-   public int hashCode() {
-      return ExtendedLong.hashCode(this.id);
-   }
+    public String getEffectiveAvatarUrl() {
+        return getAvatarUrl() == null ? getDefaultAvatarUrl() : getAvatarUrl();
+    }
 
-   @Override
-   public String toString() {
-      return "U:" + this.getName() + '(' + this.id + ')';
-   }
+    public boolean isBot() {
+        return false;
+    }
 
-   public static enum DefaultAvatar {
-      BLURPLE("6debd47ed13483642cf09e832ed0bc1b"),
-      GREY("322c936a8c8be1b803cd94861bdfa868"),
-      GREEN("dd4dbc0016779df1378e7812eabaa04d"),
-      ORANGE("0e291f67c9274a1abdddeb3fd919cbaa"),
-      RED("1cbd08c76f8af6dddce02c5138971129");
+    public String getAsMention() {
+        return "<@" + this.id + '>';
+    }
 
-      public final String text;
+    public boolean equals(Object obj) {
+        if (!(obj instanceof User)) {
+            return false;
+        }
+        User user = (User) obj;
+        return this == user || this.id == user.id;
+    }
 
-       DefaultAvatar(String var3) {
-         this.text = var3;
-      }
+    public int hashCode() {
+        return ExtendedLong.hashCode(this.id);
+    }
 
-      @Override
-      public String toString() {
-         return this.text;
-      }
-   }
+    public String toString() {
+        return "U:" + getName() + '(' + this.id + ')';
+    }
 }

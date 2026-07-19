@@ -4,66 +4,66 @@ import com.google.gson.JsonObject;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 
+/* compiled from: 0.java */
+/* loaded from: mio-yarn.jar:com/jagrosh/discordipc/entities/Packet.class */
 public class Packet {
-   public final Packet.OpCode op;
-   public final JsonObject data;
-   public final String encoding;
+    public final OpCode op;
+    public final JsonObject data;
+    public final String encoding;
 
-   public Packet(Packet.OpCode var1, JsonObject var2, String var3) {
-      super();
-      this.op = var1;
-      this.data = var2;
-      this.encoding = var3;
-   }
+    /* compiled from: 0.java */
+    /* loaded from: mio-yarn.jar:com/jagrosh/discordipc/entities/Packet$OpCode.class */
+    public enum OpCode {
+        HANDSHAKE,
+        FRAME,
+        CLOSE,
+        PING,
+        PONG
+    }
 
-   @Deprecated
-   public Packet(Packet.OpCode var1, JsonObject var2) {
-      this(var1, var2, "UTF-8");
-   }
+    public Packet(OpCode opCode, JsonObject jsonObject, String str) {
+        this.op = opCode;
+        this.data = jsonObject;
+        this.encoding = str;
+    }
 
-   public byte[] toBytes() {
-      String var1 = this.data.toString();
+    @Deprecated
+    public Packet(OpCode opCode, JsonObject jsonObject) {
+        this(opCode, jsonObject, "UTF-8");
+    }
 
-      byte[] var2;
-      try {
-         var2 = var1.getBytes(this.encoding);
-      } catch (UnsupportedEncodingException var4) {
-         var2 = var1.getBytes();
-      }
+    public byte[] toBytes() {
+        byte[] bytes;
+        String jsonObject = this.data.toString();
+        try {
+            bytes = jsonObject.getBytes(this.encoding);
+        } catch (UnsupportedEncodingException e) {
+            bytes = jsonObject.getBytes();
+        }
+        ByteBuffer allocate = ByteBuffer.allocate(bytes.length + 8);
+        allocate.putInt(Integer.reverseBytes(this.op.ordinal()));
+        allocate.putInt(Integer.reverseBytes(bytes.length));
+        allocate.put(bytes);
+        return allocate.array();
+    }
 
-      ByteBuffer var3 = ByteBuffer.allocate(var2.length + 8);
-      var3.putInt(Integer.reverseBytes(this.op.ordinal()));
-      var3.putInt(Integer.reverseBytes(var2.length));
-      var3.put(var2);
-      return var3.array();
-   }
+    public OpCode getOp() {
+        return this.op;
+    }
 
-   public Packet.OpCode getOp() {
-      return this.op;
-   }
+    public JsonObject getJson() {
+        return this.data;
+    }
 
-   public JsonObject getJson() {
-      return this.data;
-   }
+    public String toString() {
+        return "Pkt:" + getOp() + getJson().toString();
+    }
 
-   @Override
-   public String toString() {
-      return "Pkt:" + this.getOp() + this.getJson().toString();
-   }
-
-   public String toDecodedString() {
-      try {
-         return "Pkt:" + this.getOp() + new String(this.getJson().toString().getBytes(this.encoding));
-      } catch (UnsupportedEncodingException var2) {
-         return "Pkt:" + this.getOp() + this.getJson().toString();
-      }
-   }
-
-   public static enum OpCode {
-      HANDSHAKE,
-      FRAME,
-      CLOSE,
-      PING,
-      PONG;
-   }
+    public String toDecodedString() {
+        try {
+            return "Pkt:" + getOp() + new String(getJson().toString().getBytes(this.encoding));
+        } catch (UnsupportedEncodingException e) {
+            return "Pkt:" + getOp() + getJson().toString();
+        }
+    }
 }

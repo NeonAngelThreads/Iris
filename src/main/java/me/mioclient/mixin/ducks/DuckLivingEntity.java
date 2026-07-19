@@ -5,38 +5,34 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
+/* compiled from: 0.java */
 @Mixin({LivingEntity.class})
+/* loaded from: mio-yarn.jar:me/mioclient/mixin/ducks/DuckLivingEntity.class */
 public interface DuckLivingEntity {
-   @Accessor("itemUseTimeLeft")
-   void setItemUseTimeLeft(int var1);
+    @Accessor("itemUseTimeLeft")
+    void setItemUseTimeLeft(int i);
 
-   @Accessor("lastAttackedTicks")
-   int mio$getLastAttackedTicks();
+    @Accessor("leaningPitch")
+    void mio$setLeaningPitch(float f);
 
-   @Accessor("lastAttackedTicks")
-   void mio$setLastAttackedTicks(int var1);
+    @Accessor("lastLeaningPitch")
+    void mio$setLastLeaningPitch(float f);
 
-   @Accessor("leaningPitch")
-   void mio$setLeaningPitch(float var1);
+    @Accessor("leaningPitch")
+    float mio$getLeaningPitch();
 
-   @Accessor("lastLeaningPitch")
-   void mio$setLastLeaningPitch(float var1);
+    @Accessor("leaningPitch")
+    float mio$getLastLeaningPitch();
 
-   @Accessor("leaningPitch")
-   float mio$getLeaningPitch();
+    @Accessor("serverX")
+    double mio$getServerX();
 
-   @Accessor("leaningPitch")
-   float mio$getLastLeaningPitch();
+    @Accessor("serverY")
+    double mio$getServerY();
 
-   @Accessor("serverX")
-   double mio$getServerX();
+    @Accessor("serverZ")
+    double mio$getServerZ();
 
-   @Accessor("serverY")
-   double mio$getServerY();
-
-   @Accessor("serverZ")
-   double mio$getServerZ();
-
-   @Invoker("getHandSwingDuration")
-   int getSwingDuration();
+    @Invoker("getHandSwingDuration")
+    int getSwingDuration();
 }

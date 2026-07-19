@@ -5,13 +5,15 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
+/* compiled from: 0.java */
 @Mixin({WorldTimeUpdateS2CPacket.class})
+/* loaded from: mio-yarn.jar:me/mioclient/mixin/ducks/DuckWorldTimeUpdateS2CPacket.class */
 public interface DuckWorldTimeUpdateS2CPacket {
-   @Mutable
-   @Accessor("time")
-   void setTime(long var1);
+    @Accessor("time")
+    @Mutable
+    void setTime(long j);
 
-   @Mutable
-   @Accessor("timeOfDay")
-   void setTimeOfDay(long var1);
+    @Accessor("timeOfDay")
+    @Mutable
+    void setTimeOfDay(long j);
 }

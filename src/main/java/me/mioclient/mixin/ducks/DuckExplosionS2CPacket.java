@@ -5,17 +5,19 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
+/* compiled from: 0.java */
 @Mixin({ExplosionS2CPacket.class})
+/* loaded from: mio-yarn.jar:me/mioclient/mixin/ducks/DuckExplosionS2CPacket.class */
 public interface DuckExplosionS2CPacket {
-   @Mutable
-   @Accessor("playerVelocityX")
-   void setX(float var1);
+    @Accessor("playerVelocityX")
+    @Mutable
+    void setX(float f);
 
-   @Mutable
-   @Accessor("playerVelocityY")
-   void setY(float var1);
+    @Accessor("playerVelocityY")
+    @Mutable
+    void setY(float f);
 
-   @Mutable
-   @Accessor("playerVelocityZ")
-   void setZ(float var1);
+    @Accessor("playerVelocityZ")
+    @Mutable
+    void setZ(float f);
 }

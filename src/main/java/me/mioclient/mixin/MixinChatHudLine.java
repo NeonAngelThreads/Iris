@@ -1,10 +1,11 @@
 package me.mioclient.mixin;
 
-import me.mioclient.api.Class_0333;
-import me.mioclient.internal.Class_0585;
-import me.mioclient.module.misc.BetterChatModule;
+import java.util.function.Supplier;
+import me.mioclient.SignatureHelper;
+import me.mioclient.feature.Progress;
+import me.mioclient.module.misc.BetterChat;
+import net.minecraft.client.gui.hud.ChatHudLine;
 import net.minecraft.client.gui.hud.MessageIndicator;
-import net.minecraft.client.gui.hud.ChatHudLine.Visible;
 import net.minecraft.network.message.MessageSignatureData;
 import net.minecraft.text.OrderedText;
 import org.spongepowered.asm.mixin.Final;
@@ -16,68 +17,68 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin({Visible.class})
-public class MixinChatHudLine implements Class_0333 {
-   @Unique
-   private Class_0585 progress = null;
-   @Unique
-   private MessageSignatureData signature;
-   @Mutable
-   @Final
-   @Shadow
-   private OrderedText comp_896;
-   @Unique
-   private long mio$addTime;
+/* compiled from: 0.java */
+@Mixin({ChatHudLine.Visible.class})
+/* loaded from: mio-yarn.jar:me/mioclient/mixin/MixinChatHudLine.class */
+public class MixinChatHudLine implements SignatureHelper {
 
-   public MixinChatHudLine() {
-      super();
-   }
+    @Unique
+    private Progress progress = null;
 
-   @Inject(
-      method = {"<init>"},
-      at = {@At("RETURN")}
-   )
-   private void onInit(int var1, OrderedText var2, MessageIndicator var3, boolean var4, CallbackInfo var5) {
-      this.getProgress().method_36(false);
-      this.mio$addTime = System.currentTimeMillis();
-   }
+    @Unique
+    private MessageSignatureData signature;
 
-   @Override
-   public MessageSignatureData getSignature() {
-      return this.signature;
-   }
+    @Mutable
+    @Shadow
+    @Final
+    private OrderedText comp_896;
 
-   @Override
-   public void setSignature(MessageSignatureData var1) {
-      this.signature = var1;
-   }
+    @Unique
+    private long mio$addTime;
 
-   @Override
-   public OrderedText getContent() {
-      return this.comp_896;
-   }
+    @Inject(method = {"<init>"}, at = {@At("RETURN")})
+    private void onInit(int i, OrderedText orderedText, MessageIndicator messageIndicator, boolean z, CallbackInfo callbackInfo) {
+        getProgress().do2140(false);
+        this.mio$addTime = System.currentTimeMillis();
+    }
 
-   @Override
-   public void setContent(OrderedText var1) {
-      this.comp_896 = var1;
-   }
+    @Override // me.mioclient.SignatureHelper
+    public MessageSignatureData getSignature() {
+        return this.signature;
+    }
 
-   @Override
-   public Class_0585 getProgress() {
-      if (this.progress == null) {
-         this.progress = new Class_0585(() -> BetterChatModule.method_1093().field_3939.getValue() * 2.0F, true);
-      }
+    @Override // me.mioclient.SignatureHelper
+    public void setSignature(MessageSignatureData messageSignatureData) {
+        this.signature = messageSignatureData;
+    }
 
-      return this.progress;
-   }
+    @Override // me.mioclient.SignatureHelper
+    public OrderedText getContent() {
+        return this.comp_896;
+    }
 
-   @Override
-   public long mio$getAddTime() {
-      return this.mio$addTime;
-   }
+    @Override // me.mioclient.SignatureHelper
+    public void setContent(OrderedText orderedText) {
+        this.comp_896 = orderedText;
+    }
 
-   @Override
-   public void mio$setAddTime(long var1) {
-      this.mio$addTime = var1;
-   }
+    @Override // me.mioclient.SignatureHelper
+    public Progress getProgress() {
+        if (this.progress == null) {
+            this.progress = new Progress((Supplier<Float>) () -> {
+                return Float.valueOf(BetterChat.getBetterChat678().speed.getValue().floatValue() * 2.0f);
+            }, true);
+        }
+        return this.progress;
+    }
+
+    @Override // me.mioclient.SignatureHelper
+    public long mio$getAddTime() {
+        return this.mio$addTime;
+    }
+
+    @Override // me.mioclient.SignatureHelper
+    public void mio$setAddTime(long j) {
+        this.mio$addTime = j;
+    }
 }

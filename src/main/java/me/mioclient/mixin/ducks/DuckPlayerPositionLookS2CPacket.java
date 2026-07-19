@@ -5,13 +5,15 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
+/* compiled from: 0.java */
 @Mixin({PlayerPositionLookS2CPacket.class})
+/* loaded from: mio-yarn.jar:me/mioclient/mixin/ducks/DuckPlayerPositionLookS2CPacket.class */
 public interface DuckPlayerPositionLookS2CPacket {
-   @Mutable
-   @Accessor("yaw")
-   void setYaw(float var1);
+    @Accessor("yaw")
+    @Mutable
+    void setYaw(float f);
 
-   @Mutable
-   @Accessor("pitch")
-   void setPitch(float var1);
+    @Accessor("pitch")
+    @Mutable
+    void setPitch(float f);
 }

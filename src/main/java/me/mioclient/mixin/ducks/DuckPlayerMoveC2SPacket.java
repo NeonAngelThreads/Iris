@@ -5,32 +5,34 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
+/* compiled from: 0.java */
 @Mixin({PlayerMoveC2SPacket.class})
+/* loaded from: mio-yarn.jar:me/mioclient/mixin/ducks/DuckPlayerMoveC2SPacket.class */
 public interface DuckPlayerMoveC2SPacket {
-   @Mutable
-   @Accessor("onGround")
-   void setOnGround(boolean var1);
+    @Accessor("onGround")
+    @Mutable
+    void setOnGround(boolean z);
 
-   @Accessor("changePosition")
-   boolean isChangePosition();
+    @Accessor("changePosition")
+    boolean isChangePosition();
 
-   @Mutable
-   @Accessor("y")
-   void setY(double var1);
+    @Accessor("y")
+    @Mutable
+    void setY(double d);
 
-   @Mutable
-   @Accessor("x")
-   void setX(double var1);
+    @Accessor("x")
+    @Mutable
+    void setX(double d);
 
-   @Mutable
-   @Accessor("z")
-   void setZ(double var1);
+    @Accessor("z")
+    @Mutable
+    void setZ(double d);
 
-   @Mutable
-   @Accessor("yaw")
-   void setYaw(float var1);
+    @Accessor("yaw")
+    @Mutable
+    void setYaw(float f);
 
-   @Mutable
-   @Accessor("pitch")
-   void setPitch(float var1);
+    @Accessor("pitch")
+    @Mutable
+    void setPitch(float f);
 }

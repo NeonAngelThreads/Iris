@@ -1,8 +1,8 @@
 package me.mioclient.mixin;
 
-import me.mioclient.Hub;
-import me.mioclient.module.render.NoRenderModule;
-import me.mioclient.module.render.SkyColorModule;
+import me.mioclient.BaritoneHelper_3;
+import me.mioclient.module.render.NoRender;
+import me.mioclient.module.render.SkyColor;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.BossBarHud;
 import org.spongepowered.asm.mixin.Mixin;
@@ -11,35 +11,25 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+/* compiled from: 0.java */
 @Mixin({BossBarHud.class})
+/* loaded from: mio-yarn.jar:me/mioclient/mixin/MixinBossBarHud.class */
 public class MixinBossBarHud {
-   private static final NoRenderModule norender = Hub.field_2595.method_78(NoRenderModule.class);
-   private static final SkyColorModule skycolor = Hub.field_2595.method_78(SkyColorModule.class);
+    private static final NoRender norender = (NoRender) BaritoneHelper_3.baritoneHelper_4.getModule117(NoRender.class);
+    private static final SkyColor skycolor = (SkyColor) BaritoneHelper_3.baritoneHelper_4.getModule117(SkyColor.class);
 
-   public MixinBossBarHud() {
-      super();
-   }
+    @Inject(method = {"render"}, at = {@At("HEAD")}, cancellable = true)
+    private void renderHook(DrawContext drawContext, CallbackInfo callbackInfo) {
+        if (norender.isToggled() && norender.bossBars.getValue().booleanValue()) {
+            callbackInfo.cancel();
+        }
+    }
 
-   @Inject(
-      method = {"render"},
-      at = {@At("HEAD")},
-      cancellable = true
-   )
-   private void renderHook(DrawContext var1, CallbackInfo var2) {
-      if (norender.isToggled() && norender.field_730.getValue()) {
-         var2.cancel();
-      }
-   }
-
-   @Inject(
-      method = {"shouldDarkenSky"},
-      at = {@At("HEAD")},
-      cancellable = true
-   )
-   private void shouldDarkenSkyHook(CallbackInfoReturnable<Boolean> var1) {
-      if (norender.isToggled() && norender.field_730.getValue() || skycolor.isToggled() && skycolor.method_125()) {
-         var1.setReturnValue(false);
-         var1.cancel();
-      }
-   }
+    @Inject(method = {"shouldDarkenSky"}, at = {@At("HEAD")}, cancellable = true)
+    private void shouldDarkenSkyHook(CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
+        if ((norender.isToggled() && norender.bossBars.getValue().booleanValue()) || (skycolor.isToggled() && skycolor.is3136())) {
+            callbackInfoReturnable.setReturnValue(false);
+            callbackInfoReturnable.cancel();
+        }
+    }
 }

@@ -1,12 +1,12 @@
 package me.mioclient.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import me.mioclient.Hub;
-import me.mioclient.api.MioAPI;
-import me.mioclient.event.Event_24;
-import me.mioclient.internal.Class_0542;
-import me.mioclient.internal.CommandManager;
-import me.mioclient.module.render.AmbienceModule;
+import me.mioclient.BaritoneHelper_3;
+import me.mioclient.ChatFilterSearchHelper4_2;
+import me.mioclient.SearchHelper_4;
+import me.mioclient.Vec3dEvent;
+import me.mioclient.feature.Event;
+import me.mioclient.module.render.Ambience;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
@@ -19,94 +19,58 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+/* compiled from: 0.java */
 @Mixin({ClientPlayNetworkHandler.class})
+/* loaded from: mio-yarn.jar:me/mioclient/mixin/MixinClientNetworkHandler.class */
 public class MixinClientNetworkHandler {
-   private static final AmbienceModule ambience = Hub.field_2595.method_78(AmbienceModule.class);
-   @Shadow
-   private ClientWorld world;
-   @Unique
-   private Event_24 event;
+    private static final Ambience ambience = (Ambience) BaritoneHelper_3.baritoneHelper_4.getModule117(Ambience.class);
 
-   public MixinClientNetworkHandler() {
-      super();
-   }
+    @Shadow
+    private ClientWorld field_3699;
 
-   @Inject(
-      method = {"sendChatMessage"},
-      at = {@At("HEAD")},
-      cancellable = true
-   )
-   private void sendChatMessageHook(String var1, CallbackInfo var2) {
-      if (var1.startsWith(CommandManager.method_927())) {
-         CommandManager.method_7(var1.substring(CommandManager.method_927().length()));
-         var2.cancel();
-      }
-   }
+    @Unique
+    private Event event;
 
-   @ModifyVariable(
-      method = {"sendChatMessage"},
-      at = @At(
-         value = "INVOKE",
-         target = "Ljava/time/Instant;now()Ljava/time/Instant;",
-         shift = Shift.BEFORE
-      ),
-      argsOnly = true
-   )
-   private String dabigbulletz(String var1) {
-      this.event = new Event_24(var1);
-      MioAPI.field_4220.method_36(this.event);
-      return this.event.method_219();
-   }
+    @Inject(method = {"sendChatMessage"}, at = {@At("HEAD")}, cancellable = true)
+    private void sendChatMessageHook(String str, CallbackInfo callbackInfo) {
+        if (str.startsWith(ChatFilterSearchHelper4_2.getString2982())) {
+            ChatFilterSearchHelper4_2.do2060(str.substring(ChatFilterSearchHelper4_2.getString2982().length()));
+            callbackInfo.cancel();
+        }
+    }
 
-   @Inject(
-      method = {"sendChatMessage"},
-      at = {@At(
-         value = "INVOKE",
-         target = "Ljava/time/Instant;now()Ljava/time/Instant;",
-         shift = Shift.AFTER
-      )},
-      cancellable = true
-   )
-   private void dabigbulletz(String var1, CallbackInfo var2) {
-      if (this.event != null && this.event.method_464()) {
-         var2.cancel();
-      }
-   }
+    @ModifyVariable(method = {"sendChatMessage"}, at = @At(value = "INVOKE", target = "Ljava/time/Instant;now()Ljava/time/Instant;", shift = At.Shift.BEFORE), argsOnly = true)
+    private String dabigbulletz(String str) {
+        this.event = new Event(str);
+        SearchHelper_4.baritoneHelper.getObject1794(this.event);
+        return this.event.getString2649();
+    }
 
-   @Inject(
-      method = {"onWorldTimeUpdate"},
-      at = {@At(
-         value = "INVOKE",
-         target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V",
-         shift = Shift.AFTER
-      )},
-      cancellable = true
-   )
-   private void onWorldTimeUpdateHook(WorldTimeUpdateS2CPacket var1, CallbackInfo var2) {
-      if (ambience.isToggled() && ambience.field_210.getValue()) {
-         this.world.setTime(ambience.method_94());
-         this.world.setTimeOfDay(ambience.method_94());
-         var2.cancel();
-      }
-   }
+    @Inject(method = {"sendChatMessage"}, at = {@At(value = "INVOKE", target = "Ljava/time/Instant;now()Ljava/time/Instant;", shift = At.Shift.AFTER)}, cancellable = true)
+    private void dabigbulletz(String str, CallbackInfo callbackInfo) {
+        if (this.event == null || !this.event.is2403()) {
+            return;
+        }
+        callbackInfo.cancel();
+    }
 
-   @Inject(
-      method = {"onVehicleMove"},
-      at = {@At(
-         value = "INVOKE",
-         target = "Lnet/minecraft/entity/Entity;updatePositionAndAngles(DDDFF)V"
-      )},
-      cancellable = true
-   )
-   private void onVehicleMove(VehicleMoveS2CPacket var1, CallbackInfo var2, @Local Entity var3) {
-      Vec3d var4 = new Vec3d(var1.getX(), var1.getY(), var1.getZ());
-      Class_0542 var5 = new Class_0542(var4);
-      MioAPI.field_4220.method_36(var5);
-      if (var5.method_464()) {
-         var2.cancel();
-      }
-   }
+    @Inject(method = {"onWorldTimeUpdate"}, at = {@At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER)}, cancellable = true)
+    private void onWorldTimeUpdateHook(WorldTimeUpdateS2CPacket worldTimeUpdateS2CPacket, CallbackInfo callbackInfo) {
+        if (ambience.isToggled() && ambience.worldTime.getValue().booleanValue()) {
+            this.field_3699.setTime(ambience.get2923());
+            this.field_3699.setTimeOfDay(ambience.get2923());
+            callbackInfo.cancel();
+        }
+    }
+
+    @Inject(method = {"onVehicleMove"}, at = {@At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;updatePositionAndAngles(DDDFF)V")}, cancellable = true)
+    private void onVehicleMove(VehicleMoveS2CPacket vehicleMoveS2CPacket, CallbackInfo callbackInfo, @Local Entity entity) {
+        Vec3dEvent vec3dEvent = new Vec3dEvent(new Vec3d(vehicleMoveS2CPacket.getX(), vehicleMoveS2CPacket.getY(), vehicleMoveS2CPacket.getZ()));
+        SearchHelper_4.baritoneHelper.getObject1794(vec3dEvent);
+        if (vec3dEvent.is2403()) {
+            callbackInfo.cancel();
+        }
+    }
 }

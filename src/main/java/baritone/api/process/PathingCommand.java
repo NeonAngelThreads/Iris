@@ -1,2 +1,7 @@
 package baritone.api.process;
-public class PathingCommand { public PathingCommand(PathingCommandType t, Object... args) {} }
+import baritone.api.pathing.goals.Goal;
+public class PathingCommand {
+    public final Goal goal;
+    public final PathingCommandType commandType;
+    public PathingCommand(Goal goal, PathingCommandType commandType) { this.goal = goal; this.commandType = commandType; }
+}

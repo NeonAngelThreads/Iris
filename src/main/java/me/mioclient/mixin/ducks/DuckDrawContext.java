@@ -8,8 +8,10 @@ import net.minecraft.client.gui.tooltip.TooltipPositioner;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
+/* compiled from: 0.java */
 @Mixin({DrawContext.class})
+/* loaded from: mio-yarn.jar:me/mioclient/mixin/ducks/DuckDrawContext.class */
 public interface DuckDrawContext {
-   @Invoker("drawTooltip")
-   void drawTooltipsHook(TextRenderer var1, List<TooltipComponent> var2, int var3, int var4, TooltipPositioner var5);
+    @Invoker("drawTooltip")
+    void drawTooltipsHook(TextRenderer textRenderer, List<TooltipComponent> list, int i, int i2, TooltipPositioner tooltipPositioner);
 }

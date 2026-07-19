@@ -5,19 +5,12 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
+/* compiled from: 0.java */
 @Mixin({GameOptions.class})
+/* loaded from: mio-yarn.jar:me/mioclient/mixin/MixinGameOptions.class */
 public class MixinGameOptions {
-   public MixinGameOptions() {
-      super();
-   }
-
-   @ModifyConstant(
-      method = {"<init>"},
-      constant = {@Constant(
-         intValue = 110
-      )}
-   )
-   private int bullet(int var1) {
-      return 150;
-   }
+    @ModifyConstant(method = {"<init>"}, constant = {@Constant(intValue = 110)})
+    private int bullet(int i) {
+        return 150;
+    }
 }

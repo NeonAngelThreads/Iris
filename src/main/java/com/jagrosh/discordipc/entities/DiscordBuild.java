@@ -1,38 +1,38 @@
 package com.jagrosh.discordipc.entities;
 
+/* compiled from: 0.java */
+/* loaded from: mio-yarn.jar:com/jagrosh/discordipc/entities/DiscordBuild.class */
 public enum DiscordBuild {
-   CANARY("//canary.discord.com/api"),
-   PTB("//ptb.discord.com/api"),
-   STABLE("//discord.com/api"),
-   ANY;
+    CANARY("//canary.discord.com/api"),
+    PTB("//ptb.discord.com/api"),
+    STABLE("//discord.com/api"),
+    ANY;
 
-   public final String endpoint;
+    public final String endpoint;
 
-    DiscordBuild(String var3) {
-      this.endpoint = var3;
-   }
+    DiscordBuild(String str) {
+        this.endpoint = str;
+    }
 
     DiscordBuild() {
-      this(null);
-   }
+        this(null);
+    }
 
-   public static DiscordBuild from(int var0) {
-      for (DiscordBuild var4 : values()) {
-         if (var4.ordinal() == var0) {
-            return var4;
-         }
-      }
+    public static DiscordBuild from(int i) {
+        for (DiscordBuild discordBuild : values()) {
+            if (discordBuild.ordinal() == i) {
+                return discordBuild;
+            }
+        }
+        return ANY;
+    }
 
-      return ANY;
-   }
-
-   public static DiscordBuild from(String var0) {
-      for (DiscordBuild var4 : values()) {
-         if (var4.endpoint != null && var4.endpoint.equals(var0)) {
-            return var4;
-         }
-      }
-
-      return ANY;
-   }
+    public static DiscordBuild from(String str) {
+        for (DiscordBuild discordBuild : values()) {
+            if (discordBuild.endpoint != null && discordBuild.endpoint.equals(str)) {
+                return discordBuild;
+            }
+        }
+        return ANY;
+    }
 }

@@ -1,7 +1,8 @@
 package me.mioclient.mixin;
 
-import me.mioclient.Hub;
-import me.mioclient.module.misc.AutoReconnectModule;
+import me.mioclient.BaritoneHelper_3;
+import me.mioclient.Helper_7;
+import me.mioclient.module.misc.AutoReconnect;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.DisconnectedScreen;
 import net.minecraft.client.gui.screen.Screen;
@@ -10,7 +11,7 @@ import net.minecraft.client.gui.screen.multiplayer.ConnectScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
-import net.minecraft.client.gui.widget.ButtonWidget.Builder;
+import net.minecraft.client.network.CookieStorage;
 import net.minecraft.client.network.ServerAddress;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.network.DisconnectionInfo;
@@ -23,114 +24,102 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+/* compiled from: 0.java */
 @Mixin({DisconnectedScreen.class})
+/* loaded from: mio-yarn.jar:me/mioclient/mixin/MixinDisconnectedScreen.class */
 public class MixinDisconnectedScreen extends Screen {
-   private static AutoReconnectModule autoreconnect = Hub.field_2595.method_78(AutoReconnectModule.class);
-   @Unique
-   private long startTime;
-   @Shadow
-   @Final
-   private DisconnectionInfo info;
-   @Shadow
-   @Final
-   private DirectionalLayoutWidget grid;
-   @Unique
-   private ButtonWidget reconnectButton;
-   @Unique
-   private ButtonWidget autoReconnectButton;
+    private static AutoReconnect autoreconnect = (AutoReconnect) BaritoneHelper_3.baritoneHelper_4.getModule117(AutoReconnect.class);
 
-   protected MixinDisconnectedScreen(Text var1) {
-      super(var1);
-   }
+    @Unique
+    private long startTime;
 
-   @Inject(
-      method = {"init"},
-      at = {@At(
-         value = "INVOKE",
-         target = "Lnet/minecraft/client/gui/screen/DisconnectedScreen;initTabNavigation()V",
-         shift = Shift.BEFORE
-      )}
-   )
-   private void initHook(CallbackInfo var1) {
-      this.startTime = System.currentTimeMillis();
-      Builder var2 = ButtonWidget.builder(Text.literal("Reconnect"), var1x -> {
-         ServerInfo var2x = Hub.field_2602.method_991();
-         if (var2x != null) {
-            ConnectScreen.connect(new MultiplayerScreen(new TitleScreen()), this.client, ServerAddress.parse(var2x.address), var2x, true, null);
-         }
-      }).width(200);
-      Builder var3 = ButtonWidget.builder(Text.literal("AutoReconnect"), var1x -> {
-         if (!autoreconnect.isToggled()) {
-            Hub.field_2602.field_3453 = false;
-         }
+    @Shadow
+    @Final
+    private DisconnectionInfo field_52131;
 
-         autoreconnect.method_68();
-         this.startTime = System.currentTimeMillis();
-         var1x.setFocused(false);
-      }).width(200);
-      this.reconnectButton = var2.build();
-      this.autoReconnectButton = var3.build();
-      this.grid.refreshPositions();
-      this.addDrawableChild(this.reconnectButton);
-      this.addDrawableChild(this.autoReconnectButton);
-   }
+    @Shadow
+    @Final
+    private DirectionalLayoutWidget field_44552;
 
-   @Inject(
-      method = {"initTabNavigation"},
-      at = {@At("TAIL")}
-   )
-   private void initTabHook(CallbackInfo var1) {
-      if (this.reconnectButton != null) {
-         int var2 = this.width / 2 - 100;
-         this.reconnectButton.setPosition(var2, Math.min(this.height / 2 + this.grid.getHeight() / 2, this.height - 30) - 1);
-         this.autoReconnectButton.setPosition(var2, Math.min(this.height / 2 + this.grid.getHeight() / 2, this.height - 30) + 20);
-      }
-   }
+    @Unique
+    private ButtonWidget reconnectButton;
 
-   public void tick() {
-      String var1 = this.info.reason().getString();
-      if (var1.contains("Mio") && var1.contains("[AutoLog]")) {
-         this.autoReconnectButton.setX(-1000);
-         this.autoReconnectButton.setY(-1000);
-      } else if (autoreconnect.isToggled()) {
-         float var2 = this.getAutoReconnectTime(autoreconnect);
-         if (!(var2 > 0.0F)) {
-            ServerInfo var3 = Hub.field_2602.method_991();
-            if (var3 != null) {
-               ConnectScreen.connect(new MultiplayerScreen(new TitleScreen()), this.client, ServerAddress.parse(var3.address), var3, true, null);
+    @Unique
+    private ButtonWidget autoReconnectButton;
+
+    protected MixinDisconnectedScreen(Text text) {
+        super(text);
+    }
+
+    @Inject(method = {"init"}, at = {@At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/DisconnectedScreen;initTabNavigation()V", shift = At.Shift.BEFORE)})
+    private void initHook(CallbackInfo callbackInfo) {
+        this.startTime = System.currentTimeMillis();
+        ButtonWidget.Builder width = ButtonWidget.builder(Text.literal("Reconnect"), buttonWidget -> {
+            ServerInfo serverInfo2622 = BaritoneHelper_3.holeSnapSearchHelper4_4.getServerInfo2622();
+            if (serverInfo2622 != null) {
+                ConnectScreen.connect(new MultiplayerScreen(new TitleScreen()), this.client, ServerAddress.parse(serverInfo2622.address), serverInfo2622, true, (CookieStorage) null);
             }
-         }
-      }
-   }
+        }).width(Helper_7.num);
+        ButtonWidget.Builder width2 = ButtonWidget.builder(Text.literal("AutoReconnect"), buttonWidget2 -> {
+            if (!autoreconnect.isToggled()) {
+                BaritoneHelper_3.holeSnapSearchHelper4_4.flag3 = false;
+            }
+            autoreconnect.do496();
+            this.startTime = System.currentTimeMillis();
+            buttonWidget2.setFocused(false);
+        }).width(Helper_7.num);
+        this.reconnectButton = width.build();
+        this.autoReconnectButton = width2.build();
+        this.field_44552.refreshPositions();
+        addDrawableChild(this.reconnectButton);
+        addDrawableChild(this.autoReconnectButton);
+    }
 
-   public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-      String var5 = this.info.reason().getString();
-      if (var5.contains("Mio") && var5.contains("[AutoLog]")) {
-         this.autoReconnectButton.setX(-1000);
-         this.autoReconnectButton.setY(-1000);
-      } else {
-         this.autoReconnectButton.setMessage(this.getAutoReconnectText());
-         this.autoReconnectButton.setFocused(false);
-         super.render(context, mouseX, mouseY, delta);
-      }
-   }
+    @Inject(method = {"initTabNavigation"}, at = {@At("TAIL")})
+    private void initTabHook(CallbackInfo callbackInfo) {
+        if (this.reconnectButton == null) {
+            return;
+        }
+        int i = (this.width / 2) - 100;
+        this.reconnectButton.setPosition(i, Math.min((this.height / 2) + (this.field_44552.getHeight() / 2), this.height - 30) - 1);
+        this.autoReconnectButton.setPosition(i, Math.min((this.height / 2) + (this.field_44552.getHeight() / 2), this.height - 30) + 20);
+    }
 
-   private Text getAutoReconnectText() {
-      MutableText var1 = Text.literal("AutoReconnect ");
-      String var2 = this.info.reason().getString();
-      boolean var3 = autoreconnect.isToggled() && (!var2.contains("Mio") || !var2.contains("[AutoLog]"));
-      float var4 = this.getAutoReconnectTime(autoreconnect);
-      if (Hub.field_2602.field_3453) {
-         return var1.append(Formatting.RED + "AutoLogged");
-      } else {
-         return var3 ? var1.append(Formatting.GREEN + "%.1fs".formatted(var4)) : var1.append(Formatting.RED + "OFF");
-      }
-   }
+    public void tick() {
+        ServerInfo serverInfo2622;
+        String string = this.field_52131.reason().getString();
+        if (string.contains("Mio") && string.contains("[AutoLog]")) {
+            this.autoReconnectButton.setX(-1000);
+            this.autoReconnectButton.setY(-1000);
+        } else if (autoreconnect.isToggled() && getAutoReconnectTime(autoreconnect) <= 0.0f && (serverInfo2622 = BaritoneHelper_3.holeSnapSearchHelper4_4.getServerInfo2622()) != null) {
+            ConnectScreen.connect(new MultiplayerScreen(new TitleScreen()), this.client, ServerAddress.parse(serverInfo2622.address), serverInfo2622, true, (CookieStorage) null);
+        }
+    }
 
-   private float getAutoReconnectTime(AutoReconnectModule var1) {
-      return var1 == null ? 0.1F : Math.max(var1.field_2007.getValue() - (float)(System.currentTimeMillis() - this.startTime) / 1000.0F, 0.0F);
-   }
+    public void render(DrawContext drawContext, int i, int i2, float f) {
+        String string = this.field_52131.reason().getString();
+        if (string.contains("Mio") && string.contains("[AutoLog]")) {
+            this.autoReconnectButton.setX(-1000);
+            this.autoReconnectButton.setY(-1000);
+        } else {
+            this.autoReconnectButton.setMessage(getAutoReconnectText());
+            this.autoReconnectButton.setFocused(false);
+            super.render(drawContext, i, i2, f);
+        }
+    }
+
+    private Text getAutoReconnectText() {
+        MutableText literal = Text.literal("AutoReconnect ");
+        String string = this.field_52131.reason().getString();
+        return BaritoneHelper_3.holeSnapSearchHelper4_4.flag3 ? literal.append(String.valueOf(Formatting.RED) + "AutoLogged") : autoreconnect.isToggled() && (!string.contains("Mio") || !string.contains("[AutoLog]")) ? literal.append(String.valueOf(Formatting.GREEN) + "%.1fs".formatted(Float.valueOf(getAutoReconnectTime(autoreconnect)))) : literal.append(String.valueOf(Formatting.RED) + "OFF");
+    }
+
+    private float getAutoReconnectTime(AutoReconnect autoReconnect) {
+        if (autoReconnect == null) {
+            return 0.1f;
+        }
+        return Math.max(autoReconnect.delay.getValue().floatValue() - (((float) (System.currentTimeMillis() - this.startTime)) / 1000.0f), 0.0f);
+    }
 }

@@ -1,8 +1,8 @@
 package me.mioclient.mixin;
 
-import me.mioclient.Hub;
-import me.mioclient.module.movement.NoSlowModule;
-import me.mioclient.module.render.XrayModule;
+import me.mioclient.BaritoneHelper_3;
+import me.mioclient.module.movement.NoSlow;
+import me.mioclient.module.render.Xray;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -14,45 +14,33 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+/* compiled from: 0.java */
 @Mixin({Block.class})
+/* loaded from: mio-yarn.jar:me/mioclient/mixin/MixinBlock.class */
 public class MixinBlock {
-   private static NoSlowModule noslow = Hub.field_2595.method_78(NoSlowModule.class);
+    private static NoSlow noslow = (NoSlow) BaritoneHelper_3.baritoneHelper_4.getModule117(NoSlow.class);
 
-   public MixinBlock() {
-      super();
-   }
+    @Inject(method = {"shouldDrawSide"}, at = {@At("HEAD")}, cancellable = true)
+    private static void onShouldDrawHook(BlockState blockState, BlockView blockView, BlockPos blockPos, Direction direction, BlockPos blockPos2, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
+        if (Xray.getXray3073().isToggled()) {
+            callbackInfoReturnable.cancel();
+            callbackInfoReturnable.setReturnValue(Boolean.valueOf(Xray.getXray3073().is3071(blockPos, blockState.getBlock())));
+        }
+    }
 
-   @Inject(
-      method = {"shouldDrawSide"},
-      at = {@At("HEAD")},
-      cancellable = true
-   )
-   private static void onShouldDrawHook(BlockState var0, BlockView var1, BlockPos var2, Direction var3, BlockPos var4, CallbackInfoReturnable<Boolean> var5) {
-      if (XrayModule.method_844().isToggled()) {
-         var5.cancel();
-         var5.setReturnValue(XrayModule.method_844().method_2(var2, var0.getBlock()));
-      }
-   }
-
-   @Inject(
-      method = {"getSlipperiness"},
-      at = {@At("HEAD")},
-      cancellable = true
-   )
-   private void getSlipperinessHook(CallbackInfoReturnable<Float> var1) {
-      if (noslow.isToggled()) {
-         Block var2 = (Block)(Object)this;
-         if (noslow.field_1695.getValue() && (var2 == Blocks.ICE || var2 == Blocks.PACKED_ICE || var2 == Blocks.BLUE_ICE)) {
-            var1.setReturnValue(0.6F);
-         }
-
-         if (noslow.field_1696.getValue() && var2 == Blocks.SLIME_BLOCK) {
-            var1.setReturnValue(0.6F);
-         }
-
-         if (noslow.field_1699.getValue() && var2 == Blocks.HONEY_BLOCK) {
-            var1.setReturnValue(0.6F);
-         }
-      }
-   }
+    @Inject(method = {"getSlipperiness"}, at = {@At("HEAD")}, cancellable = true)
+    private void getSlipperinessHook(CallbackInfoReturnable<Float> callbackInfoReturnable) {
+        if (noslow.isToggled()) {
+            Block block = (Block)(Object) this;
+            if (noslow.ice.getValue().booleanValue() && (block == Blocks.ICE || block == Blocks.PACKED_ICE || block == Blocks.BLUE_ICE)) {
+                callbackInfoReturnable.setReturnValue(Float.valueOf(0.6f));
+            }
+            if (noslow.slime.getValue().booleanValue() && block == Blocks.SLIME_BLOCK) {
+                callbackInfoReturnable.setReturnValue(Float.valueOf(0.6f));
+            }
+            if (noslow.honey.getValue().booleanValue() && block == Blocks.HONEY_BLOCK) {
+                callbackInfoReturnable.setReturnValue(Float.valueOf(0.6f));
+            }
+        }
+    }
 }

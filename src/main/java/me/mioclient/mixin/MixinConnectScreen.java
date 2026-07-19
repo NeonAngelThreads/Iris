@@ -1,36 +1,29 @@
 package me.mioclient.mixin;
 
-import me.mioclient.Hub;
-import me.mioclient.api.MioAPI;
-import me.mioclient.event.Event_22;
+import me.mioclient.BaritoneHelper_3;
+import me.mioclient.SearchHelper_4;
+import me.mioclient.event.ConnectEvent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.multiplayer.ConnectScreen;
 import net.minecraft.client.network.CookieStorage;
 import net.minecraft.client.network.ServerAddress;
 import net.minecraft.client.network.ServerInfo;
-import net.minecraft.client.network.ServerInfo.ServerType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+/* compiled from: 0.java */
 @Mixin({ConnectScreen.class})
+/* loaded from: mio-yarn.jar:me/mioclient/mixin/MixinConnectScreen.class */
 public class MixinConnectScreen {
-   public MixinConnectScreen() {
-      super();
-   }
-
-   @Inject(
-      method = {"connect(Lnet/minecraft/client/MinecraftClient;Lnet/minecraft/client/network/ServerAddress;Lnet/minecraft/client/network/ServerInfo;Lnet/minecraft/client/network/CookieStorage;)V"},
-      at = {@At("HEAD")}
-   )
-   private void connectHook(MinecraftClient var1, ServerAddress var2, ServerInfo var3, CookieStorage var4, CallbackInfo var5) {
-      ServerInfo var6 = var3;
-      if (var3 == null) {
-         var6 = new ServerInfo("mioclient", var2.getAddress(), ServerType.OTHER);
-      }
-
-      MioAPI.field_4220.method_36(new Event_22(var6.address));
-      Hub.field_2602.method_2(var6);
-   }
+    @Inject(method = {"connect(Lnet/minecraft/client/MinecraftClient;Lnet/minecraft/client/network/ServerAddress;Lnet/minecraft/client/network/ServerInfo;Lnet/minecraft/client/network/CookieStorage;)V"}, at = {@At("HEAD")})
+    private void connectHook(MinecraftClient minecraftClient, ServerAddress serverAddress, ServerInfo serverInfo, CookieStorage cookieStorage, CallbackInfo callbackInfo) {
+        ServerInfo serverInfo2 = serverInfo;
+        if (serverInfo2 == null) {
+            serverInfo2 = new ServerInfo("mioclient", serverAddress.getAddress(), ServerInfo.ServerType.OTHER);
+        }
+        SearchHelper_4.baritoneHelper.getObject1794(new ConnectEvent(serverInfo2.address));
+        BaritoneHelper_3.holeSnapSearchHelper4_4.do2623(serverInfo2);
+    }
 }

@@ -1,7 +1,7 @@
 package me.mioclient.mixin;
 
-import me.mioclient.Hub;
-import me.mioclient.module.render.NoRenderModule;
+import me.mioclient.BaritoneHelper_3;
+import me.mioclient.module.render.NoRender;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.InGameOverlayRenderer;
 import net.minecraft.client.texture.Sprite;
@@ -11,44 +11,30 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+/* compiled from: 0.java */
 @Mixin({InGameOverlayRenderer.class})
+/* loaded from: mio-yarn.jar:me/mioclient/mixin/MixinInGameOverlayRenderer.class */
 public class MixinInGameOverlayRenderer {
-   private static NoRenderModule norender = Hub.field_2595.method_78(NoRenderModule.class);
+    private static NoRender norender = (NoRender) BaritoneHelper_3.baritoneHelper_4.getModule117(NoRender.class);
 
-   public MixinInGameOverlayRenderer() {
-      super();
-   }
+    @Inject(method = {"renderFireOverlay"}, at = {@At("HEAD")}, cancellable = true)
+    private static void onRenderFireOverlay(MinecraftClient minecraftClient, MatrixStack matrixStack, CallbackInfo callbackInfo) {
+        if (norender.isToggled() && norender.fire.getValue().booleanValue()) {
+            callbackInfo.cancel();
+        }
+    }
 
-   @Inject(
-      method = {"renderFireOverlay"},
-      at = {@At("HEAD")},
-      cancellable = true
-   )
-   private static void onRenderFireOverlay(MinecraftClient var0, MatrixStack var1, CallbackInfo var2) {
-      if (norender.isToggled() && norender.field_750.getValue()) {
-         var2.cancel();
-      }
-   }
+    @Inject(method = {"renderUnderwaterOverlay"}, at = {@At("HEAD")}, cancellable = true)
+    private static void onRenderUnderwaterOverlay(MinecraftClient minecraftClient, MatrixStack matrixStack, CallbackInfo callbackInfo) {
+        if (norender.isToggled() && norender.blindness.getValue().booleanValue()) {
+            callbackInfo.cancel();
+        }
+    }
 
-   @Inject(
-      method = {"renderUnderwaterOverlay"},
-      at = {@At("HEAD")},
-      cancellable = true
-   )
-   private static void onRenderUnderwaterOverlay(MinecraftClient var0, MatrixStack var1, CallbackInfo var2) {
-      if (norender.isToggled() && norender.field_720.getValue()) {
-         var2.cancel();
-      }
-   }
-
-   @Inject(
-      method = {"renderInWallOverlay"},
-      at = {@At("HEAD")},
-      cancellable = true
-   )
-   private static void render(Sprite var0, MatrixStack var1, CallbackInfo var2) {
-      if (norender.isToggled() && norender.field_720.getValue()) {
-         var2.cancel();
-      }
-   }
+    @Inject(method = {"renderInWallOverlay"}, at = {@At("HEAD")}, cancellable = true)
+    private static void render(Sprite sprite, MatrixStack matrixStack, CallbackInfo callbackInfo) {
+        if (norender.isToggled() && norender.blindness.getValue().booleanValue()) {
+            callbackInfo.cancel();
+        }
+    }
 }

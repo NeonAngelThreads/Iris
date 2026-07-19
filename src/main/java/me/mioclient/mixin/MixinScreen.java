@@ -1,11 +1,11 @@
 package me.mioclient.mixin;
 
-import me.mioclient.Hub;
-import me.mioclient.internal.CommandManager;
-import me.mioclient.internal.Class_1117;
-import me.mioclient.internal.Class_1299;
-import me.mioclient.module.render.BlurModule;
-import me.mioclient.module.render.NoRenderModule;
+import me.mioclient.BaritoneHelper_3;
+import me.mioclient.BlurFramebuffer;
+import me.mioclient.ChatFilterSearchHelper4_2;
+import me.mioclient.FontsSearchHelper4_2;
+import me.mioclient.module.render.Blur;
+import me.mioclient.module.render.NoRender;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -15,75 +15,59 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+/* compiled from: 0.java */
 @Mixin({Screen.class})
+/* loaded from: mio-yarn.jar:me/mioclient/mixin/MixinScreen.class */
 public abstract class MixinScreen {
-   private static final NoRenderModule norender = Hub.field_2595.method_78(NoRenderModule.class);
-   private static final BlurModule blur = Hub.field_2595.method_78(BlurModule.class);
-   @Shadow
-   @Nullable
-   protected MinecraftClient client;
-   @Shadow
-   public int width;
-   @Shadow
-   public int height;
+    private static final NoRender norender = (NoRender) BaritoneHelper_3.baritoneHelper_4.getModule117(NoRender.class);
+    private static final Blur blur = (Blur) BaritoneHelper_3.baritoneHelper_4.getModule117(Blur.class);
 
-   public MixinScreen() {
-      super();
-   }
+    @Shadow
+    @Nullable
+    protected MinecraftClient field_22787;
 
-   @Shadow
-   protected abstract void renderDarkening(DrawContext var1);
+    @Shadow
+    public int field_22789;
 
-   @Inject(
-      method = {"handleTextClick"},
-      at = {@At(
-         value = "INVOKE",
-         target = "Ljava/lang/String;startsWith(Ljava/lang/String;)Z",
-         shift = Shift.BEFORE
-      )}
-   )
-   private void handleTextClickHook(Style var1, CallbackInfoReturnable<Boolean> var2) {
-      if (this.client.getNetworkHandler() != null) {
-         String var3 = var1.getClickEvent().getValue();
-         if (var3.startsWith(CommandManager.method_927())) {
-            this.client.getNetworkHandler().sendChatMessage(var3);
-         }
-      }
-   }
+    @Shadow
+    public int field_22790;
 
-   @Inject(
-      method = {"renderInGameBackground"},
-      at = {@At("HEAD")},
-      cancellable = true
-   )
-   private void renderInGameBackgroundHook(DrawContext var1, CallbackInfo var2) {
-      if (norender.method_285()) {
-         var2.cancel();
-      }
-   }
+    @Shadow
+    protected abstract void method_57735(DrawContext drawContext);
 
-   @Inject(
-      method = {"renderBackground"},
-      at = {@At(
-         value = "INVOKE",
-         target = "Lnet/minecraft/client/gui/screen/Screen;applyBlur(F)V",
-         shift = Shift.BEFORE
-      )},
-      cancellable = true
-   )
-   private void renderBackground(DrawContext var1, int var2, int var3, float var4, CallbackInfo var5) {
-      if (blur.isToggled() && this.client.world != null && this.client.player != null) {
-         this.renderDarkening(var1);
-         var5.cancel();
-      } else if (MinecraftClient.getInstance().currentScreen instanceof Class_1117) {
-         float var6 = (float)this.client.options.getMenuBackgroundBlurrinessValue();
-         this.renderDarkening(var1);
-         Class_1299.method_2(() -> var1.fill(0, 0, this.width, this.height, -1), var6);
-         var5.cancel();
-      }
-   }
+    @Inject(method = {"handleTextClick"}, at = {@At(value = "INVOKE", target = "Ljava/lang/String;startsWith(Ljava/lang/String;)Z", shift = At.Shift.BEFORE)})
+    private void handleTextClickHook(Style style, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
+        if (this.field_22787.getNetworkHandler() == null) {
+            return;
+        }
+        String value = style.getClickEvent().getValue();
+        if (value.startsWith(ChatFilterSearchHelper4_2.getString2982())) {
+            this.field_22787.getNetworkHandler().sendChatMessage(value);
+        }
+    }
+
+    @Inject(method = {"renderInGameBackground"}, at = {@At("HEAD")}, cancellable = true)
+    private void renderInGameBackgroundHook(DrawContext drawContext, CallbackInfo callbackInfo) {
+        if (norender.is1998()) {
+            callbackInfo.cancel();
+        }
+    }
+
+    @Inject(method = {"renderBackground"}, at = {@At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;applyBlur(F)V", shift = At.Shift.BEFORE)}, cancellable = true)
+    private void renderBackground(DrawContext drawContext, int i, int i2, float f, CallbackInfo callbackInfo) {
+        if (blur.isToggled() && this.field_22787.world != null && this.field_22787.player != null) {
+            method_57735(drawContext);
+            callbackInfo.cancel();
+        } else if (MinecraftClient.getInstance().currentScreen instanceof FontsSearchHelper4_2) {
+            float menuBackgroundBlurrinessValue = this.field_22787.options.getMenuBackgroundBlurrinessValue();
+            method_57735(drawContext);
+            BlurFramebuffer.do2002(() -> {
+                drawContext.fill(0, 0, this.field_22789, this.field_22790, -1);
+            }, menuBackgroundBlurrinessValue);
+            callbackInfo.cancel();
+        }
+    }
 }

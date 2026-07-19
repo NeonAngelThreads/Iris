@@ -1,9 +1,9 @@
 package me.mioclient.mixin;
 
-import me.mioclient.Hub;
-import me.mioclient.internal.RotationManager;
-import me.mioclient.internal.RenderUtil;
-import me.mioclient.module.abstract_.AbstractModule_24;
+import me.mioclient.BaritoneHelper_3;
+import me.mioclient.SearchHelper4_8;
+import me.mioclient.SearchHelper_2;
+import me.mioclient.module.PlayerModel;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.entity.LivingEntity;
@@ -14,44 +14,26 @@ import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
+/* compiled from: 0.java */
 @Mixin({InventoryScreen.class})
+/* loaded from: mio-yarn.jar:me/mioclient/mixin/MixinInventoryScreen.class */
 public class MixinInventoryScreen {
-   private static AbstractModule_24 playermodel = Hub.field_2595.method_78(AbstractModule_24.class);
+    private static PlayerModel playermodel = (PlayerModel) BaritoneHelper_3.baritoneHelper_4.getModule117(PlayerModel.class);
 
-   public MixinInventoryScreen() {
-      super();
-   }
+    @Inject(method = {"drawEntity(Lnet/minecraft/client/gui/DrawContext;IIIIIFFFLnet/minecraft/entity/LivingEntity;)V"}, at = {@At("HEAD")})
+    private static void drawEntityHook(DrawContext drawContext, int i, int i2, int i3, int i4, int i5, float f, float f2, float f3, LivingEntity livingEntity, CallbackInfo callbackInfo) {
+        SearchHelper4_8.flag = true;
+    }
 
-   @Inject(
-      method = {"drawEntity(Lnet/minecraft/client/gui/DrawContext;IIIIIFFFLnet/minecraft/entity/LivingEntity;)V"},
-      at = {@At("HEAD")}
-   )
-   private static void drawEntityHook(
-      DrawContext var0, int var1, int var2, int var3, int var4, int var5, float var6, float var7, float var8, LivingEntity var9, CallbackInfo var10
-   ) {
-      RotationManager.field_1538 = true;
-   }
+    @Inject(method = {"drawEntity(Lnet/minecraft/client/gui/DrawContext;IIIIIFFFLnet/minecraft/entity/LivingEntity;)V"}, at = {@At("RETURN")})
+    private static void drawEntityHook2(DrawContext drawContext, int i, int i2, int i3, int i4, int i5, float f, float f2, float f3, LivingEntity livingEntity, CallbackInfo callbackInfo) {
+        SearchHelper4_8.flag = false;
+    }
 
-   @Inject(
-      method = {"drawEntity(Lnet/minecraft/client/gui/DrawContext;IIIIIFFFLnet/minecraft/entity/LivingEntity;)V"},
-      at = {@At("RETURN")}
-   )
-   private static void drawEntityHook2(
-      DrawContext var0, int var1, int var2, int var3, int var4, int var5, float var6, float var7, float var8, LivingEntity var9, CallbackInfo var10
-   ) {
-      RotationManager.field_1538 = false;
-   }
-
-   @ModifyArgs(
-      method = {"method_29977"},
-      at = @At(
-         value = "INVOKE",
-         target = "Lnet/minecraft/client/render/entity/EntityRenderDispatcher;render(Lnet/minecraft/entity/Entity;DDDFFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V"
-      )
-   )
-   private static void lambdaHook(Args var0) {
-      if (AbstractModule_24.field_1777) {
-         var0.set(5, RenderUtil.method_776());
-      }
-   }
+    @ModifyArgs(method = {"method_29977"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/EntityRenderDispatcher;render(Lnet/minecraft/entity/Entity;DDDFFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V"))
+    private static void lambdaHook(Args args) {
+        if (PlayerModel.flag) {
+            args.set(5, Float.valueOf(SearchHelper_2.get536()));
+        }
+    }
 }

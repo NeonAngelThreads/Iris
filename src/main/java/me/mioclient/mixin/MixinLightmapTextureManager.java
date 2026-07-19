@@ -1,9 +1,8 @@
 package me.mioclient.mixin;
 
 import java.awt.Color;
-import me.mioclient.Hub;
-import me.mioclient.enum_.Class_0574;
-import me.mioclient.module.render.AmbienceModule;
+import me.mioclient.BaritoneHelper_3;
+import me.mioclient.module.render.Ambience;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.texture.NativeImage;
 import org.spongepowered.asm.mixin.Final;
@@ -14,42 +13,31 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+/* compiled from: 0.java */
 @Mixin({LightmapTextureManager.class})
+/* loaded from: mio-yarn.jar:me/mioclient/mixin/MixinLightmapTextureManager.class */
 public class MixinLightmapTextureManager {
-   private static AmbienceModule ambience = Hub.field_2595.method_78(AmbienceModule.class);
-   @Final
-   @Shadow
-   private NativeImage image;
+    private static Ambience ambience = (Ambience) BaritoneHelper_3.baritoneHelper_4.getModule117(Ambience.class);
 
-   public MixinLightmapTextureManager() {
-      super();
-   }
+    @Shadow
+    @Final
+    private NativeImage field_4133;
 
-   @Redirect(
-      method = {"update"},
-      at = @At(
-         value = "INVOKE",
-         target = "Lnet/minecraft/client/texture/NativeImage;setColor(III)V"
-      )
-   )
-   private void updateHook(NativeImage var1, int var2, int var3, int var4) {
-      if (!ambience.isToggled() || ambience.field_207.getValue() != Class_0574.SCREEN || var2 == 15 && var3 == 15) {
-         var1.setColor(var2, var3, var4);
-      } else {
-         Color var5 = ambience.field_208.getValue();
-         this.image.setColor(var2, var3, 0xFF000000 | var5.getBlue() << 16 | var5.getGreen() << 8 | var5.getRed());
-      }
-   }
+    @Redirect(method = {"update"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/texture/NativeImage;setColor(III)V"))
+    private void updateHook(NativeImage nativeImage, int i, int i2, int i3) {
+        if (!ambience.isToggled() || ambience.brightness.getValue() != Ambience.MixinEntityRendererMode.SCREEN || (i == 15 && i2 == 15)) {
+            nativeImage.setColor(i, i2, i3);
+        } else {
+            Color value = ambience.color.getValue();
+            this.field_4133.setColor(i, i2, (-16777216) | (value.getBlue() << 16) | (value.getGreen() << 8) | value.getRed());
+        }
+    }
 
-   @Inject(
-      method = {"pack"},
-      at = {@At("HEAD")},
-      cancellable = true
-   )
-   private static void packHook(int var0, int var1, CallbackInfoReturnable<Integer> var2) {
-      if (ambience.isToggled() && ambience.field_207.getValue() == Class_0574.SCREEN) {
-         var2.setReturnValue(0);
-         var2.cancel();
-      }
-   }
+    @Inject(method = {"pack"}, at = {@At("HEAD")}, cancellable = true)
+    private static void packHook(int i, int i2, CallbackInfoReturnable<Integer> callbackInfoReturnable) {
+        if (ambience.isToggled() && ambience.brightness.getValue() == Ambience.MixinEntityRendererMode.SCREEN) {
+            callbackInfoReturnable.setReturnValue(0);
+            callbackInfoReturnable.cancel();
+        }
+    }
 }

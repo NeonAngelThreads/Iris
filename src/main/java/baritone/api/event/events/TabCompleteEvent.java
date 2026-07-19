@@ -1,2 +1,5 @@
 package baritone.api.event.events;
-public class TabCompleteEvent { public String getPrefix() { return ""; } }
+public class TabCompleteEvent {
+    public String[] completions;
+    public TabCompleteEvent(String prefix) {}
+}

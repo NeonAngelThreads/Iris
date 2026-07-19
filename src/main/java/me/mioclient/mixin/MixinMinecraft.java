@@ -3,24 +3,24 @@ package me.mioclient.mixin;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Local;
-import me.mioclient.Hub;
-import me.mioclient.api.MioAPI;
-import me.mioclient.event.Event_11;
-import me.mioclient.event.Event_20;
-import me.mioclient.event.Event_21;
-import me.mioclient.event.Event_53;
-import me.mioclient.event.Event_61;
-import me.mioclient.internal.Class_0631;
-import me.mioclient.internal.Class_1117;
-import me.mioclient.module.abstract_.AbstractModule_38;
-import me.mioclient.module.client.UIModule;
-import me.mioclient.module.combat.ArrowsModule;
-import me.mioclient.module.combat.AutoClickerModule;
-import me.mioclient.module.combat.AutoCrystalModule;
-import me.mioclient.module.exploit.MultiTaskModule;
-import me.mioclient.module.misc.AntiQuitModule;
-import me.mioclient.module.misc.UnfocusedFPSModule;
-import me.mioclient.module.player.AutoEatModule;
+import me.mioclient.BaritoneHelper_3;
+import me.mioclient.FontsEvent;
+import me.mioclient.FontsSearchHelper4_2;
+import me.mioclient.SearchHelper_4;
+import me.mioclient.event.DisconnectEvent;
+import me.mioclient.event.RenderEvent;
+import me.mioclient.event.SetScreenHookPostEvent;
+import me.mioclient.event.SetScreenHookPreEvent;
+import me.mioclient.feature.ConfirmGameClose;
+import me.mioclient.module.client.UI;
+import me.mioclient.module.combat.Arrows;
+import me.mioclient.module.combat.AutoClicker;
+import me.mioclient.module.combat.AutoCrystal;
+import me.mioclient.module.combat.NoHitDelay;
+import me.mioclient.module.exploit.MultiTask;
+import me.mioclient.module.misc.AntiQuit;
+import me.mioclient.module.misc.UnfocusedFPS;
+import me.mioclient.module.player.AutoEat;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
@@ -34,234 +34,168 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+/* compiled from: 0.java */
 @Mixin({MinecraftClient.class})
+/* loaded from: mio-yarn.jar:me/mioclient/mixin/MixinMinecraft.class */
 public class MixinMinecraft {
-   private static UIModule clickgui = Hub.field_2595.method_78(UIModule.class);
-   private static MultiTaskModule multitask = Hub.field_2595.method_78(MultiTaskModule.class);
-   private static AutoEatModule autoeat = Hub.field_2595.method_78(AutoEatModule.class);
-   private static UnfocusedFPSModule unfocusedfps = Hub.field_2595.method_78(UnfocusedFPSModule.class);
-   private static AntiQuitModule antiquit = Hub.field_2595.method_78(AntiQuitModule.class);
-   private static AbstractModule_38 nohitdelay = Hub.field_2595.method_78(AbstractModule_38.class);
-   private static AutoClickerModule autoclicker = Hub.field_2595.method_78(AutoClickerModule.class);
-   private static final ArrowsModule arrows = Hub.field_2595.method_78(ArrowsModule.class);
-   private static final AutoCrystalModule autocrystal = Hub.field_2595.method_78(AutoCrystalModule.class);
-   @Unique
-   private Screen mio$lastScreen;
-   @Shadow
-   private boolean windowFocused;
-   @Shadow
-   public int attackCooldown;
-   @Shadow
-   @Final
-   public GameOptions options;
-   @Shadow
-   @Nullable
-   public Screen currentScreen;
-   @Shadow
-   @Final
-   private Window window;
-   private static boolean saved = false;
 
-   public MixinMinecraft() {
-      super();
-   }
+    @Unique
+    private Screen mio$lastScreen;
 
-   @Inject(
-      method = {"doAttack()Z"},
-      at = {@At("HEAD")}
-   )
-   public void doAttackHook(CallbackInfoReturnable<Boolean> var1) {
-      if (nohitdelay.isToggled() || autoclicker.isToggled()) {
-         this.attackCooldown = 0;
-      }
-   }
+    @Shadow
+    private boolean field_1695;
 
-   @Inject(
-      method = {"stop"},
-      at = {@At("HEAD")}
-   )
-   public void scheduleStop(CallbackInfo var1) {
-      if (!saved && Hub.field_2597 != null) {
-         saved = true;
-         clickgui.disable();
-         Hub.field_2597.method_357();
-      }
-   }
+    @Shadow
+    public int field_1771;
 
-   @Inject(
-      method = {"disconnect(Lnet/minecraft/client/gui/screen/Screen;)V"},
-      at = {@At("HEAD")}
-   )
-   public void disconnect(Screen var1, CallbackInfo var2) {
-      Event_20 var3 = new Event_20();
-      MioAPI.field_4220.method_36(var3);
-   }
+    @Shadow
+    @Final
+    public GameOptions field_1690;
 
-   @ModifyExpressionValue(
-      method = {"handleBlockBreaking"},
-      at = {@At(
-         value = "INVOKE",
-         target = "Lnet/minecraft/client/network/ClientPlayerEntity;isUsingItem()Z"
-      )}
-   )
-   public boolean handleBlockBreakingHook(boolean var1) {
-      return !multitask.isToggled() && var1;
-   }
+    @Shadow
+    @Nullable
+    public Screen field_1755;
 
-   @Redirect(
-      method = {"doItemUse"},
-      at = @At(
-         value = "INVOKE",
-         target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;isBreakingBlock()Z"
-      ),
-      require = 0
-   )
-   public boolean doItemUseHook(ClientPlayerInteractionManager var1) {
-      return !multitask.isToggled() && var1.isBreakingBlock();
-   }
+    @Shadow
+    @Final
+    private Window field_1704;
+    private static UI clickgui = (UI) BaritoneHelper_3.baritoneHelper_4.getModule117(UI.class);
+    private static MultiTask multitask = (MultiTask) BaritoneHelper_3.baritoneHelper_4.getModule117(MultiTask.class);
+    private static AutoEat autoeat = (AutoEat) BaritoneHelper_3.baritoneHelper_4.getModule117(AutoEat.class);
+    private static UnfocusedFPS unfocusedfps = (UnfocusedFPS) BaritoneHelper_3.baritoneHelper_4.getModule117(UnfocusedFPS.class);
+    private static AntiQuit antiquit = (AntiQuit) BaritoneHelper_3.baritoneHelper_4.getModule117(AntiQuit.class);
+    private static NoHitDelay nohitdelay = (NoHitDelay) BaritoneHelper_3.baritoneHelper_4.getModule117(NoHitDelay.class);
+    private static AutoClicker autoclicker = (AutoClicker) BaritoneHelper_3.baritoneHelper_4.getModule117(AutoClicker.class);
+    private static final Arrows arrows = (Arrows) BaritoneHelper_3.baritoneHelper_4.getModule117(Arrows.class);
+    private static final AutoCrystal autocrystal = (AutoCrystal) BaritoneHelper_3.baritoneHelper_4.getModule117(AutoCrystal.class);
+    private static boolean saved = false;
 
-   @Inject(
-      method = {"setScreen"},
-      at = {@At("HEAD")},
-      cancellable = true
-   )
-   private void setScreenHookPre(Screen var1, CallbackInfo var2) {
-      this.mio$lastScreen = this.currentScreen;
-      Event_53 var3 = new Event_53(this.mio$lastScreen, var1);
-      MioAPI.field_4220.method_36(var3);
-      if (var3.method_464()) {
-         var2.cancel();
-      }
-   }
+    @Inject(method = {"doAttack()Z"}, at = {@At("HEAD")})
+    public void doAttackHook(CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
+        if (nohitdelay.isToggled() || autoclicker.isToggled()) {
+            this.field_1771 = 0;
+        }
+    }
 
-   @Inject(
-      method = {"setScreen"},
-      at = {@At(
-         value = "INVOKE",
-         target = "Lnet/minecraft/client/gui/screen/Screen;init(Lnet/minecraft/client/MinecraftClient;II)V",
-         shift = Shift.AFTER
-      )},
-      cancellable = true
-   )
-   private void setScreenHookPost(Screen var1, CallbackInfo var2) {
-      Event_61 var3 = new Event_61(this.mio$lastScreen, var1);
-      MioAPI.field_4220.method_36(var3);
-      if (var3.method_464()) {
-         var2.cancel();
-      }
-   }
+    @Inject(method = {"stop"}, at = {@At("HEAD")})
+    public void scheduleStop(CallbackInfo callbackInfo) {
+        if (saved || BaritoneHelper_3.presetHelper == null) {
+            return;
+        }
+        saved = true;
+        clickgui.disable();
+        BaritoneHelper_3.presetHelper.do41();
+    }
 
-   @Inject(
-      method = {"tick"},
-      at = {@At("HEAD")}
-   )
-   private void tickHook(CallbackInfo var1) {
-      MioAPI.field_4220.method_36(Event_21.field_3173);
-   }
+    @Inject(method = {"disconnect(Lnet/minecraft/client/gui/screen/Screen;)V"}, at = {@At("HEAD")})
+    public void disconnect(Screen screen, CallbackInfo callbackInfo) {
+        SearchHelper_4.baritoneHelper.getObject1794(new DisconnectEvent());
+    }
 
-   @ModifyExpressionValue(
-      method = {"handleInputEvents"},
-      at = {@At(
-         value = "INVOKE",
-         target = "Lnet/minecraft/client/network/ClientPlayerEntity;isUsingItem()Z"
-      )}
-   )
-   private boolean handleInputEventsHook(boolean var1) {
-      return autoeat.method_892() && autoeat.isToggled() ? false : var1;
-   }
+    @ModifyExpressionValue(method = {"handleBlockBreaking"}, at = {@At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isUsingItem()Z")})
+    public boolean handleBlockBreakingHook(boolean z) {
+        return !multitask.isToggled() && z;
+    }
 
-   @Inject(
-      method = {"getFramerateLimit"},
-      at = {@At("HEAD")},
-      cancellable = true
-   )
-   public void getFramerateLimit(CallbackInfoReturnable<Integer> var1) {
-      if (unfocusedfps.isToggled() && !this.windowFocused) {
-         if (unfocusedfps.field_2211.method_468()) {
-            var1.setReturnValue(unfocusedfps.method_681());
-         } else {
-            var1.setReturnValue(unfocusedfps.field_2211.getValue());
-         }
-      } else {
-         if (this.currentScreen instanceof Class_1117 && this.windowFocused) {
-            var1.setReturnValue(this.window.getFramerateLimit());
-         }
-      }
-   }
+    @Redirect(method = {"doItemUse"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;isBreakingBlock()Z"), require = 0)
+    public boolean doItemUseHook(ClientPlayerInteractionManager clientPlayerInteractionManager) {
+        return !multitask.isToggled() && clientPlayerInteractionManager.isBreakingBlock();
+    }
 
-   @WrapWithCondition(
-      method = {"render"},
-      at = {@At(
-         value = "INVOKE",
-         target = "Lnet/minecraft/client/MinecraftClient;scheduleStop()V"
-      )}
-   )
-   private boolean renderHook(MinecraftClient var1) {
-      if (antiquit.isToggled() && antiquit.field_3761.getValue()) {
-         if (!(var1.currentScreen instanceof Class_0631)) {
-            var1.setScreen(new Class_0631());
-         }
+    @Inject(method = {"setScreen"}, at = {@At("HEAD")}, cancellable = true)
+    private void setScreenHookPre(Screen screen, CallbackInfo callbackInfo) {
+        this.mio$lastScreen = this.field_1755;
+        SetScreenHookPreEvent setScreenHookPreEvent = new SetScreenHookPreEvent(this.mio$lastScreen, screen);
+        SearchHelper_4.baritoneHelper.getObject1794(setScreenHookPreEvent);
+        if (setScreenHookPreEvent.is2403()) {
+            callbackInfo.cancel();
+        }
+    }
 
-         return false;
-      } else {
-         return true;
-      }
-   }
+    @Inject(method = {"setScreen"}, at = {@At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;init(Lnet/minecraft/client/MinecraftClient;II)V", shift = At.Shift.AFTER)}, cancellable = true)
+    private void setScreenHookPost(Screen screen, CallbackInfo callbackInfo) {
+        SetScreenHookPostEvent setScreenHookPostEvent = new SetScreenHookPostEvent(this.mio$lastScreen, screen);
+        SearchHelper_4.baritoneHelper.getObject1794(setScreenHookPostEvent);
+        if (setScreenHookPostEvent.is2403()) {
+            callbackInfo.cancel();
+        }
+    }
 
-   @Inject(
-      method = {"render"},
-      at = {@At(
-         value = "INVOKE",
-         target = "Lnet/minecraft/client/MinecraftClient;runTasks()V",
-         shift = Shift.AFTER
-      )}
-   )
-   private void render(boolean var1, CallbackInfo var2, @Local int var3) {
-      MioAPI.field_4220.method_36(new Event_11(var3 >= 1));
-   }
+    @Inject(method = {"tick"}, at = {@At("HEAD")})
+    private void tickHook(CallbackInfo callbackInfo) {
+        SearchHelper_4.baritoneHelper.getObject1794(FontsEvent.fontsEvent);
+    }
 
-   @ModifyExpressionValue(
-      method = {"handleInputEvents"},
-      at = {@At(
-         value = "INVOKE",
-         target = "Lnet/minecraft/client/network/ClientPlayerEntity;isUsingItem()Z"
-      )}
-   )
-   private boolean handleInputEvents(boolean var1) {
-      return arrows.isToggled() && arrows.field_654.getValue() ? false : var1;
-   }
+    @ModifyExpressionValue(method = {"handleInputEvents"}, at = {@At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isUsingItem()Z")})
+    private boolean handleInputEventsHook(boolean z) {
+        if (autoeat.is2086() && autoeat.isToggled()) {
+            return false;
+        }
+        return z;
+    }
 
-   @Inject(
-      method = {"doItemUse"},
-      at = {@At("HEAD")}
-   )
-   private void doItemUse(CallbackInfo var1) {
-      autocrystal.method_463();
-   }
+    @Inject(method = {"getFramerateLimit"}, at = {@At("HEAD")}, cancellable = true)
+    public void getFramerateLimit(CallbackInfoReturnable<Integer> callbackInfoReturnable) {
+        if (!unfocusedfps.isToggled() || this.field_1695) {
+            if ((this.field_1755 instanceof FontsSearchHelper4_2) && this.field_1695) {
+                callbackInfoReturnable.setReturnValue(Integer.valueOf(this.field_1704.getFramerateLimit()));
+                return;
+            }
+            return;
+        }
+        if (unfocusedfps.fps.is2348()) {
+            callbackInfoReturnable.setReturnValue(Integer.valueOf(unfocusedfps.get2003()));
+        } else {
+            callbackInfoReturnable.setReturnValue(unfocusedfps.fps.getValue());
+        }
+    }
 
-   @ModifyExpressionValue(
-      method = {"doItemUse"},
-      at = {@At(
-         value = "INVOKE",
-         target = "Lnet/minecraft/client/network/ClientPlayerEntity;isRiding()Z"
-      )}
-   )
-   private boolean doItemUseHook(boolean var1) {
-      return multitask.isToggled() ? false : var1;
-   }
+    @WrapWithCondition(method = {"render"}, at = {@At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;scheduleStop()V")})
+    private boolean renderHook(MinecraftClient minecraftClient) {
+        if (!antiquit.isToggled() || !antiquit.gameClose.getValue().booleanValue()) {
+            return true;
+        }
+        if (minecraftClient.currentScreen instanceof ConfirmGameClose) {
+            return false;
+        }
+        minecraftClient.setScreen(new ConfirmGameClose());
+        return false;
+    }
 
-   @ModifyExpressionValue(
-      method = {"doAttack"},
-      at = {@At(
-         value = "INVOKE",
-         target = "Lnet/minecraft/client/network/ClientPlayerEntity;isRiding()Z"
-      )}
-   )
-   private boolean doAttack(boolean var1) {
-      return multitask.isToggled() ? false : var1;
-   }
+    @Inject(method = {"render"}, at = {@At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;runTasks()V", shift = At.Shift.AFTER)})
+    private void render(boolean z, CallbackInfo callbackInfo, @Local int i) {
+        SearchHelper_4.baritoneHelper.getObject1794(new RenderEvent(i >= 1));
+    }
+
+    @ModifyExpressionValue(method = {"handleInputEvents"}, at = {@At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isUsingItem()Z")})
+    private boolean handleInputEvents(boolean z) {
+        if (arrows.isToggled() && arrows.autoShoot.getValue().booleanValue()) {
+            return false;
+        }
+        return z;
+    }
+
+    @Inject(method = {"doItemUse"}, at = {@At("HEAD")})
+    private void doItemUse(CallbackInfo callbackInfo) {
+        autocrystal.do1162();
+    }
+
+    @ModifyExpressionValue(method = {"doItemUse"}, at = {@At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isRiding()Z")})
+    private boolean doItemUseHook(boolean z) {
+        if (multitask.isToggled()) {
+            return false;
+        }
+        return z;
+    }
+
+    @ModifyExpressionValue(method = {"doAttack"}, at = {@At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isRiding()Z")})
+    private boolean doAttack(boolean z) {
+        if (multitask.isToggled()) {
+            return false;
+        }
+        return z;
+    }
 }

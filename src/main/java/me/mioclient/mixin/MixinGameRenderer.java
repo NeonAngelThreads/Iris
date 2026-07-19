@@ -5,35 +5,34 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.systems.RenderSystem;
-import me.mioclient.Hub;
-import me.mioclient.api.MioAPI;
-import me.mioclient.internal.Class_0127;
-import me.mioclient.internal.Constants;
-import me.mioclient.internal.Class_1000;
-import me.mioclient.internal.Class_1334;
-import me.mioclient.internal.Class_1355;
-import me.mioclient.module.exploit.ReachModule;
-import me.mioclient.module.player.FreecamModule;
-import me.mioclient.module.render.FreeLookModule;
-import me.mioclient.module.render.NoBobModule;
-import me.mioclient.module.render.NoRenderModule;
-import me.mioclient.module.render.ShaderModule;
-import me.mioclient.module.render.ViewModelModule;
-import me.mioclient.module.render.ZoomModule;
+import me.mioclient.BaritoneHelper_3;
+import me.mioclient.ESPSearchHelper4_3;
+import me.mioclient.FreecamHelper;
+import me.mioclient.MixinLivingEntityHelper_2;
+import me.mioclient.NewChunksHelper_4;
+import me.mioclient.SearchHelper_4;
+import me.mioclient.ShaderSearchHelper4;
+import me.mioclient.module.exploit.Reach;
+import me.mioclient.module.player.Freecam;
+import me.mioclient.module.render.FreeLook;
+import me.mioclient.module.render.NoBob;
+import me.mioclient.module.render.NoRender;
+import me.mioclient.module.render.Shader;
+import me.mioclient.module.render.ViewModel;
+import me.mioclient.module.render.Zoom;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.BufferBuilderStorage;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.client.render.VertexConsumerProvider.Immediate;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.HeldItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.hit.HitResult.Type;
 import net.minecraft.util.math.MathHelper;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
@@ -45,299 +44,221 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+/* compiled from: 0.java */
 @Mixin({GameRenderer.class})
+/* loaded from: mio-yarn.jar:me/mioclient/mixin/MixinGameRenderer.class */
 public abstract class MixinGameRenderer {
-   private static ZoomModule zoom = Hub.field_2595.method_78(ZoomModule.class);
-   private static ReachModule reach = Hub.field_2595.method_78(ReachModule.class);
-   private static NoRenderModule norender = Hub.field_2595.method_78(NoRenderModule.class);
-   private static ShaderModule shader = Hub.field_2595.method_78(ShaderModule.class);
-   private static FreecamModule freecam = Hub.field_2595.method_78(FreecamModule.class);
-   private static FreeLookModule freelook = Hub.field_2595.method_78(FreeLookModule.class);
-   private static ViewModelModule viewmodel = Hub.field_2595.method_78(ViewModelModule.class);
-   private static NoBobModule nobob = Hub.field_2595.method_78(NoBobModule.class);
-   @Final
-   @Shadow
-   MinecraftClient client;
-   @Final
-   @Shadow
-   private Camera camera;
-   @Shadow
-   private boolean renderHand;
-   @Shadow
-   @Final
-   public HeldItemRenderer firstPersonRenderer;
-   @Shadow
-   @Final
-   private BufferBuilderStorage buffers;
-   @Unique
-   private boolean bobbing;
-   @Unique
-   private boolean prevBobbing;
-   private boolean freecamSet = false;
+    private static Zoom zoom = (Zoom) BaritoneHelper_3.baritoneHelper_4.getModule117(Zoom.class);
+    private static Reach reach = (Reach) BaritoneHelper_3.baritoneHelper_4.getModule117(Reach.class);
+    private static NoRender norender = (NoRender) BaritoneHelper_3.baritoneHelper_4.getModule117(NoRender.class);
+    private static Shader shader = (Shader) BaritoneHelper_3.baritoneHelper_4.getModule117(Shader.class);
+    private static Freecam freecam = (Freecam) BaritoneHelper_3.baritoneHelper_4.getModule117(Freecam.class);
+    private static FreeLook freelook = (FreeLook) BaritoneHelper_3.baritoneHelper_4.getModule117(FreeLook.class);
+    private static ViewModel viewmodel = (ViewModel) BaritoneHelper_3.baritoneHelper_4.getModule117(ViewModel.class);
+    private static NoBob nobob = (NoBob) BaritoneHelper_3.baritoneHelper_4.getModule117(NoBob.class);
 
-   public MixinGameRenderer() {
-      super();
-   }
+    @Shadow
+    @Final
+    MinecraftClient field_4015;
 
-   @Shadow
-   private void renderHand(Camera var1, float var2, Matrix4f var3) {
-   }
+    @Shadow
+    @Final
+    private Camera field_18765;
 
-   @Shadow
-   public abstract void tick();
+    @Shadow
+    private boolean field_3992;
 
-   @Shadow
-   public abstract void updateCrosshairTarget(float var1);
+    @Shadow
+    @Final
+    public HeldItemRenderer field_4012;
 
-   @Inject(
-      at = {@At(
-         value = "FIELD",
-         target = "Lnet/minecraft/client/render/GameRenderer;renderHand:Z",
-         opcode = 180,
-         ordinal = 0
-      )},
-      method = {"renderWorld"}
-   )
-   private void renderWorldFieldHook(RenderTickCounter var1, CallbackInfo var2) {
-      if (this.bobbing) {
-         this.client.options.getBobView().setValue(true);
-         this.bobbing = false;
-      }
-   }
+    @Shadow
+    @Final
+    private BufferBuilderStorage field_20948;
 
-   @Inject(
-      at = {@At("HEAD")},
-      method = {"renderWorld"}
-   )
-   private void renderWorldPreHook(RenderTickCounter var1, CallbackInfo var2) {
-      this.prevBobbing = true;
-   }
+    @Unique
+    private boolean bobbing;
 
-   @Inject(
-      at = {@At("HEAD")},
-      method = {"bobView"},
-      cancellable = true
-   )
-   private void bobViewHook(MatrixStack var1, float var2, CallbackInfo var3) {
-      if ((Boolean)this.client.options.getBobView().getValue() && this.prevBobbing) {
-         this.bobbing = true;
-         this.client.options.getBobView().setValue(false);
-         this.prevBobbing = false;
-         var3.cancel();
-      }
-   }
+    @Unique
+    private boolean prevBobbing;
+    private boolean freecamSet = false;
 
-   @Inject(
-      method = {"tiltViewWhenHurt"},
-      at = {@At("HEAD")},
-      cancellable = true
-   )
-   private void bobViewWhenHurtHook(MatrixStack var1, float var2, CallbackInfo var3) {
-      if (norender.isToggled() && norender.field_717.getValue()) {
-         var3.cancel();
-      }
-   }
+    @Shadow
+    private void method_3172(Camera camera, float f, Matrix4f matrix4f) {
+    }
 
-   @Inject(
-      method = {"showFloatingItem"},
-      at = {@At("HEAD")},
-      cancellable = true
-   )
-   private void showFloatingItemHook(ItemStack var1, CallbackInfo var2) {
-      if (var1.getItem() == Items.TOTEM_OF_UNDYING && norender.isToggled() && norender.field_722.getValue()) {
-         var2.cancel();
-      }
-   }
+    @Shadow
+    public abstract void method_3182();
 
-   @WrapOperation(
-      method = {"renderWorld"},
-      at = {@At(
-         value = "INVOKE",
-         target = "Lnet/minecraft/util/math/MathHelper;lerp(FFF)F"
-      )},
-      require = 0
-   )
-   private float applyCameraTransformationsMathHelperLerpProxy(float var1, float var2, float var3, Operation<Float> var4) {
-      return norender.isToggled() && norender.field_720.getValue() ? 0.0F : MathHelper.lerp(var1, var2, var3);
-   }
+    @Shadow
+    public abstract void method_3190(float f);
 
-   @Inject(
-      method = {"findCrosshairTarget"},
-      at = {@At(
-         value = "INVOKE",
-         target = "Lnet/minecraft/entity/projectile/ProjectileUtil;raycast(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Box;Ljava/util/function/Predicate;D)Lnet/minecraft/util/hit/EntityHitResult;"
-      )},
-      cancellable = true
-   )
-   private void onUpdateTargetedEntity(Entity var1, double var2, double var4, float var6, CallbackInfoReturnable<HitResult> var7, @Local HitResult var8) {
-      if (reach.method_41() && var8.getType() == Type.BLOCK) {
-         var7.setReturnValue(var8);
-      }
-   }
+    @Inject(at = {@At(value = "FIELD", target = "Lnet/minecraft/client/render/GameRenderer;renderHand:Z", opcode = 180, ordinal = 0)}, method = {"renderWorld"})
+    private void renderWorldFieldHook(RenderTickCounter renderTickCounter, CallbackInfo callbackInfo) {
+        if (this.bobbing) {
+            this.field_4015.options.getBobView().setValue(true);
+            this.bobbing = false;
+        }
+    }
 
-   @WrapWithCondition(
-      method = {"renderHand"},
-      at = {@At(
-         value = "INVOKE",
-         target = "Lnet/minecraft/client/render/item/HeldItemRenderer;renderItem(FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;Lnet/minecraft/client/network/ClientPlayerEntity;I)V"
-      )}
-   )
-   private boolean renderHand(HeldItemRenderer var1, float var2, MatrixStack var3, Immediate var4, ClientPlayerEntity var5, int var6) {
-      if (!Class_1355.field_2003) {
-         return true;
-      } else {
-         Class_1000.method_2(shader.field_2017.getValue().method_177(), true, () -> var1.renderItem(var2, var3, var4, var5, var6));
-         return false;
-      }
-   }
+    @Inject(at = {@At("HEAD")}, method = {"renderWorld"})
+    private void renderWorldPreHook(RenderTickCounter renderTickCounter, CallbackInfo callbackInfo) {
+        this.prevBobbing = true;
+    }
 
-   @Inject(
-      method = {"renderWorld"},
-      at = {@At(
-         value = "INVOKE",
-         target = "Lnet/minecraft/client/render/GameRenderer;renderHand(Lnet/minecraft/client/render/Camera;FLorg/joml/Matrix4f;)V",
-         shift = Shift.BEFORE
-      )},
-      cancellable = true
-   )
-   private void renderWorldHook(
-      RenderTickCounter var1, CallbackInfo var2, @Local(ordinal = 1) Matrix4f var3, @Local(ordinal = 0) float var4, @Local(ordinal = 0) Quaternionf var5
-   ) {
-      if (this.renderHand && shader.isToggled() && shader.field_2041.getValue()) {
-         var2.cancel();
-         if (!norender.method_279()) {
-            this.renderHand(this.camera, var4, var3);
-         }
+    @Inject(at = {@At("HEAD")}, method = {"bobView"}, cancellable = true)
+    private void bobViewHook(MatrixStack matrixStack, float f, CallbackInfo callbackInfo) {
+        if (((Boolean)(Object) this.field_4015.options.getBobView().getValue()).booleanValue() && this.prevBobbing) {
+            this.bobbing = true;
+            this.field_4015.options.getBobView().setValue(false);
+            this.prevBobbing = false;
+            callbackInfo.cancel();
+        }
+    }
 
-         Class_1355.field_2003 = true;
-         this.renderHand(this.camera, var4, var3);
-         Class_1355.field_2003 = false;
-         MioAPI.field_4219.getProfiler().pop();
-      }
-   }
+    @Inject(method = {"tiltViewWhenHurt"}, at = {@At("HEAD")}, cancellable = true)
+    private void bobViewWhenHurtHook(MatrixStack matrixStack, float f, CallbackInfo callbackInfo) {
+        if (norender.isToggled() && norender.hurtCam.getValue().booleanValue()) {
+            callbackInfo.cancel();
+        }
+    }
 
-   @Redirect(
-      method = {"bobView"},
-      at = @At(
-         value = "INVOKE",
-         target = "Lnet/minecraft/client/util/math/MatrixStack;translate(FFF)V"
-      )
-   )
-   private void mio$redirectTranslate(MatrixStack var1, float var2, float var3, float var4) {
-      float var5 = nobob.field_4483.getValue();
-      if (var5 <= 0.0F || !nobob.isToggled()) {
-         var5 = 1.0F;
-      }
+    @Inject(method = {"showFloatingItem"}, at = {@At("HEAD")}, cancellable = true)
+    private void showFloatingItemHook(ItemStack itemStack, CallbackInfo callbackInfo) {
+        if (itemStack.getItem() == Items.TOTEM_OF_UNDYING && norender.isToggled() && norender.totemOverlay.getValue().booleanValue()) {
+            callbackInfo.cancel();
+        }
+    }
 
-      if ((Boolean)this.client.options.getBobView().getValue()) {
-         var1.translate(var2 * var5, var3 * var5, var4 * var5);
-      }
-   }
+    @WrapOperation(method = {"renderWorld"}, at = {@At(value = "INVOKE", target = "Lnet/minecraft/util/math/MathHelper;lerp(FFF)F")}, require = 0)
+    private float get1953(float f, float f2, float f3, Operation<Float> operation) {
+        if (norender.isToggled() && norender.blindness.getValue().booleanValue()) {
+            return 0.0f;
+        }
+        return MathHelper.lerp(f, f2, f3);
+    }
 
-   @Inject(
-      method = {"renderHand"},
-      at = {@At("HEAD")},
-      cancellable = true
-   )
-   private void renderHandHook(Camera var1, float var2, Matrix4f var3, CallbackInfo var4) {
-      RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, norender.method_282());
-      if (viewmodel.isToggled() && !viewmodel.field_1907.getValue()) {
-         float var5 = var1.getPitch() * Constants.field_690;
-         float var6 = -(var1.getYaw() - 45.0F) * Constants.field_690;
-         float var7 = MathHelper.cos(var6);
-         float var8 = MathHelper.sin(var6);
-         float var9 = MathHelper.cos(var5);
-         float var10 = MathHelper.sin(var5);
-         Vector3f var11 = new Vector3f(var8 * var9, -var10, var7 * var9);
-         RenderSystem.setShaderLights(var11, new Vector3f(var11).mul(-1.0F));
-      }
+    @Inject(method = {"findCrosshairTarget"}, at = {@At(value = "INVOKE", target = "Lnet/minecraft/entity/projectile/ProjectileUtil;raycast(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Box;Ljava/util/function/Predicate;D)Lnet/minecraft/util/hit/EntityHitResult;")}, cancellable = true)
+    private void onUpdateTargetedEntity(Entity entity, double d, double d2, float f, CallbackInfoReturnable<HitResult> callbackInfoReturnable, @Local HitResult hitResult) {
+        if (reach.is951() && hitResult.getType() == HitResult.Type.BLOCK) {
+            callbackInfoReturnable.setReturnValue(hitResult);
+        }
+    }
 
-      if (freecam.method_279() || norender.method_279()) {
-         var4.cancel();
-         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-      }
-   }
+    @WrapWithCondition(method = {"renderHand"}, at = {@At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/HeldItemRenderer;renderItem(FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;Lnet/minecraft/client/network/ClientPlayerEntity;I)V")})
+    private boolean renderHand(HeldItemRenderer heldItemRenderer, float f, MatrixStack matrixStack, VertexConsumerProvider.Immediate immediate, ClientPlayerEntity clientPlayerEntity, int i) {
+        if (!ShaderSearchHelper4.flag2) {
+            return true;
+        }
+        ESPSearchHelper4_3.do2887(shader.shader.getValue().getShaderFramebufferHelper21(), true, () -> {
+            heldItemRenderer.renderItem(f, matrixStack, immediate, clientPlayerEntity, i);
+        });
+        return false;
+    }
 
-   @WrapOperation(
-      method = {"renderHand"},
-      at = {@At(
-         value = "INVOKE",
-         target = "Lnet/minecraft/client/render/GameRenderer;getFov(Lnet/minecraft/client/render/Camera;FZ)D"
-      )},
-      require = 0
-   )
-   private double renderHandHook(GameRenderer var1, Camera var2, float var3, boolean var4, Operation<Double> var5) {
-      float var6 = zoom.isToggled() ? 1.0F - zoom.method_1176() : 1.0F;
-      return viewmodel.isToggled() && viewmodel.field_1941.getValue()
-         ? (double)((float)viewmodel.field_1942.getValue().intValue() * var6)
-         : (Double)var5.call(new Object[]{var1, var2, var3, var4}) * (double)var6;
-   }
+    @Inject(method = {"renderWorld"}, at = {@At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;renderHand(Lnet/minecraft/client/render/Camera;FLorg/joml/Matrix4f;)V", shift = At.Shift.BEFORE)}, cancellable = true)
+    private void renderWorldHook(RenderTickCounter renderTickCounter, CallbackInfo callbackInfo, @Local(ordinal = 1) Matrix4f matrix4f, @Local(ordinal = 0) float f, @Local(ordinal = 0) Quaternionf quaternionf) {
+        if (this.field_3992 && shader.isToggled() && shader.hands.getValue().booleanValue()) {
+            callbackInfo.cancel();
+            if (!norender.is179()) {
+                method_3172(this.field_18765, f, matrix4f);
+            }
+            ShaderSearchHelper4.flag2 = true;
+            method_3172(this.field_18765, f, matrix4f);
+            ShaderSearchHelper4.flag2 = false;
+            SearchHelper_4.minecraftClient.getProfiler().pop();
+        }
+    }
 
-   @Inject(
-      method = {"renderHand"},
-      at = {@At("RETURN")}
-   )
-   private void renderHandHook2(Camera var1, float var2, Matrix4f var3, CallbackInfo var4) {
-      RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-   }
+    @Redirect(method = {"bobView"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;translate(FFF)V"))
+    private void mio$redirectTranslate(MatrixStack matrixStack, float f, float f2, float f3) {
+        float floatValue = nobob.multiplier.getValue().floatValue();
+        if (floatValue <= 0.0f || !nobob.isToggled()) {
+            floatValue = 1.0f;
+        }
+        if (((Boolean)(Object) this.field_4015.options.getBobView().getValue()).booleanValue()) {
+            matrixStack.translate(f * floatValue, f2 * floatValue, f3 * floatValue);
+        }
+    }
 
-   @Inject(
-      method = {"updateCrosshairTarget"},
-      at = {@At("HEAD")},
-      cancellable = true
-   )
-   private void updateTargetedEntityInvoke(float var1, CallbackInfo var2) {
-      if (freecam.isToggled() && this.client.getCameraEntity() != null && !this.freecamSet) {
-         var2.cancel();
-         Entity var3 = this.client.getCameraEntity();
-         double var4 = var3.getX();
-         double var6 = var3.getY();
-         double var8 = var3.getZ();
-         double var10 = var3.prevX;
-         double var12 = var3.prevY;
-         double var14 = var3.prevZ;
-         float var16 = var3.getYaw();
-         float var17 = var3.getPitch();
-         float var18 = var3.prevYaw;
-         float var19 = var3.prevPitch;
-         var3.prevX = freecam.field_2828.x;
-         var3.prevY = freecam.field_2828.y - (double)var3.getEyeHeight(var3.getPose());
-         var3.prevZ = freecam.field_2828.z;
-         var3.setYaw(freecam.field_1760);
-         var3.setHeadYaw(freecam.field_1760);
-         var3.setPitch(freecam.field_1761);
-         var3.prevYaw = freecam.field_1542;
-         var3.prevPitch = freecam.field_1543;
-         this.freecamSet = true;
-         Class_0127.method_7(() -> {
-            Class_1334.method_2(var3.getPos(), freecam.field_806.x, freecam.field_806.y - (double)var3.getEyeHeight(var3.getPose()), freecam.field_806.z);
-            this.updateCrosshairTarget(var1);
-            Class_1334.method_2(var3.getPos(), var4, var6, var8);
-         });
-         this.freecamSet = false;
-         var3.prevX = var10;
-         var3.prevY = var12;
-         var3.prevZ = var14;
-         var3.setYaw(var16);
-         var3.setPitch(var17);
-         var3.prevYaw = var18;
-         var3.prevPitch = var19;
-      }
+    @Inject(method = {"renderHand"}, at = {@At("HEAD")}, cancellable = true)
+    private void renderHandHook(Camera camera, float f, Matrix4f matrix4f, CallbackInfo callbackInfo) {
+        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, norender.get1995());
+        if (viewmodel.isToggled() && !viewmodel.shadow.getValue().booleanValue()) {
+            float pitch = camera.getPitch() * FreecamHelper.val4;
+            float f2 = (-(camera.getYaw() - 45.0f)) * FreecamHelper.val4;
+            float cos = MathHelper.cos(f2);
+            float sin = MathHelper.sin(f2);
+            float cos2 = MathHelper.cos(pitch);
+            Vector3f vector3f = new Vector3f(sin * cos2, -MathHelper.sin(pitch), cos * cos2);
+            RenderSystem.setShaderLights(vector3f, new Vector3f(vector3f).mul(-1.0f));
+        }
+        if (freecam.is179() || norender.is179()) {
+            callbackInfo.cancel();
+            RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+        }
+    }
 
-      if (freelook.isToggled() && !freecam.isToggled()) {
-         var2.cancel();
-      }
-   }
+    @WrapOperation(method = {"renderHand"}, at = {@At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;getFov(Lnet/minecraft/client/render/Camera;FZ)D")}, require = 0)
+    private double renderHandHook(GameRenderer gameRenderer, Camera camera, float f, boolean z, Operation<Double> operation) {
+        double base = ((Double) operation.call(new Object[]{gameRenderer, camera, Float.valueOf(f), Boolean.valueOf(z)})).doubleValue();
+        return (viewmodel.isToggled() && viewmodel.viewModelFov.getValue().booleanValue()) ? viewmodel.fovAmount.getValue().intValue() * base : base * (zoom.isToggled() ? 1.0f - zoom.get918() : 1.0f);
+    }
 
-   @Inject(
-      method = {"render"},
-      at = {@At("HEAD")}
-   )
-   private void render(RenderTickCounter var1, boolean var2, CallbackInfo var3) {
-      Hub.field_2601.method_813();
-   }
+    @Inject(method = {"renderHand"}, at = {@At("RETURN")})
+    private void renderHandHook2(Camera camera, float f, Matrix4f matrix4f, CallbackInfo callbackInfo) {
+        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+    }
+
+    @Inject(method = {"updateCrosshairTarget"}, at = {@At("HEAD")}, cancellable = true)
+    private void updateTargetedEntityInvoke(float f, CallbackInfo callbackInfo) {
+        if (freecam.isToggled() && this.field_4015.getCameraEntity() != null && !this.freecamSet) {
+            callbackInfo.cancel();
+            Entity cameraEntity = this.field_4015.getCameraEntity();
+            double x = cameraEntity.getX();
+            double y = cameraEntity.getY();
+            double z = cameraEntity.getZ();
+            double d = cameraEntity.prevX;
+            double d2 = cameraEntity.prevY;
+            double d3 = cameraEntity.prevZ;
+            float yaw = cameraEntity.getYaw();
+            float pitch = cameraEntity.getPitch();
+            float f2 = cameraEntity.prevYaw;
+            float f3 = cameraEntity.prevPitch;
+            cameraEntity.prevX = freecam.vec3d2.x;
+            cameraEntity.prevY = freecam.vec3d2.y - cameraEntity.getEyeHeight(cameraEntity.getPose());
+            cameraEntity.prevZ = freecam.vec3d2.z;
+            cameraEntity.setYaw(freecam.val);
+            cameraEntity.setHeadYaw(freecam.val);
+            cameraEntity.setPitch(freecam.val3);
+            cameraEntity.prevYaw = freecam.val2;
+            cameraEntity.prevPitch = freecam.val4;
+            this.freecamSet = true;
+            NewChunksHelper_4.do2149(() -> {
+                MixinLivingEntityHelper_2.do2581(cameraEntity.getPos(), freecam.vec3d.x, freecam.vec3d.y - cameraEntity.getEyeHeight(cameraEntity.getPose()), freecam.vec3d.z);
+                method_3190(f);
+                MixinLivingEntityHelper_2.do2581(cameraEntity.getPos(), x, y, z);
+            });
+            this.freecamSet = false;
+            cameraEntity.prevX = d;
+            cameraEntity.prevY = d2;
+            cameraEntity.prevZ = d3;
+            cameraEntity.setYaw(yaw);
+            cameraEntity.setPitch(pitch);
+            cameraEntity.prevYaw = f2;
+            cameraEntity.prevPitch = f3;
+        }
+        if (!freelook.isToggled() || freecam.isToggled()) {
+            return;
+        }
+        callbackInfo.cancel();
+    }
+
+    @Inject(method = {"render"}, at = {@At("HEAD")})
+    private void render(RenderTickCounter renderTickCounter, boolean z, CallbackInfo callbackInfo) {
+        BaritoneHelper_3.hitmarkerSearchHelper4.do3093();
+    }
 }

@@ -1,9 +1,8 @@
 package baritone.api.behavior;
-import baritone.api.pathing.goals.Goal;
+import baritone.api.utils.interfaces.IGoalRenderPos;
 public interface IPathingBehavior {
-   void setGoalAndPath(Goal goal);
-   void cancelEverything();
-   void forceCancel();
-   boolean isPathing();
-   Goal getGoal();
+    boolean isPathing();
+    IGoalRenderPos getGoal();
+    void cancelEverything();
+    boolean forceCancel();
 }

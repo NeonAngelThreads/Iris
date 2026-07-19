@@ -5,10 +5,9 @@ import com.mojang.brigadier.ParseResults;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.suggestion.Suggestions;
 import java.util.concurrent.CompletableFuture;
-import me.mioclient.api.MioAPI;
-import me.mioclient.internal.CommandManager;
+import me.mioclient.ChatFilterSearchHelper4_2;
+import me.mioclient.SearchHelper_4;
 import net.minecraft.client.gui.screen.ChatInputSuggestor;
-import net.minecraft.client.gui.screen.ChatInputSuggestor.SuggestionWindow;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.command.CommandSource;
 import org.spongepowered.asm.mixin.Final;
@@ -19,57 +18,49 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+/* compiled from: 0.java */
 @Mixin({ChatInputSuggestor.class})
-public abstract class MixinChatInputSuggester implements MioAPI {
-   @Shadow
-   @Final
-   TextFieldWidget textField;
-   @Shadow
-   boolean completingSuggestions;
-   @Shadow
-   private ParseResults<CommandSource> parse;
-   @Shadow
-   private CompletableFuture<Suggestions> pendingSuggestions;
-   @Shadow
-   private SuggestionWindow window;
+/* loaded from: mio-yarn.jar:me/mioclient/mixin/MixinChatInputSuggester.class */
+public abstract class MixinChatInputSuggester implements SearchHelper_4 {
 
-   public MixinChatInputSuggester() {
-      super();
-   }
+    @Shadow
+    @Final
+    TextFieldWidget field_21599;
 
-   @Shadow
-   public abstract void show(boolean var1);
+    @Shadow
+    boolean field_21614;
 
-   @Inject(
-      method = {"refresh"},
-      at = {@At(
-         value = "INVOKE",
-         target = "Lcom/mojang/brigadier/StringReader;canRead()Z",
-         remap = false
-      )},
-      cancellable = true,
-      locals = LocalCapture.CAPTURE_FAILHARD
-   )
-   public void refresh(CallbackInfo var1, String var2, StringReader var3) {
-      String var4 = CommandManager.method_927();
-      if (var3.canRead(var4.length()) && var3.getString().startsWith(var4, var3.getCursor())) {
-         var3.setCursor(var3.getCursor() + var4.length());
-         CommandDispatcher var5 = CommandManager.field_3191;
-         if (this.parse == null) {
-            this.parse = var5.parse(var3, CommandManager.field_3190);
-         }
+    @Shadow
+    private ParseResults<CommandSource> field_21610;
 
-         int var6 = this.textField.getCursor();
-         if (var6 >= 1 && (this.window == null || !this.completingSuggestions)) {
-            this.pendingSuggestions = var5.getCompletionSuggestions(this.parse, var6);
-            this.pendingSuggestions.thenRun(() -> {
-               if (this.pendingSuggestions.isDone()) {
-                  this.show(false);
-               }
-            });
-         }
+    @Shadow
+    private CompletableFuture<Suggestions> field_21611;
 
-         var1.cancel();
-      }
-   }
+    @Shadow
+    private ChatInputSuggestor.SuggestionWindow field_21612;
+
+    @Shadow
+    public abstract void method_23920(boolean z);
+
+    @Inject(method = {"refresh"}, at = {@At(value = "INVOKE", target = "Lcom/mojang/brigadier/StringReader;canRead()Z", remap = false)}, cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
+    public void refresh(CallbackInfo callbackInfo, String str, StringReader stringReader) {
+        String string2982 = ChatFilterSearchHelper4_2.getString2982();
+        if (stringReader.canRead(string2982.length()) && stringReader.getString().startsWith(string2982, stringReader.getCursor())) {
+            stringReader.setCursor(stringReader.getCursor() + string2982.length());
+            CommandDispatcher<CommandSource> commandDispatcher = ChatFilterSearchHelper4_2.commandDispatcher;
+            if (this.field_21610 == null) {
+                this.field_21610 = commandDispatcher.parse(stringReader, ChatFilterSearchHelper4_2.commandSource);
+            }
+            int cursor = this.field_21599.getCursor();
+            if (cursor >= 1 && (this.field_21612 == null || !this.field_21614)) {
+                this.field_21611 = commandDispatcher.getCompletionSuggestions(this.field_21610, cursor);
+                this.field_21611.thenRun(() -> {
+                    if (this.field_21611.isDone()) {
+                        method_23920(false);
+                    }
+                });
+            }
+            callbackInfo.cancel();
+        }
+    }
 }

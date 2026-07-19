@@ -1,6 +1,6 @@
 package me.mioclient.mixin;
 
-import me.mioclient.api.Class_0558;
+import me.mioclient.ArrowsHelper;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -9,54 +9,37 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+/* compiled from: 0.java */
 @Mixin({StatusEffectInstance.class})
-public class MixinStatusEffectInstance implements Class_0558 {
-   @Shadow
-   private int duration;
-   @Unique
-   private int mio$initialDuration;
+/* loaded from: mio-yarn.jar:me/mioclient/mixin/MixinStatusEffectInstance.class */
+public class MixinStatusEffectInstance implements ArrowsHelper {
 
-   public MixinStatusEffectInstance() {
-      super();
-   }
+    @Shadow
+    private int field_5895;
 
-   @Inject(
-      method = {"<init>(Lnet/minecraft/registry/entry/RegistryEntry;IIZZZLnet/minecraft/entity/effect/StatusEffectInstance;)V"},
-      at = {@At("TAIL")}
-   )
-   private void initHook(
-      RegistryEntry<StatusEffect> var1, int var2, int var3, boolean var4, boolean var5, boolean var6, StatusEffectInstance var7, CallbackInfo var8
-   ) {
-      this.mio$initialDuration = var2;
-   }
+    @Unique
+    private int mio$initialDuration;
 
-   @Inject(
-      method = {"copyFrom"},
-      at = {@At("TAIL")}
-   )
-   private void copyFrom(StatusEffectInstance var1, CallbackInfo var2) {
-      this.mio$initialDuration = var1.getDuration();
-   }
+    @Inject(method = {"<init>(Lnet/minecraft/registry/entry/RegistryEntry;IIZZZLnet/minecraft/entity/effect/StatusEffectInstance;)V"}, at = {@At("TAIL")})
+    private void initHook(RegistryEntry<StatusEffect> registryEntry, int i, int i2, boolean z, boolean z2, boolean z3, StatusEffectInstance statusEffectInstance, CallbackInfo callbackInfo) {
+        this.mio$initialDuration = i;
+    }
 
-   @Inject(
-      method = {"upgrade"},
-      at = {@At(
-         value = "FIELD",
-         target = "Lnet/minecraft/entity/effect/StatusEffectInstance;duration:I",
-         opcode = 181,
-         shift = Shift.AFTER
-      )}
-   )
-   private void updateDuration(CallbackInfoReturnable<Integer> var1) {
-      this.mio$initialDuration = this.duration;
-   }
+    @Inject(method = {"copyFrom"}, at = {@At("TAIL")})
+    private void copyFrom(StatusEffectInstance statusEffectInstance, CallbackInfo callbackInfo) {
+        this.mio$initialDuration = statusEffectInstance.getDuration();
+    }
 
-   @Override
-   public float mio$getDurationRation() {
-      return (float)this.duration / (float)this.mio$initialDuration;
-   }
+    @Inject(method = {"upgrade"}, at = {@At(value = "FIELD", target = "Lnet/minecraft/entity/effect/StatusEffectInstance;duration:I", opcode = 181, shift = At.Shift.AFTER)})
+    private void updateDuration(CallbackInfoReturnable<Integer> callbackInfoReturnable) {
+        this.mio$initialDuration = this.field_5895;
+    }
+
+    @Override // me.mioclient.ArrowsHelper
+    public float mio$getDurationRation() {
+        return this.field_5895 / this.mio$initialDuration;
+    }
 }

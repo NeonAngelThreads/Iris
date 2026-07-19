@@ -6,69 +6,58 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.HashMap;
 
+/* compiled from: 0.java */
+/* loaded from: mio-yarn.jar:com/jagrosh/discordipc/entities/pipe/MacPipe.class */
 public class MacPipe extends UnixPipe {
-   public MacPipe(IPCClient var1, HashMap<String, Callback> var2, File var3) {
-      super(var1, var2, var3);
-   }
+    public MacPipe(IPCClient iPCClient, HashMap<String, Callback> hashMap, File file) throws java.io.IOException {
+        super(iPCClient, hashMap, file);
+    }
 
-   public void registerCommand(String var1, String var2) {
-      String var3 = System.getenv("HOME");
-      if (var3 == null) {
-         throw new RuntimeException("Unable to find user HOME directory");
-      } else {
-         String var4 = var3 + "/Library/Application Support/discord";
-         if (!this.mkdir(var4)) {
-            throw new RuntimeException("Failed to create directory '" + var4 + "'");
-         } else {
-            var4 = var4 + "/games";
-            if (!this.mkdir(var4)) {
-               throw new RuntimeException("Failed to create directory '" + var4 + "'");
-            } else {
-               var4 = var4 + "/" + var1 + ".json";
-
-               try {
-                  FileWriter var5 = new FileWriter(var4);
-
-                  try {
-                     var5.write("{\"command\": \"" + var2 + "\"}");
-                  } catch (Throwable var9) {
-                     try {
-                        var5.close();
-                     } catch (Throwable var8) {
-                        var9.addSuppressed(var8);
-                     }
-
-                     throw var9;
-                  }
-
-                  var5.close();
-               } catch (Exception var10) {
-                  throw new RuntimeException("Failed to write fame info into '" + var4 + "'");
-               }
+    public void registerCommand(String str, String str2) {
+        String str3 = System.getenv("HOME");
+        if (str3 == null) {
+            throw new RuntimeException("Unable to find user HOME directory");
+        }
+        String str4 = str3 + "/Library/Application Support/discord";
+        if (!mkdir(str4)) {
+            throw new RuntimeException("Failed to create directory '" + str4 + "'");
+        }
+        String str5 = str4 + "/games";
+        if (!mkdir(str5)) {
+            throw new RuntimeException("Failed to create directory '" + str5 + "'");
+        }
+        String str6 = str5 + "/" + str + ".json";
+        try {
+            FileWriter fileWriter = new FileWriter(str6);
+            try {
+                fileWriter.write("{\"command\": \"" + str2 + "\"}");
+                fileWriter.close();
+            } finally {
             }
-         }
-      }
-   }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to write fame info into '" + str6 + "'");
+        }
+    }
 
-   public void registerUrl(String var1) {
-      throw new UnsupportedOperationException("MacOS URL registration is not supported at this time.");
-   }
+    public void registerUrl(String str) {
+        throw new UnsupportedOperationException("MacOS URL registration is not supported at this time.");
+    }
 
-   @Override
-   public void registerApp(String var1, String var2) {
-      try {
-         if (var2 != null) {
-            this.registerCommand(var1, var2);
-         } else {
-            this.registerUrl(var1);
-         }
-      } catch (Exception var4) {
-         throw new RuntimeException("Failed to register " + (var2 == null ? "url" : "command"), var4);
-      }
-   }
+    @Override // com.jagrosh.discordipc.entities.pipe.UnixPipe, com.jagrosh.discordipc.entities.pipe.Pipe
+    public void registerApp(String str, String str2) {
+        try {
+            if (str2 != null) {
+                registerCommand(str, str2);
+            } else {
+                registerUrl(str);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to register " + (str2 == null ? "url" : "command"), e);
+        }
+    }
 
-   @Override
-   public void registerSteamGame(String var1, String var2) {
-      this.registerApp(var1, "steam://rungameid/" + var2);
-   }
+    @Override // com.jagrosh.discordipc.entities.pipe.UnixPipe, com.jagrosh.discordipc.entities.pipe.Pipe
+    public void registerSteamGame(String str, String str2) {
+        registerApp(str, "steam://rungameid/" + str2);
+    }
 }

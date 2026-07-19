@@ -13,133 +13,109 @@ import java.util.HashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/* compiled from: 0.java */
+/* loaded from: mio-yarn.jar:com/jagrosh/discordipc/entities/pipe/WindowsPipe.class */
 public class WindowsPipe extends Pipe {
-   public static final Logger LOGGER = LoggerFactory.getLogger(WindowsPipe.class);
-   public static final Float javaSpec = Float.parseFloat(System.getProperty("java.specification.version"));
-   public final int targetKey = -2147483647;
-   public final long targetLongKey = -2147483647L;
-   public RandomAccessFile file;
+    public static final Logger LOGGER = LoggerFactory.getLogger(WindowsPipe.class);
+    public static final Float javaSpec = Float.valueOf(Float.parseFloat(System.getProperty("java.specification.version")));
+    public int targetKey = -2147483647;
+    public long targetLongKey = -2147483647L;
+    public RandomAccessFile file;
 
-   public WindowsPipe(IPCClient var1, HashMap<String, Callback> var2, File var3) {
-      super(var1, var2);
+    public WindowsPipe(IPCClient iPCClient, HashMap<String, Callback> hashMap, File file) {
+        super(iPCClient, hashMap);
+        this.targetKey = WinRegistry.HKEY_CURRENT_USER;
+        this.targetLongKey = -2147483647L;
+        try {
+            this.file = new RandomAccessFile(file, "rw");
+        } catch (FileNotFoundException e) {
+            this.file = null;
+        }
+    }
 
-      try {
-         this.file = new RandomAccessFile(var3, "rw");
-      } catch (FileNotFoundException var5) {
-         this.file = null;
-      }
-   }
+    @Override // com.jagrosh.discordipc.entities.pipe.Pipe
+    public void write(byte[] bArr) throws java.io.IOException {
+        this.file.write(bArr);
+    }
 
-   @Override
-   public void write(byte[] var1) {
-      try {
-         this.file.write(var1);
-      } catch (IOException e) { throw new RuntimeException(e); }
-   }
-
-   @Override
-   public Packet read() {
-      try {
-         while ((this.status == PipeStatus.CONNECTED || this.status == PipeStatus.CLOSING) && this.file.length() == 0L) {
+    @Override // com.jagrosh.discordipc.entities.pipe.Pipe
+    public Packet read() throws java.io.IOException {
+        while ((this.status == PipeStatus.CONNECTED || this.status == PipeStatus.CLOSING) && this.file.length() == 0) {
             try {
-               Thread.sleep(50L);
-            } catch (InterruptedException var4) {
+                Thread.sleep(50L);
+            } catch (InterruptedException e) {
             }
-         }
-
-         if (this.status == PipeStatus.DISCONNECTED) {
+        }
+        if (this.status == PipeStatus.DISCONNECTED) {
             throw new IOException("Disconnected!");
-         } else if (this.status == PipeStatus.CLOSED) {
+        }
+        if (this.status == PipeStatus.CLOSED) {
             return new Packet(Packet.OpCode.CLOSE, null, this.ipcClient.getEncoding());
-         } else {
-            Packet.OpCode var1 = Packet.OpCode.values()[Integer.reverseBytes(this.file.readInt())];
-            int var2 = Integer.reverseBytes(this.file.readInt());
-            byte[] var3 = new byte[var2];
-            this.file.readFully(var3);
-            return this.receive(var1, var3);
-         }
-      } catch (IOException e) { throw new RuntimeException(e); }
-   }
+        }
+        Packet.OpCode opCode = Packet.OpCode.values()[Integer.reverseBytes(this.file.readInt())];
+        byte[] bArr = new byte[Integer.reverseBytes(this.file.readInt())];
+        this.file.readFully(bArr);
+        return receive(opCode, bArr);
+    }
 
-   @Override
-   public void close() {
-      if (this.ipcClient.isDebugMode()) {
-         this.ipcClient.getCurrentLogger(LOGGER).info("[DEBUG] Closing IPC pipe...");
-      }
+    @Override // com.jagrosh.discordipc.entities.pipe.Pipe
+    public void close() throws java.io.IOException {
+        if (this.ipcClient.isDebugMode()) {
+            this.ipcClient.getCurrentLogger(LOGGER).info("[DEBUG] Closing IPC pipe...");
+        }
+        this.status = PipeStatus.CLOSING;
+        send(Packet.OpCode.CLOSE, new JsonObject());
+        this.status = PipeStatus.CLOSED;
+        this.file.close();
+    }
 
-      this.status = PipeStatus.CLOSING;
-      this.send(Packet.OpCode.CLOSE, new JsonObject());
-      this.status = PipeStatus.CLOSED;
-      try {
-         this.file.close();
-      } catch (IOException e) { throw new RuntimeException(e); }
-   }
-
-   @Override
-   public void registerApp(String var1, String var2) {
-      String var3 = System.getProperty("java.home");
-      File var4 = new File(var3.split(";")[0] + "/bin/java.exe");
-      File var5 = new File(var3.split(";")[0] + "/bin/javaw.exe");
-      String var6 = var4.exists() ? var4.getAbsolutePath() : (var5.exists() ? var5.getAbsolutePath() : null);
-      if (var6 == null) {
-         throw new RuntimeException("Unable to find java path");
-      } else {
-         String var7;
-         if (var2 != null) {
-            var7 = var2;
-         } else {
-            var7 = var6;
-         }
-
-         String var8 = "discord-" + var1;
-         String var9 = "URL:Run game " + var1 + " protocol";
-         String var10 = "Software\\Classes\\" + var8;
-         String var11 = var10 + "\\DefaultIcon";
-         String var12 = var10 + "\\DefaultIcon";
-
-         try {
-            if (javaSpec >= 11.0F) {
-               WinRegistry.createKey(-2147483647L, var10);
-               WinRegistry.writeStringValue(-2147483647L, var10, "", var9);
-               WinRegistry.writeStringValue(-2147483647L, var10, "URL Protocol", "\u0000");
-               WinRegistry.createKey(-2147483647L, var11);
-               WinRegistry.writeStringValue(-2147483647L, var11, "", var6);
-               WinRegistry.createKey(-2147483647L, var12);
-               WinRegistry.writeStringValue(-2147483647L, var12, "", var7);
+    @Override // com.jagrosh.discordipc.entities.pipe.Pipe
+    public void registerApp(String str, String str2) {
+        String property = System.getProperty("java.home");
+        File file = new File(property.split(";")[0] + "/bin/java.exe");
+        File file2 = new File(property.split(";")[0] + "/bin/javaw.exe");
+        String absolutePath = file.exists() ? file.getAbsolutePath() : file2.exists() ? file2.getAbsolutePath() : null;
+        if (absolutePath == null) {
+            throw new RuntimeException("Unable to find java path");
+        }
+        String str3 = str2 != null ? str2 : absolutePath;
+        String str4 = "URL:Run game " + str + " protocol";
+        String str5 = "Software\\Classes\\" + ("discord-" + str);
+        String str6 = str5 + "\\DefaultIcon";
+        String str7 = str5 + "\\DefaultIcon";
+        try {
+            if (javaSpec.floatValue() >= 11.0f) {
+                WinRegistry.createKey(-2147483647L, str5);
+                WinRegistry.writeStringValue(-2147483647L, str5, "", str4);
+                WinRegistry.writeStringValue(-2147483647L, str5, "URL Protocol", "��");
+                WinRegistry.createKey(-2147483647L, str6);
+                WinRegistry.writeStringValue(-2147483647L, str6, "", absolutePath);
+                WinRegistry.createKey(-2147483647L, str7);
+                WinRegistry.writeStringValue(-2147483647L, str7, "", str3);
             } else {
-               WinRegistry.createKey(-2147483647, var10);
-               WinRegistry.writeStringValue(-2147483647, var10, "", var9);
-               WinRegistry.writeStringValue(-2147483647, var10, "URL Protocol", "\u0000");
-               WinRegistry.createKey(-2147483647, var11);
-               WinRegistry.writeStringValue(-2147483647, var11, "", var6);
-               WinRegistry.createKey(-2147483647, var12);
-               WinRegistry.writeStringValue(-2147483647, var12, "", var7);
+                WinRegistry.createKey(WinRegistry.HKEY_CURRENT_USER, str5);
+                WinRegistry.writeStringValue(WinRegistry.HKEY_CURRENT_USER, str5, "", str4);
+                WinRegistry.writeStringValue(WinRegistry.HKEY_CURRENT_USER, str5, "URL Protocol", "��");
+                WinRegistry.createKey(WinRegistry.HKEY_CURRENT_USER, str6);
+                WinRegistry.writeStringValue(WinRegistry.HKEY_CURRENT_USER, str6, "", absolutePath);
+                WinRegistry.createKey(WinRegistry.HKEY_CURRENT_USER, str7);
+                WinRegistry.writeStringValue(WinRegistry.HKEY_CURRENT_USER, str7, "", str3);
             }
-         } catch (Error | Exception var14) {
-            throw new RuntimeException("Unable to modify Discord registry keys", var14);
-         }
-      }
-   }
+        } catch (Error | Exception e) {
+            throw new RuntimeException("Unable to modify Discord registry keys", e);
+        }
+    }
 
-   @Override
-   public void registerSteamGame(String var1, String var2) {
-      try {
-         String var3;
-         if (javaSpec >= 11.0F) {
-            var3 = WinRegistry.readString(-2147483647L, "Software\\\\Valve\\\\Steam", "SteamExe");
-         } else {
-            var3 = WinRegistry.readString(-2147483647, "Software\\\\Valve\\\\Steam", "SteamExe");
-         }
-
-         if (var3 == null) {
-            throw new RuntimeException("Steam exe path not found");
-         } else {
-            var3 = var3.replaceAll("/", "\\");
-            String var4 = "\"" + var3 + "\" steam://rungameid/" + var2;
-            this.registerApp(var1, var4);
-         }
-      } catch (Exception var5) {
-         throw new RuntimeException("Unable to register Steam game", var5);
-      }
-   }
+    @Override // com.jagrosh.discordipc.entities.pipe.Pipe
+    public void registerSteamGame(String str, String str2) {
+        try {
+            String readString = javaSpec.floatValue() >= 11.0f ? WinRegistry.readString(-2147483647L, "Software\\\\Valve\\\\Steam", "SteamExe") : WinRegistry.readString(WinRegistry.HKEY_CURRENT_USER, "Software\\\\Valve\\\\Steam", "SteamExe");
+            if (readString == null) {
+                throw new RuntimeException("Steam exe path not found");
+            }
+            registerApp(str, "\"" + readString.replaceAll("/", "\\") + "\" steam://rungameid/" + str2);
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to register Steam game", e);
+        }
+    }
 }

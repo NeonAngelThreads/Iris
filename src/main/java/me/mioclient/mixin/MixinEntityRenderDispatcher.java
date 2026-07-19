@@ -1,12 +1,11 @@
 package me.mioclient.mixin;
 
-import me.mioclient.Hub;
-import me.mioclient.api.MioAPI;
-import me.mioclient.event.Event_13;
-import me.mioclient.internal.Class_0483;
-import me.mioclient.internal.Class_1355;
-import me.mioclient.module.render.ChamsModule;
-import me.mioclient.module.render.NoRenderModule;
+import me.mioclient.BaritoneHelper_3;
+import me.mioclient.EntityEvent_2;
+import me.mioclient.SearchHelper_4;
+import me.mioclient.ShaderSearchHelper4;
+import me.mioclient.module.render.Chams;
+import me.mioclient.module.render.NoRender;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -21,83 +20,53 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+/* compiled from: 0.java */
 @Mixin({EntityRenderDispatcher.class})
+/* loaded from: mio-yarn.jar:me/mioclient/mixin/MixinEntityRenderDispatcher.class */
 public class MixinEntityRenderDispatcher {
-   private static NoRenderModule norender = Hub.field_2595.method_78(NoRenderModule.class);
-   private static ChamsModule chams = Hub.field_2595.method_78(ChamsModule.class);
+    private static NoRender norender = (NoRender) BaritoneHelper_3.baritoneHelper_4.getModule117(NoRender.class);
+    private static Chams chams = (Chams) BaritoneHelper_3.baritoneHelper_4.getModule117(Chams.class);
 
-   public MixinEntityRenderDispatcher() {
-      super();
-   }
+    @Inject(method = {"renderShadow"}, at = {@At("HEAD")}, cancellable = true)
+    private static void onRenderShadow(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, Entity entity, float f, float f2, WorldView worldView, float f3, CallbackInfo callbackInfo) {
+        if (chams.is2046(entity)) {
+            callbackInfo.cancel();
+        }
+        if (ShaderSearchHelper4.flag) {
+            callbackInfo.cancel();
+        }
+    }
 
-   @Inject(
-      method = {"renderShadow"},
-      at = {@At("HEAD")},
-      cancellable = true
-   )
-   private static void onRenderShadow(
-      MatrixStack var0, VertexConsumerProvider var1, Entity var2, float var3, float var4, WorldView var5, float var6, CallbackInfo var7
-   ) {
-      if (chams.method_101(var2)) {
-         var7.cancel();
-      }
+    @Inject(method = {"render"}, at = {@At("HEAD")}, cancellable = true)
+    public <E extends Entity> void onRenderPre(E e, double d, double d2, double d3, float f, float f2, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo callbackInfo) {
+        EntityEvent_2.Inner inner994 = EntityEvent_2.Inner.getInner994(e, matrixStack, vertexConsumerProvider);
+        SearchHelper_4.baritoneHelper.getObject1794(inner994);
+        if (inner994.is2403() || e == null) {
+            callbackInfo.cancel();
+        }
+    }
 
-      if (Class_1355.field_4422) {
-         var7.cancel();
-      }
-   }
+    @Inject(method = {"render"}, at = {@At("RETURN")})
+    public <E extends Entity> void onRenderPost(E e, double d, double d2, double d3, float f, float f2, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo callbackInfo) {
+        SearchHelper_4.baritoneHelper.getObject1794(EntityEvent_2.Inner_2.getInner_21412(e, matrixStack, vertexConsumerProvider));
+    }
 
-   @Inject(
-      method = {"render"},
-      at = {@At("HEAD")},
-      cancellable = true
-   )
-   public <E extends Entity> void onRenderPre(
-      E var1, double var2, double var4, double var6, float var8, float var9, MatrixStack var10, VertexConsumerProvider var11, int var12, CallbackInfo var13
-   ) {
-      Event_13 var14 = Event_13.method_9(var1, var10, var11);
-      MioAPI.field_4220.method_36(var14);
-      if (var14.method_464() || var1 == null) {
-         var13.cancel();
-      }
-   }
+    @Inject(method = {"renderFire"}, at = {@At("HEAD")}, cancellable = true)
+    private void renderFireHook(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, Entity entity, Quaternionf quaternionf, CallbackInfo callbackInfo) {
+        if (chams.is2046(entity)) {
+            callbackInfo.cancel();
+        }
+        if (norender.isToggled() && norender.fire.getValue().booleanValue()) {
+            if (norender.others.getValue().booleanValue() || (entity instanceof ClientPlayerEntity) || (entity instanceof EndCrystalEntity)) {
+                callbackInfo.cancel();
+            }
+        }
+    }
 
-   @Inject(
-      method = {"render"},
-      at = {@At("RETURN")}
-   )
-   public <E extends Entity> void onRenderPost(
-      E var1, double var2, double var4, double var6, float var8, float var9, MatrixStack var10, VertexConsumerProvider var11, int var12, CallbackInfo var13
-   ) {
-      Class_0483 var14 = Class_0483.method_2(var1, var10, var11);
-      MioAPI.field_4220.method_36(var14);
-   }
-
-   @Inject(
-      method = {"renderFire"},
-      at = {@At("HEAD")},
-      cancellable = true
-   )
-   private void renderFireHook(MatrixStack var1, VertexConsumerProvider var2, Entity var3, Quaternionf var4, CallbackInfo var5) {
-      if (chams.method_101(var3)) {
-         var5.cancel();
-      }
-
-      if (norender.isToggled()
-         && norender.field_750.getValue()
-         && (norender.field_751.getValue() || var3 instanceof ClientPlayerEntity || var3 instanceof EndCrystalEntity)) {
-         var5.cancel();
-      }
-   }
-
-   @Inject(
-      method = {"renderHitbox"},
-      at = {@At("HEAD")},
-      cancellable = true
-   )
-   private static void renderHitboxHook(MatrixStack var0, VertexConsumer var1, Entity var2, float var3, float var4, float var5, float var6, CallbackInfo var7) {
-      if (ChamsModule.field_253) {
-         var7.cancel();
-      }
-   }
+    @Inject(method = {"renderHitbox"}, at = {@At("HEAD")}, cancellable = true)
+    private static void renderHitboxHook(MatrixStack matrixStack, VertexConsumer vertexConsumer, Entity entity, float f, float f2, float f3, float f4, CallbackInfo callbackInfo) {
+        if (Chams.flag) {
+            callbackInfo.cancel();
+        }
+    }
 }

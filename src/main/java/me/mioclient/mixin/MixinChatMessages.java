@@ -3,11 +3,11 @@ package me.mioclient.mixin;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import java.awt.Color;
 import java.util.Optional;
-import me.mioclient.Hub;
-import me.mioclient.internal.Class_0436;
-import me.mioclient.internal.FontRenderer;
-import me.mioclient.module.client.FontsModule;
-import me.mioclient.module.misc.BetterChatModule;
+import me.mioclient.AdvanceGlyph;
+import me.mioclient.BaritoneHelper_3;
+import me.mioclient.FontsSearchHelper4;
+import me.mioclient.module.client.Fonts;
+import me.mioclient.module.misc.BetterChat;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextHandler;
 import net.minecraft.client.util.ChatMessages;
@@ -20,72 +20,54 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
+/* compiled from: 0.java */
 @Mixin({ChatMessages.class})
+/* loaded from: mio-yarn.jar:me/mioclient/mixin/MixinChatMessages.class */
 public class MixinChatMessages {
-   private static final FontsModule fonts = Hub.field_2595.method_78(FontsModule.class);
-   @Unique
-   private static final BetterChatModule betterchat = Hub.field_2595.method_78(BetterChatModule.class);
+    private static final Fonts fonts = (Fonts) BaritoneHelper_3.baritoneHelper_4.getModule117(Fonts.class);
 
-   public MixinChatMessages() {
-      super();
-   }
+    @Unique
+    private static final BetterChat betterchat = (BetterChat) BaritoneHelper_3.baritoneHelper_4.getModule117(BetterChat.class);
 
-   @ModifyExpressionValue(
-      method = {"breakRenderedChatMessageLines"},
-      at = {@At(
-         value = "INVOKE",
-         target = "Lnet/minecraft/client/font/TextRenderer;getTextHandler()Lnet/minecraft/client/font/TextHandler;"
-      )}
-   )
-   private static TextHandler mio$breakRenderedChatMessageLines(TextHandler var0) {
-      Class_0436 var1 = FontRenderer.field_3143.method_914();
-      return (TextHandler)(var1 != null && fonts.isToggled() && fonts.field_370.getValue() ? var1.method_477() : var0);
-   }
+    @ModifyExpressionValue(method = {"breakRenderedChatMessageLines"}, at = {@At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;getTextHandler()Lnet/minecraft/client/font/TextHandler;")})
+    private static TextHandler mio$breakRenderedChatMessageLines(TextHandler textHandler) {
+        AdvanceGlyph advanceGlyph1686 = FontsSearchHelper4.fontsSearchHelper4.getAdvanceGlyph1686();
+        return (advanceGlyph1686 != null && fonts.isToggled() && fonts.chat.getValue().booleanValue()) ? advanceGlyph1686.getTextHandler2776() : textHandler;
+    }
 
-   @ModifyVariable(
-      method = {"breakRenderedChatMessageLines"},
-      at = @At("HEAD"),
-      ordinal = 0,
-      argsOnly = true
-   )
-   private static StringVisitable mio$breakRenderedChatMessageLines(StringVisitable var0) {
-      if (betterchat.isToggled() && betterchat.field_3944.getValue()) {
-         String var1 = MinecraftClient.getInstance().getSession().getUsername();
-         MutableText var2 = Text.empty();
-         var0.visit(
-            (var2x, var3) -> {
-               if (!var3.contains(var1)) {
-                  var2.append(Text.literal(var3).setStyle(var2x));
-               } else {
-                  String[] var4 = var3.split("((?=%s)|(?<=%s))".formatted(var1, var1));
-
-                  for (String var8 : var4) {
-                     if (!var8.equals(var1)) {
-                        var2.append(Text.literal(var8).setStyle(var2x));
-                     } else {
-                        Color var9 = betterchat.field_3945.getValue();
-                        MutableText var10 = Text.literal(var8)
-                           .styled(var1xx -> var1xx.withColor(new Color(var9.getRed(), var9.getGreen(), var9.getBlue(), 255).getRGB()));
-                        var10.styled(var1xx -> {
-                           var1xx.withBold(var2x.isBold());
-                           var1xx.withItalic(var2x.isItalic());
-                           var1xx.withUnderline(var2x.isUnderlined());
-                           var1xx.withObfuscated(var2x.isObfuscated());
-                           var1xx.withStrikethrough(var2x.isStrikethrough());
-                           return var1xx;
+    @ModifyVariable(method = {"breakRenderedChatMessageLines"}, at = @At("HEAD"), ordinal = 0, argsOnly = true)
+    private static StringVisitable mio$breakRenderedChatMessageLines(StringVisitable stringVisitable) {
+        if (!betterchat.isToggled() || !betterchat.highlight.getValue().booleanValue()) {
+            return stringVisitable;
+        }
+        String username = MinecraftClient.getInstance().getSession().getUsername();
+        MutableText empty = Text.empty();
+        stringVisitable.visit((style, str) -> {
+            if (str.contains(username)) {
+                for (String part : str.split("((?=%s)|(?<=%s))".formatted(username, username))) {
+                    if (part.equals(username)) {
+                        Color value = betterchat.color.getValue();
+                        MutableText styled = Text.literal(part).styled(st -> {
+                            return st.withColor(new Color(value.getRed(), value.getGreen(), value.getBlue(), 255).getRGB());
                         });
-                        var2.append(var10);
-                     }
-                  }
-               }
-
-               return Optional.empty();
-            },
-            Style.EMPTY
-         );
-         return var2;
-      } else {
-         return var0;
-      }
-   }
+                        styled.styled(style2 -> {
+                            style2.withBold(Boolean.valueOf(style.isBold()));
+                            style2.withItalic(Boolean.valueOf(style.isItalic()));
+                            style2.withUnderline(Boolean.valueOf(style.isUnderlined()));
+                            style2.withObfuscated(Boolean.valueOf(style.isObfuscated()));
+                            style2.withStrikethrough(Boolean.valueOf(style.isStrikethrough()));
+                            return style2;
+                        });
+                        empty.append(styled);
+                    } else {
+                        empty.append(Text.literal(part).setStyle(style));
+                    }
+                }
+            } else {
+                empty.append(Text.literal(str).setStyle(style));
+            }
+            return Optional.empty();
+        }, Style.EMPTY);
+        return empty;
+    }
 }

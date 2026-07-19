@@ -1,7 +1,7 @@
 package me.mioclient.mixin;
 
-import me.mioclient.api.Class_0875;
-import me.mioclient.internal.Timer;
+import me.mioclient.Helper_3;
+import me.mioclient.feature.Stopwatch;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.ZombifiedPiglinEntity;
@@ -12,29 +12,28 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+/* compiled from: 0.java */
 @Mixin({ZombifiedPiglinEntity.class})
-public abstract class MixinZombifiedPiglinEntity extends MobEntity implements Class_0875 {
-   @Unique
-   private Timer stopwatch;
+/* loaded from: mio-yarn.jar:me/mioclient/mixin/MixinZombifiedPiglinEntity.class */
+public abstract class MixinZombifiedPiglinEntity extends MobEntity implements Helper_3 {
 
-   protected MixinZombifiedPiglinEntity(EntityType<? extends MobEntity> var1, World var2) {
-      super(var1, var2);
-   }
+    @Unique
+    private Stopwatch stopwatch;
 
-   @Inject(
-      method = {"<init>"},
-      at = {@At("TAIL")}
-   )
-   private void initHook(EntityType<?> var1, World var2, CallbackInfo var3) {
-      this.stopwatch = new Timer();
-   }
+    protected MixinZombifiedPiglinEntity(EntityType<? extends MobEntity> entityType, World world) {
+        super(entityType, world);
+    }
 
-   @Override
-   public boolean mio$isAttacking() {
-      if (this.isAttacking()) {
-         this.stopwatch.reset();
-      }
+    @Inject(method = {"<init>"}, at = {@At("TAIL")})
+    private void initHook(EntityType<?> entityType, World world, CallbackInfo callbackInfo) {
+        this.stopwatch = new Stopwatch();
+    }
 
-      return !this.stopwatch.method_9(1000L);
-   }
+    @Override // me.mioclient.Helper_3
+    public boolean mio$isAttacking() {
+        if (isAttacking()) {
+            this.stopwatch.reset();
+        }
+        return !this.stopwatch.is419(1000L);
+    }
 }

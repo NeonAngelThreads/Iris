@@ -9,14 +9,16 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
+/* compiled from: 0.java */
 @Mixin({Screen.class})
+/* loaded from: mio-yarn.jar:me/mioclient/mixin/ducks/DuckScreen.class */
 public interface DuckScreen {
-   @Accessor
-   List<Drawable> getDrawables();
+    @Accessor
+    List<Drawable> getDrawables();
 
-   @Accessor
-   void setDrawables(List<Drawable> var1);
+    @Accessor
+    void setDrawables(List<Drawable> list);
 
-   @Invoker("addDrawableChild")
-   <T extends Element & Drawable & Selectable> T addDrawableChildHook(T var1);
+    @Invoker("addDrawableChild")
+    <T extends Element & Drawable & Selectable> T addDrawableChildHook(T t);
 }

@@ -1,5 +1,5 @@
 package dev.tr7zw.entityculling.versionless;
-// Stub for optional EntityCulling mod integration.
+/** Stub of EntityCulling API (optional soft-dependency; not bundled). */
 public class EntityCullingVersionlessBase {
-    public static boolean enabled = false;
+    public static boolean enabled;
 }

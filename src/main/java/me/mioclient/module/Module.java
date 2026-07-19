@@ -7,216 +7,216 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
-import me.mioclient.Hub;
-import me.mioclient.api.Class_0945;
-import me.mioclient.api.Class_1146;
-import me.mioclient.api.Class_1240;
-import me.mioclient.api.MioAPI;
-import me.mioclient.deobf.Named;
-import me.mioclient.enum_.Class_0046;
-import me.mioclient.event.Event_45;
-import me.mioclient.internal.TextBuilder;
-import me.mioclient.record.Class_0702;
-import me.mioclient.setting.Setting;
+import me.mioclient.ArgumentTypeHelper;
+import me.mioclient.BaritoneHelper_3;
+import me.mioclient.HUDHelper;
+import me.mioclient.Helper_9;
+import me.mioclient.PresetHelper_7;
+import me.mioclient.SearchHelper_4;
+import me.mioclient.api.Category;
+import me.mioclient.api.Keybind;
+import me.mioclient.api.Setting;
+import me.mioclient.event.EnableEvent;
 import net.minecraft.util.Formatting;
 
-public class Module extends Named implements MioAPI, Class_1240, Class_0945<Setting<?>, List<Setting<?>>>, Class_1146 {
-   public final Category field_37;
-   public List<Setting<?>> field_38 = new ArrayList<>();
-   public String[] field_39;
-   public Class_0702 field_40 = Class_0702.field_2229;
-   public boolean field_41;
-   public boolean field_42 = true;
-   public boolean field_43;
+/* compiled from: 0.java */
+/* loaded from: mio-yarn.jar:me/mioclient/module/Module.class */
+public class Module extends Feature implements SearchHelper_4, HUDHelper, Helper_9<Setting<?>, List<Setting<?>>>, PresetHelper_7 {
+    public final Category category;
+    public final List<Setting<?>> registry;
+    public final String[] aliases;
+    public Keybind keybind;
+    public boolean toggled;
+    public boolean drawn;
+    public boolean wip;
 
-   public Module(String var1, String var2, Category var3, String... var4) {
-      super(var1);
-      this.field_37 = var3;
-      this.setDescription(var2);
-      String[] var5 = Objects.requireNonNullElseGet(var4, () -> new String[0]);
-      this.field_39 = Arrays.copyOf(var5, var5.length + 1);
-      this.field_39[var5.length] = var1;
-   }
+    public Module(String str, String str2, Category category, String... strArr) {
+        super(str);
+        this.registry = new ArrayList();
+        this.keybind = Keybind.keybind;
+        this.drawn = true;
+        this.category = category;
+        setDescription(str2);
+        String[] strArr2 = (String[]) Objects.requireNonNullElseGet(strArr, () -> {
+            return new String[0];
+        });
+        this.aliases = (String[]) Arrays.copyOf(strArr2, strArr2.length + 1);
+        this.aliases[strArr2.length] = str;
+    }
 
-   public Module(String var1, Category var2, String... var3) {
-      this(var1, "", var2, var3);
-   }
+    public Module(String str, Category category, String... strArr) {
+        this(str, "", category, strArr);
+    }
 
-   public Category getCategory() {
-      return this.field_37;
-   }
+    public Category getCategory() {
+        return this.category;
+    }
 
-   public Class_0702 getKeybind() {
-      if (this.field_40 == null) this.field_40 = Class_0702.field_2229;
-      return this.field_40;
-   }
+    public Keybind getKeybind() {
+        return this.keybind;
+    }
 
-   public String getInfoString() {
-      return new TextBuilder()
-         .method_2(
-            this.getInfo() != null
-               ? new TextBuilder()
-                  .method_2(String.valueOf(Formatting.GRAY))
-                  .method_2(this.getInfo())
-                  .method_2(String.valueOf(Formatting.WHITE))
-                  .method_2(String.valueOf(Formatting.GRAY))
-                  .method_9("\u0001 [\u0001\u0001\u0001]")
-               : ""
-         )
-         .method_2(Hub.field_2626.method_7(this))
-         .method_9("\u0001\u0001");
-   }
+    public String getInfoString() {
+        String str;
+        String string397 = BaritoneHelper_3.notificationsHelper.getString397(this);
+        if (getInfo() != null) {
+            str = new ArgumentTypeHelper().getArgumentTypeHelper2919(String.valueOf(Formatting.GRAY)).getArgumentTypeHelper2919(getInfo()).getArgumentTypeHelper2919(String.valueOf(Formatting.WHITE)).getArgumentTypeHelper2919(String.valueOf(Formatting.GRAY)).getString2921("\u0001 [\u0001\u0001\u0001]");
+        } else {
+            str = "";
+        }
+        return new ArgumentTypeHelper().getArgumentTypeHelper2919(str).getArgumentTypeHelper2919(string397).getString2921("\u0001\u0001");
+    }
 
-   public void setKeybind(Class_0702 var1) {
-      this.field_40 = var1;
-   }
+    public void setKeybind(Keybind keybind) {
+        this.keybind = keybind;
+    }
 
-   public void modifyKeybind(Function<Class_0702, Class_0702> var1) {
-      this.field_40 = (Class_0702)var1.apply(this.field_40);
-   }
+    public void modifyKeybind(Function<Keybind, Keybind> function) {
+        this.keybind = function.apply(this.keybind);
+    }
 
-   public List<Setting<?>> getRegistry() {
-      if (this.field_38 == null) this.field_38 = new ArrayList<>();
-      return this.field_38;
-   }
+    /* JADX WARN: Can't rename method to resolve collision */
+    @Override // me.mioclient.Helper_9
+    public List<Setting<?>> getRegistry() {
+        return this.registry;
+    }
 
-   public boolean register(Setting<?> var1) {
-      return this.field_38.add(var1);
-   }
+    @Override // me.mioclient.Helper_9
+    public boolean register(Setting<?> setting) {
+        return this.registry.add(setting);
+    }
 
-   public boolean unregister(Setting<?> var1) {
-      return this.field_38.remove(var1);
-   }
+    @Override // me.mioclient.Helper_9
+    public boolean unregister(Setting<?> setting) {
+        return this.registry.remove(setting);
+    }
 
-   public <T> Setting<T> add(Setting<T> var1) {
-      this.register(var1);
-      return var1;
-   }
+    public <T> Setting<T> add(Setting<T> setting) {
+        register((Setting<?>) setting);
+        return setting;
+    }
 
-   public <T> Setting<T> add(Setting<T> var1, Setting<?> var2) {
-      int var3 = this.field_38.indexOf(var2) + 1;
-      this.field_38.add(var3, var1);
-      return var1;
-   }
+    public <T> Setting<T> add(Setting<T> setting, Setting<?> setting2) {
+        this.registry.add(this.registry.indexOf(setting2) + 1, setting);
+        return setting;
+    }
 
-   @Override
-   public boolean isToggled() {
-      return this.field_41;
-   }
+    public boolean isToggled() {
+        return this.toggled;
+    }
 
-   @Override
-   public void enable() {
-      if (!this.isToggled()) {
-         this.field_41 = true;
-         field_4220.method_14(this);
-         field_4220.method_36(new Event_45(this));
-         this.onToggle();
-         this.onEnable();
-      }
-   }
+    @Override // me.mioclient.HUDHelper
+    public void enable() {
+        if (isToggled()) {
+            return;
+        }
+        this.toggled = true;
+        baritoneHelper.do1796(this);
+        baritoneHelper.getObject1794(new EnableEvent(this));
+        onToggle();
+        onEnable();
+    }
 
-   @Override
-   public void disable() {
-      if (this.isToggled()) {
-         field_4220.method_17(this);
-         this.field_41 = false;
-         field_4220.method_36(new Event_45(this));
-         this.onToggle();
-         this.onDisable();
-      }
-   }
+    public void disable() {
+        if (isToggled()) {
+            baritoneHelper.do1802(this);
+            this.toggled = false;
+            baritoneHelper.getObject1794(new EnableEvent(this));
+            onToggle();
+            onDisable();
+        }
+    }
 
-   public void onEnable() {
-   }
+    public void onEnable() {
+    }
 
-   public void onDisable() {
-   }
+    public void onDisable() {
+    }
 
-   public void onToggle() {
-   }
+    public void onToggle() {
+    }
 
-   public String getInfo() {
-      return null;
-   }
+    public String getInfo() {
+        return null;
+    }
 
-   public boolean isDrawn() {
-      return this.field_42;
-   }
+    public boolean isDrawn() {
+        return this.drawn;
+    }
 
-   public void setDrawn(boolean var1) {
-      this.field_42 = var1;
-   }
+    public void setDrawn(boolean z) {
+        this.drawn = z;
+    }
 
-   public String[] getAliases() {
-      if (this.field_39 == null) this.field_39 = new String[0];
-      return this.field_39;
-   }
+    public String[] getAliases() {
+        return this.aliases;
+    }
 
-   @Override
-   public JsonElement toJson() {
-      JsonObject var1 = new JsonObject();
-      var1.addProperty("enabled", this.field_41);
-      var1.addProperty("key", this.field_40.method_38());
-      var1.addProperty("state", this.field_40.method_78().method_30());
-      var1.addProperty("mouse", this.field_40.method_39());
-      var1.addProperty("drawn", this.field_42);
-      JsonObject var2 = new JsonObject();
-
-      for (Setting var4 : this.getRegistry()) {
-         if (!var4.method_158() && !var4.method_113()) {
-            var2.add(var4.getConfigName(), var4.toJson());
-         }
-      }
-
-      var1.add("settings", var2);
-      return var1;
-   }
-
-   @Override
-   public void fromJson(JsonElement var1) {
-      if (var1 instanceof JsonObject var2) {
-         if (var2.has("settings") && var2.get("settings") instanceof JsonObject var3) {
-            for (Setting var5 : this.getRegistry()) {
-               if (!var5.method_113() && var3.has(var5.getConfigName())) {
-                  try {
-                     var5.fromJson(var3.get(var5.getConfigName()));
-                  } catch (Exception var7) {
-                  }
-               }
+    public JsonElement toJson() {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("enabled", Boolean.valueOf(this.toggled));
+        jsonObject.addProperty("key", Integer.valueOf(this.keybind.get1945()));
+        jsonObject.addProperty("state", this.keybind.getKeybindMode1946().getString2552());
+        jsonObject.addProperty("mouse", Boolean.valueOf(this.keybind.is1947()));
+        jsonObject.addProperty("drawn", Boolean.valueOf(this.drawn));
+        JsonObject jsonObject2 = new JsonObject();
+        for (Setting<?> setting : getRegistry()) {
+            if (!setting.is2352() && !setting.is2354()) {
+                jsonObject2.add(setting.getConfigName(), setting.toJson());
             }
-         }
+        }
+        jsonObject.add("settings", (JsonElement) jsonObject2);
+        return jsonObject;
+    }
 
-         if (var2.has("drawn")) {
-            this.setDrawn(var2.get("drawn").getAsBoolean());
-         }
+    public void fromJson(JsonElement jsonElement) {
+        if (jsonElement instanceof JsonObject) {
+            JsonObject jsonObject = (JsonObject) jsonElement;
+            if (jsonObject.has("settings")) {
+                JsonObject jsonObject2 = (JsonObject)(jsonObject.get("settings"));
+                if (jsonObject2 instanceof JsonObject) {
+                    JsonObject jsonObject3 = jsonObject2;
+                    for (Setting<?> setting : getRegistry()) {
+                        if (!setting.is2354()) {
+                            if (jsonObject3.has(setting.getConfigName())) {
+                                try {
+                                    setting.fromJson(jsonObject3.get(setting.getConfigName()));
+                                } catch (Exception e) {
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (jsonObject.has("drawn")) {
+                setDrawn(jsonObject.get("drawn").getAsBoolean());
+            }
+            if (jsonObject.has("key")) {
+                modifyKeybind(keybind -> {
+                    return keybind.getKeybind1941(jsonObject.get("key").getAsInt()).getKeybind1942(jsonObject.has("state") ? Keybind.KeybindMode.getKeybindMode2553(jsonObject.get("state").getAsString()) : Keybind.KeybindMode.TOGGLE);
+                });
+            }
+            if (jsonObject.has("mouse")) {
+                modifyKeybind(keybind2 -> {
+                    return keybind2.getKeybind1943(jsonObject.get("mouse").getAsBoolean());
+                });
+            }
+            if (jsonObject.has("enabled")) {
+                do495(jsonObject.get("enabled").getAsBoolean());
+            }
+        }
+    }
 
-         if (var2.has("key")) {
-            this.modifyKeybind(
-               var1x -> var1x.method_9(var2.get("key").getAsInt())
-                     .method_2(var2.has("state") ? Class_0046.method_4(var2.get("state").getAsString()) : Class_0046.TOGGLE)
-            );
-         }
+    @Override // me.mioclient.PresetHelper_7
+    public String getConfigName() {
+        return getName();
+    }
 
-         if (var2.has("mouse")) {
-            this.modifyKeybind(var1x -> var1x.method_9(var2.get("mouse").getAsBoolean()));
-         }
+    public boolean isWip() {
+        return this.wip;
+    }
 
-         if (var2.has("enabled")) {
-            this.method_38(var2.get("enabled").getAsBoolean());
-         }
-      }
-   }
-
-   @Override
-   public String getConfigName() {
-      return this.getName();
-   }
-
-   public boolean isWip() {
-      return this.field_43;
-   }
-
-   public void setWip(boolean var1) {
-      this.field_43 = var1;
-   }
+    public void setWip(boolean z) {
+        this.wip = z;
+    }
 }

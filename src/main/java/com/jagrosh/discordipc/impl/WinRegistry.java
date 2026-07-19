@@ -8,291 +8,308 @@ import java.util.Map;
 import java.util.prefs.Preferences;
 import net.lenni0451.reflect.Methods;
 
+/* compiled from: 0.java */
+/* loaded from: mio-yarn.jar:com/jagrosh/discordipc/impl/WinRegistry.class */
 public class WinRegistry {
-   public static final int HKEY_CURRENT_USER = -2147483647;
-   public static final int HKEY_LOCAL_MACHINE = -2147483646;
-   public static final int REG_SUCCESS = 0;
-   public static final int KEY_ALL_ACCESS = 983103;
-   public static final int KEY_READ = 131097;
-   public static final Preferences userRoot = Preferences.userRoot();
-   public static final Preferences systemRoot = Preferences.systemRoot();
-   public static final Class<? extends Preferences> userClass = (Class<? extends Preferences>)userRoot.getClass();
-   public static final Method regOpenKey;
-   public static final Method regCloseKey;
-   public static final Method regQueryValueEx;
-   public static final Method regEnumValue;
-   public static final Method regQueryInfoKey;
-   public static final Method regEnumKeyEx;
-   public static final Method regCreateKeyEx;
-   public static final Method regSetValueEx;
-   public static final Method regDeleteKey;
-   public static final Method regDeleteValue;
-   public static final float javaSpec;
+    public static final int HKEY_CURRENT_USER = -2147483647;
+    public static final int HKEY_LOCAL_MACHINE = -2147483646;
+    public static final int REG_SUCCESS = 0;
+    public static final int KEY_ALL_ACCESS = 983103;
+    public static final int KEY_READ = 131097;
+    public static final Preferences userRoot = Preferences.userRoot();
+    public static final Preferences systemRoot = Preferences.systemRoot();
+    public static final Class<? extends Preferences> userClass = userRoot.getClass();
+    public static final Method regOpenKey;
+    public static final Method regCloseKey;
+    public static final Method regQueryValueEx;
+    public static final Method regEnumValue;
+    public static final Method regQueryInfoKey;
+    public static final Method regEnumKeyEx;
+    public static final Method regCreateKeyEx;
+    public static final Method regSetValueEx;
+    public static final Method regDeleteKey;
+    public static final Method regDeleteValue;
+    public static final float javaSpec;
 
-   public WinRegistry() {
-      super();
-   }
+    public static String readString(int i, String str, String str2) {
+        if (i == -2147483646) {
+            return readString(systemRoot, i, str, str2);
+        }
+        if (i == -2147483647) {
+            return readString(userRoot, i, str, str2);
+        }
+        throw new IllegalArgumentException("hkey=" + i);
+    }
 
-   public static String readString(int var0, String var1, String var2) {
-      if (var0 == -2147483646) {
-         return readString(systemRoot, var0, var1, var2);
-      } else if (var0 == -2147483647) {
-         return readString(userRoot, var0, var1, var2);
-      } else {
-         throw new IllegalArgumentException("hkey=" + var0);
-      }
-   }
+    public static String readString(long j, String str, String str2) {
+        if (j == -2147483646) {
+            return readString(systemRoot, j, str, str2);
+        }
+        if (j == -2147483647L) {
+            return readString(userRoot, j, str, str2);
+        }
+        throw new IllegalArgumentException("hkey=" + j);
+    }
 
-   public static String readString(long var0, String var2, String var3) {
-      if (var0 == -2147483646L) {
-         return readString(systemRoot, var0, var2, var3);
-      } else if (var0 == -2147483647L) {
-         return readString(userRoot, var0, var2, var3);
-      } else {
-         throw new IllegalArgumentException("hkey=" + var0);
-      }
-   }
+    public static Map<String, String> readStringValues(int i, String str) {
+        if (i == -2147483646) {
+            return readStringValues(systemRoot, i, str);
+        }
+        if (i == -2147483647) {
+            return readStringValues(userRoot, i, str);
+        }
+        throw new IllegalArgumentException("hkey=" + i);
+    }
 
-   public static Map<String, String> readStringValues(int var0, String var1) {
-      if (var0 == -2147483646) {
-         return readStringValues(systemRoot, var0, var1);
-      } else if (var0 == -2147483647) {
-         return readStringValues(userRoot, var0, var1);
-      } else {
-         throw new IllegalArgumentException("hkey=" + var0);
-      }
-   }
+    public static List<String> readStringSubKeys(int i, String str) {
+        if (i == -2147483646) {
+            return readStringSubKeys(systemRoot, i, str);
+        }
+        if (i == -2147483647) {
+            return readStringSubKeys(userRoot, i, str);
+        }
+        throw new IllegalArgumentException("hkey=" + i);
+    }
 
-   public static List<String> readStringSubKeys(int var0, String var1) {
-      if (var0 == -2147483646) {
-         return readStringSubKeys(systemRoot, var0, var1);
-      } else if (var0 == -2147483647) {
-         return readStringSubKeys(userRoot, var0, var1);
-      } else {
-         throw new IllegalArgumentException("hkey=" + var0);
-      }
-   }
+    public static void createKey(int i, String str) {
+        int[] createKey;
+        if (i == -2147483646) {
+            createKey = createKey(systemRoot, i, str);
+            Methods.invoke(systemRoot, regCloseKey, new Object[]{Integer.valueOf(createKey[0])});
+        } else {
+            if (i != -2147483647) {
+                throw new IllegalArgumentException("hkey=" + i);
+            }
+            createKey = createKey(userRoot, i, str);
+            Methods.invoke(userRoot, regCloseKey, new Object[]{Integer.valueOf(createKey[0])});
+        }
+        if (createKey[1] != 0) {
+            throw new IllegalArgumentException("rc=" + createKey[1] + "  key=" + str);
+        }
+    }
 
-   public static void createKey(int var0, String var1) {
-      int[] var2;
-      if (var0 == -2147483646) {
-         var2 = createKey(systemRoot, var0, var1);
-         Methods.invoke(systemRoot, regCloseKey, new Object[]{var2[0]});
-      } else {
-         if (var0 != -2147483647) {
-            throw new IllegalArgumentException("hkey=" + var0);
-         }
+    public static void createKey(long j, String str) {
+        long[] createKey;
+        if (j == -2147483646) {
+            createKey = createKey(systemRoot, j, str);
+            Methods.invoke(systemRoot, regCloseKey, new Object[]{Long.valueOf(createKey[0])});
+        } else {
+            if (j != -2147483647L) {
+                throw new IllegalArgumentException("hkey=" + j);
+            }
+            createKey = createKey(userRoot, j, str);
+            Methods.invoke(userRoot, regCloseKey, new Object[]{Long.valueOf(createKey[0])});
+        }
+        if (createKey[1] != 0) {
+            throw new IllegalArgumentException("rc=" + createKey[1] + "  key=" + str);
+        }
+    }
 
-         var2 = createKey(userRoot, var0, var1);
-         Methods.invoke(userRoot, regCloseKey, new Object[]{var2[0]});
-      }
+    public static void writeStringValue(int i, String str, String str2, String str3) {
+        if (i == -2147483646) {
+            writeStringValue(systemRoot, i, str, str2, str3);
+        } else {
+            if (i != -2147483647) {
+                throw new IllegalArgumentException("hkey=" + i);
+            }
+            writeStringValue(userRoot, i, str, str2, str3);
+        }
+    }
 
-      if (var2[1] != 0) {
-         throw new IllegalArgumentException("rc=" + var2[1] + "  key=" + var1);
-      }
-   }
+    public static void writeStringValue(long j, String str, String str2, String str3) {
+        if (j == -2147483646) {
+            writeStringValue(systemRoot, j, str, str2, str3);
+        } else {
+            if (j != -2147483647L) {
+                throw new IllegalArgumentException("hkey=" + j);
+            }
+            writeStringValue(userRoot, j, str, str2, str3);
+        }
+    }
 
-   public static void createKey(long var0, String var2) {
-      long[] var3;
-      if (var0 == -2147483646L) {
-         var3 = createKey(systemRoot, var0, var2);
-         Methods.invoke(systemRoot, regCloseKey, new Object[]{var3[0]});
-      } else {
-         if (var0 != -2147483647L) {
-            throw new IllegalArgumentException("hkey=" + var0);
-         }
+    public static void deleteKey(int i, String str) {
+        int i2 = -1;
+        if (i == -2147483646) {
+            i2 = deleteKey(systemRoot, i, str);
+        } else if (i == -2147483647) {
+            i2 = deleteKey(userRoot, i, str);
+        }
+        if (i2 != 0) {
+            throw new IllegalArgumentException("rc=" + i2 + "  key=" + str);
+        }
+    }
 
-         var3 = createKey(userRoot, var0, var2);
-         Methods.invoke(userRoot, regCloseKey, new Object[]{var3[0]});
-      }
+    public static void deleteValue(int i, String str, String str2) {
+        int i2 = -1;
+        if (i == -2147483646) {
+            i2 = deleteValue(systemRoot, i, str, str2);
+        } else if (i == -2147483647) {
+            i2 = deleteValue(userRoot, i, str, str2);
+        }
+        if (i2 != 0) {
+            throw new IllegalArgumentException("rc=" + i2 + "  key=" + str + "  value=" + str2);
+        }
+    }
 
-      if (var3[1] != 0L) {
-         throw new IllegalArgumentException("rc=" + var3[1] + "  key=" + var2);
-      }
-   }
+    public static int deleteValue(Preferences preferences, int i, String str, String str2) {
+        int[] iArr = (int[]) Methods.invoke(preferences, regOpenKey, new Object[]{Integer.valueOf(i), toCstr(str), Integer.valueOf(KEY_ALL_ACCESS)});
+        if (iArr[1] != 0) {
+            return iArr[1];
+        }
+        int intValue = ((Integer) Methods.invoke(preferences, regDeleteValue, new Object[]{Integer.valueOf(iArr[0]), toCstr(str2)})).intValue();
+        Methods.invoke(preferences, regCloseKey, new Object[]{Integer.valueOf(iArr[0])});
+        return intValue;
+    }
 
-   public static void writeStringValue(int var0, String var1, String var2, String var3) {
-      if (var0 == -2147483646) {
-         writeStringValue(systemRoot, var0, var1, var2, var3);
-      } else {
-         if (var0 != -2147483647) {
-            throw new IllegalArgumentException("hkey=" + var0);
-         }
+    public static int deleteKey(Preferences preferences, int i, String str) {
+        return ((Integer) Methods.invoke(preferences, regDeleteKey, new Object[]{Integer.valueOf(i), toCstr(str)})).intValue();
+    }
 
-         writeStringValue(userRoot, var0, var1, var2, var3);
-      }
-   }
+    public static String readString(Preferences preferences, int i, String str, String str2) {
+        int[] iArr = (int[]) Methods.invoke(preferences, regOpenKey, new Object[]{Integer.valueOf(i), toCstr(str), Integer.valueOf(KEY_READ)});
+        if (iArr[1] != 0) {
+            return null;
+        }
+        byte[] bArr = (byte[]) Methods.invoke(preferences, regQueryValueEx, new Object[]{Integer.valueOf(iArr[0]), toCstr(str2)});
+        Methods.invoke(preferences, regCloseKey, new Object[]{Integer.valueOf(iArr[0])});
+        if (bArr != null) {
+            return new String(bArr).trim();
+        }
+        return null;
+    }
 
-   public static void writeStringValue(long var0, String var2, String var3, String var4) {
-      if (var0 == -2147483646L) {
-         writeStringValue(systemRoot, var0, var2, var3, var4);
-      } else {
-         if (var0 != -2147483647L) {
-            throw new IllegalArgumentException("hkey=" + var0);
-         }
+    public static String readString(Preferences preferences, long j, String str, String str2) {
+        long[] jArr = (long[]) Methods.invoke(preferences, regOpenKey, new Object[]{Long.valueOf(j), toCstr(str), Integer.valueOf(KEY_READ)});
+        if (jArr[1] != 0) {
+            return null;
+        }
+        byte[] bArr = (byte[]) Methods.invoke(preferences, regQueryValueEx, new Object[]{Long.valueOf(jArr[0]), toCstr(str2)});
+        Methods.invoke(preferences, regCloseKey, new Object[]{Long.valueOf(jArr[0])});
+        if (bArr != null) {
+            return new String(bArr).trim();
+        }
+        return null;
+    }
 
-         writeStringValue(userRoot, var0, var2, var3, var4);
-      }
-   }
+    public static Map<String, String> readStringValues(Preferences preferences, int i, String str) {
+        HashMap hashMap = new HashMap();
+        int[] iArr = (int[]) Methods.invoke(preferences, regOpenKey, new Object[]{Integer.valueOf(i), toCstr(str), Integer.valueOf(KEY_READ)});
+        if (iArr[1] != 0) {
+            return null;
+        }
+        int[] iArr2 = (int[]) Methods.invoke(preferences, regQueryInfoKey, new Object[]{Integer.valueOf(iArr[0])});
+        int i2 = iArr2[0];
+        int i3 = iArr2[3];
+        for (int i4 = 0; i4 < i2; i4++) {
+            byte[] bArr = (byte[]) Methods.invoke(preferences, regEnumValue, new Object[]{Integer.valueOf(iArr[0]), Integer.valueOf(i4), Integer.valueOf(i3 + 1)});
+            hashMap.put(new String(bArr).trim(), readString(i, str, new String(bArr)));
+        }
+        Methods.invoke(preferences, regCloseKey, new Object[]{Integer.valueOf(iArr[0])});
+        return hashMap;
+    }
 
-   public static void deleteKey(int var0, String var1) {
-      int var2 = -1;
-      if (var0 == -2147483646) {
-         var2 = deleteKey(systemRoot, var0, var1);
-      } else if (var0 == -2147483647) {
-         var2 = deleteKey(userRoot, var0, var1);
-      }
+    public static List<String> readStringSubKeys(Preferences preferences, int i, String str) {
+        ArrayList arrayList = new ArrayList();
+        int[] iArr = (int[]) Methods.invoke(preferences, regOpenKey, new Object[]{Integer.valueOf(i), toCstr(str), Integer.valueOf(KEY_READ)});
+        if (iArr[1] != 0) {
+            return null;
+        }
+        int[] iArr2 = (int[]) Methods.invoke(preferences, regQueryInfoKey, new Object[]{Integer.valueOf(iArr[0])});
+        int i2 = iArr2[0];
+        int i3 = iArr2[3];
+        for (int i4 = 0; i4 < i2; i4++) {
+            arrayList.add(new String((byte[]) Methods.invoke(preferences, regEnumKeyEx, new Object[]{Integer.valueOf(iArr[0]), Integer.valueOf(i4), Integer.valueOf(i3 + 1)})).trim());
+        }
+        Methods.invoke(preferences, regCloseKey, new Object[]{Integer.valueOf(iArr[0])});
+        return arrayList;
+    }
 
-      if (var2 != 0) {
-         throw new IllegalArgumentException("rc=" + var2 + "  key=" + var1);
-      }
-   }
+    public static int[] createKey(Preferences preferences, int i, String str) {
+        return (int[]) Methods.invoke(preferences, regCreateKeyEx, new Object[]{Integer.valueOf(i), toCstr(str)});
+    }
 
-   public static void deleteValue(int var0, String var1, String var2) {
-      int var3 = -1;
-      if (var0 == -2147483646) {
-         var3 = deleteValue(systemRoot, var0, var1, var2);
-      } else if (var0 == -2147483647) {
-         var3 = deleteValue(userRoot, var0, var1, var2);
-      }
+    public static long[] createKey(Preferences preferences, long j, String str) {
+        return (long[]) Methods.invoke(preferences, regCreateKeyEx, new Object[]{Long.valueOf(j), toCstr(str)});
+    }
 
-      if (var3 != 0) {
-         throw new IllegalArgumentException("rc=" + var3 + "  key=" + var1 + "  value=" + var2);
-      }
-   }
+    public static void writeStringValue(Preferences preferences, int i, String str, String str2, String str3) {
+        int[] iArr = (int[]) Methods.invoke(preferences, regOpenKey, new Object[]{Integer.valueOf(i), toCstr(str), Integer.valueOf(KEY_ALL_ACCESS)});
+        Methods.invoke(preferences, regSetValueEx, new Object[]{Integer.valueOf(iArr[0]), toCstr(str2), toCstr(str3)});
+        Methods.invoke(preferences, regCloseKey, new Object[]{Integer.valueOf(iArr[0])});
+    }
 
-   public static int deleteValue(Preferences var0, int var1, String var2, String var3) {
-      int[] var4 = (int[])Methods.invoke(var0, regOpenKey, new Object[]{var1, toCstr(var2), 983103});
-      if (var4[1] != 0) {
-         return var4[1];
-      } else {
-         int var5 = (Integer)Methods.invoke(var0, regDeleteValue, new Object[]{var4[0], toCstr(var3)});
-         Methods.invoke(var0, regCloseKey, new Object[]{var4[0]});
-         return var5;
-      }
-   }
+    public static void writeStringValue(Preferences preferences, long j, String str, String str2, String str3) {
+        long[] jArr = (long[]) Methods.invoke(preferences, regOpenKey, new Object[]{Long.valueOf(j), toCstr(str), Integer.valueOf(KEY_ALL_ACCESS)});
+        Methods.invoke(preferences, regSetValueEx, new Object[]{Long.valueOf(jArr[0]), toCstr(str2), toCstr(str3)});
+        Methods.invoke(preferences, regCloseKey, new Object[]{Long.valueOf(jArr[0])});
+    }
 
-   public static int deleteKey(Preferences var0, int var1, String var2) {
-      return (Integer)Methods.invoke(var0, regDeleteKey, new Object[]{var1, toCstr(var2)});
-   }
+    public static byte[] toCstr(String str) {
+        byte[] bArr = new byte[str.length() + 1];
+        for (int i = 0; i < str.length(); i++) {
+            bArr[i] = (byte) str.charAt(i);
+        }
+        bArr[str.length()] = 0;
+        return bArr;
+    }
 
-   public static String readString(Preferences var0, int var1, String var2, String var3) {
-      int[] var4 = (int[])Methods.invoke(var0, regOpenKey, new Object[]{var1, toCstr(var2), 131097});
-      if (var4[1] != 0) {
-         return null;
-      } else {
-         byte[] var5 = (byte[])Methods.invoke(var0, regQueryValueEx, new Object[]{var4[0], toCstr(var3)});
-         Methods.invoke(var0, regCloseKey, new Object[]{var4[0]});
-         return var5 != null ? new String(var5).trim() : null;
-      }
-   }
-
-   public static String readString(Preferences var0, long var1, String var3, String var4) {
-      long[] var5 = (long[])Methods.invoke(var0, regOpenKey, new Object[]{var1, toCstr(var3), 131097});
-      if (var5[1] != 0L) {
-         return null;
-      } else {
-         byte[] var6 = (byte[])Methods.invoke(var0, regQueryValueEx, new Object[]{var5[0], toCstr(var4)});
-         Methods.invoke(var0, regCloseKey, new Object[]{var5[0]});
-         return var6 != null ? new String(var6).trim() : null;
-      }
-   }
-
-   public static Map<String, String> readStringValues(Preferences var0, int var1, String var2) {
-      HashMap var3 = new HashMap();
-      int[] var4 = (int[])Methods.invoke(var0, regOpenKey, new Object[]{var1, toCstr(var2), 131097});
-      if (var4[1] != 0) {
-         return null;
-      } else {
-         int[] var5 = (int[])Methods.invoke(var0, regQueryInfoKey, new Object[]{var4[0]});
-         int var6 = var5[0];
-         int var7 = var5[3];
-
-         for (int var8 = 0; var8 < var6; var8++) {
-            byte[] var9 = (byte[])Methods.invoke(var0, regEnumValue, new Object[]{var4[0], var8, var7 + 1});
-            String var10 = readString(var1, var2, new String(var9));
-            var3.put(new String(var9).trim(), var10);
-         }
-
-         Methods.invoke(var0, regCloseKey, new Object[]{var4[0]});
-         return var3;
-      }
-   }
-
-   public static List<String> readStringSubKeys(Preferences var0, int var1, String var2) {
-      ArrayList var3 = new ArrayList();
-      int[] var4 = (int[])Methods.invoke(var0, regOpenKey, new Object[]{var1, toCstr(var2), 131097});
-      if (var4[1] != 0) {
-         return null;
-      } else {
-         int[] var5 = (int[])Methods.invoke(var0, regQueryInfoKey, new Object[]{var4[0]});
-         int var6 = var5[0];
-         int var7 = var5[3];
-
-         for (int var8 = 0; var8 < var6; var8++) {
-            byte[] var9 = (byte[])Methods.invoke(var0, regEnumKeyEx, new Object[]{var4[0], var8, var7 + 1});
-            var3.add(new String(var9).trim());
-         }
-
-         Methods.invoke(var0, regCloseKey, new Object[]{var4[0]});
-         return var3;
-      }
-   }
-
-   public static int[] createKey(Preferences var0, int var1, String var2) {
-      return (int[])Methods.invoke(var0, regCreateKeyEx, new Object[]{var1, toCstr(var2)});
-   }
-
-   public static long[] createKey(Preferences var0, long var1, String var3) {
-      return (long[])Methods.invoke(var0, regCreateKeyEx, new Object[]{var1, toCstr(var3)});
-   }
-
-   public static void writeStringValue(Preferences var0, int var1, String var2, String var3, String var4) {
-      int[] var5 = (int[])Methods.invoke(var0, regOpenKey, new Object[]{var1, toCstr(var2), 983103});
-      Methods.invoke(var0, regSetValueEx, new Object[]{var5[0], toCstr(var3), toCstr(var4)});
-      Methods.invoke(var0, regCloseKey, new Object[]{var5[0]});
-   }
-
-   public static void writeStringValue(Preferences var0, long var1, String var3, String var4, String var5) {
-      long[] var6 = (long[])Methods.invoke(var0, regOpenKey, new Object[]{var1, toCstr(var3), 983103});
-      Methods.invoke(var0, regSetValueEx, new Object[]{var6[0], toCstr(var4), toCstr(var5)});
-      Methods.invoke(var0, regCloseKey, new Object[]{var6[0]});
-   }
-
-   public static byte[] toCstr(String var0) {
-      byte[] var1 = new byte[var0.length() + 1];
-
-      for (int var2 = 0; var2 < var0.length(); var2++) {
-         var1[var2] = (byte)var0.charAt(var2);
-      }
-
-      var1[var0.length()] = 0;
-      return var1;
-   }
-
-   static {
-      try {
-         javaSpec = Float.parseFloat(System.getProperty("java.specification.version"));
-         regOpenKey = Methods.getDeclaredMethod(
-            userClass, "WindowsRegOpenKey", new Class[]{javaSpec >= 11.0F ? long.class : int.class, byte[].class, int.class}
-         );
-         regCloseKey = Methods.getDeclaredMethod(userClass, "WindowsRegCloseKey", new Class[]{javaSpec >= 11.0F ? long.class : int.class});
-         regQueryValueEx = Methods.getDeclaredMethod(userClass, "WindowsRegQueryValueEx", new Class[]{javaSpec >= 11.0F ? long.class : int.class, byte[].class});
-         regEnumValue = Methods.getDeclaredMethod(
-            userClass, "WindowsRegEnumValue", new Class[]{javaSpec >= 11.0F ? long.class : int.class, int.class, int.class}
-         );
-         regQueryInfoKey = Methods.getDeclaredMethod(userClass, "WindowsRegQueryInfoKey1", new Class[]{javaSpec >= 11.0F ? long.class : int.class});
-         regEnumKeyEx = Methods.getDeclaredMethod(
-            userClass, "WindowsRegEnumKeyEx", new Class[]{javaSpec >= 11.0F ? long.class : int.class, int.class, int.class}
-         );
-         regCreateKeyEx = Methods.getDeclaredMethod(userClass, "WindowsRegCreateKeyEx", new Class[]{javaSpec >= 11.0F ? long.class : int.class, byte[].class});
-         regSetValueEx = Methods.getDeclaredMethod(
-            userClass, "WindowsRegSetValueEx", new Class[]{javaSpec >= 11.0F ? long.class : int.class, byte[].class, byte[].class}
-         );
-         regDeleteValue = Methods.getDeclaredMethod(userClass, "WindowsRegDeleteValue", new Class[]{javaSpec >= 11.0F ? long.class : int.class, byte[].class});
-         regDeleteKey = Methods.getDeclaredMethod(userClass, "WindowsRegDeleteKey", new Class[]{javaSpec >= 11.0F ? long.class : int.class, byte[].class});
-      } catch (Exception var1) {
-         throw new RuntimeException(var1);
-      }
-   }
+    static {
+        try {
+            javaSpec = Float.parseFloat(System.getProperty("java.specification.version"));
+            Class<? extends Preferences> cls = userClass;
+            Class[] clsArr = new Class[3];
+            clsArr[0] = javaSpec >= 11.0f ? Long.TYPE : Integer.TYPE;
+            clsArr[1] = byte[].class;
+            clsArr[2] = Integer.TYPE;
+            regOpenKey = Methods.getDeclaredMethod(cls, "WindowsRegOpenKey", clsArr);
+            Class<? extends Preferences> cls2 = userClass;
+            Class[] clsArr2 = new Class[1];
+            clsArr2[0] = javaSpec >= 11.0f ? Long.TYPE : Integer.TYPE;
+            regCloseKey = Methods.getDeclaredMethod(cls2, "WindowsRegCloseKey", clsArr2);
+            Class<? extends Preferences> cls3 = userClass;
+            Class[] clsArr3 = new Class[2];
+            clsArr3[0] = javaSpec >= 11.0f ? Long.TYPE : Integer.TYPE;
+            clsArr3[1] = byte[].class;
+            regQueryValueEx = Methods.getDeclaredMethod(cls3, "WindowsRegQueryValueEx", clsArr3);
+            Class<? extends Preferences> cls4 = userClass;
+            Class[] clsArr4 = new Class[3];
+            clsArr4[0] = javaSpec >= 11.0f ? Long.TYPE : Integer.TYPE;
+            clsArr4[1] = Integer.TYPE;
+            clsArr4[2] = Integer.TYPE;
+            regEnumValue = Methods.getDeclaredMethod(cls4, "WindowsRegEnumValue", clsArr4);
+            Class<? extends Preferences> cls5 = userClass;
+            Class[] clsArr5 = new Class[1];
+            clsArr5[0] = javaSpec >= 11.0f ? Long.TYPE : Integer.TYPE;
+            regQueryInfoKey = Methods.getDeclaredMethod(cls5, "WindowsRegQueryInfoKey1", clsArr5);
+            Class<? extends Preferences> cls6 = userClass;
+            Class[] clsArr6 = new Class[3];
+            clsArr6[0] = javaSpec >= 11.0f ? Long.TYPE : Integer.TYPE;
+            clsArr6[1] = Integer.TYPE;
+            clsArr6[2] = Integer.TYPE;
+            regEnumKeyEx = Methods.getDeclaredMethod(cls6, "WindowsRegEnumKeyEx", clsArr6);
+            Class<? extends Preferences> cls7 = userClass;
+            Class[] clsArr7 = new Class[2];
+            clsArr7[0] = javaSpec >= 11.0f ? Long.TYPE : Integer.TYPE;
+            clsArr7[1] = byte[].class;
+            regCreateKeyEx = Methods.getDeclaredMethod(cls7, "WindowsRegCreateKeyEx", clsArr7);
+            Class<? extends Preferences> cls8 = userClass;
+            Class[] clsArr8 = new Class[3];
+            clsArr8[0] = javaSpec >= 11.0f ? Long.TYPE : Integer.TYPE;
+            clsArr8[1] = byte[].class;
+            clsArr8[2] = byte[].class;
+            regSetValueEx = Methods.getDeclaredMethod(cls8, "WindowsRegSetValueEx", clsArr8);
+            Class<? extends Preferences> cls9 = userClass;
+            Class[] clsArr9 = new Class[2];
+            clsArr9[0] = javaSpec >= 11.0f ? Long.TYPE : Integer.TYPE;
+            clsArr9[1] = byte[].class;
+            regDeleteValue = Methods.getDeclaredMethod(cls9, "WindowsRegDeleteValue", clsArr9);
+            Class<? extends Preferences> cls10 = userClass;
+            Class[] clsArr10 = new Class[2];
+            clsArr10[0] = javaSpec >= 11.0f ? Long.TYPE : Integer.TYPE;
+            clsArr10[1] = byte[].class;
+            regDeleteKey = Methods.getDeclaredMethod(cls10, "WindowsRegDeleteKey", clsArr10);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

@@ -6,13 +6,12 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.function.Consumer;
-import me.mioclient.enum_.Class_1202;
+import me.mioclient.feature.Flag;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Overlay;
@@ -26,80 +25,54 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+/* compiled from: 0.java */
 @Mixin({SplashOverlay.class})
+/* loaded from: mio-yarn.jar:me/mioclient/mixin/MixinSplashOverlay.class */
 public abstract class MixinSplashOverlay extends Overlay {
-   @Shadow
-   private long reloadCompleteTime;
-   @Shadow
-   @Final
-   private MinecraftClient client;
-   @Unique
-   private Class_1202 flag;
 
-   public MixinSplashOverlay() {
-      super();
-   }
+    @Shadow
+    private long field_17771;
 
-   @Inject(
-      method = {"<init>"},
-      at = {@At("TAIL")}
-   )
-   private void initHook(MinecraftClient var1, ResourceReload var2, Consumer<?> var3, boolean var4, CallbackInfo var5) {
-      try {
-         HttpRequest var6 = HttpRequest.newBuilder().uri(new URI("https://api.country.is/")).timeout(Duration.of(3L, ChronoUnit.SECONDS)).GET().build();
-         HttpResponse var7 = HttpClient.newHttpClient().send(var6, BodyHandlers.ofString());
-         String var8 = (String)var7.body();
-         JsonObject var9 = JsonParser.parseString(var8).getAsJsonObject();
-         if (var9.has("country")) {
-            this.flag = Class_1202.method_35(var9.get("country").getAsString());
-         }
-      } catch (Throwable var10) {
-         this.flag = Class_1202.DEFAULT;
-      }
+    @Shadow
+    @Final
+    private MinecraftClient field_18217;
 
-      Calendar var11 = Calendar.getInstance();
-      var11.setTime(new Date());
-      int var12 = var11.get(2);
-      int var13 = var11.get(5);
-      if (var12 == 1 && var13 == 23 || var12 == 4 && var13 == 9) {
-         this.flag = Class_1202.field_3728;
-      }
-   }
+    @Unique
+    private Flag flag;
 
-   @Shadow
-   private static int withAlpha(int var0, int var1) {
-      return 0;
-   }
+    @Inject(method = {"<init>"}, at = {@At("TAIL")})
+    private void initHook(MinecraftClient minecraftClient, ResourceReload resourceReload, Consumer<?> consumer, boolean z, CallbackInfo callbackInfo) {
+        try {
+            JsonObject asJsonObject = JsonParser.parseString((String) HttpClient.newHttpClient().send(HttpRequest.newBuilder().uri(new URI("https://api.country.is/")).timeout(Duration.of(3L, ChronoUnit.SECONDS)).GET().build(), HttpResponse.BodyHandlers.ofString()).body()).getAsJsonObject();
+            if (asJsonObject.has("country")) {
+                this.flag = Flag.getFlag684(asJsonObject.get("country").getAsString());
+            }
+        } catch (Throwable th) {
+            this.flag = Flag.DEFAULT;
+        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        int i = calendar.get(2);
+        int i2 = calendar.get(5);
+        if ((i == 1 && i2 == 23) || (i == 4 && i2 == 9)) {
+            this.flag = Flag.GOOD_DAY;
+        }
+    }
 
-   @Inject(
-      method = {"render"},
-      at = {@At(
-         value = "INVOKE",
-         target = "Lcom/mojang/blaze3d/systems/RenderSystem;disableDepthTest()V",
-         ordinal = 0,
-         shift = Shift.BEFORE,
-         remap = false
-      )}
-   )
-   private void renderHook(DrawContext var1, int var2, int var3, float var4, CallbackInfo var5) {
-      int var6 = this.client.getWindow().getScaledWidth();
-      int var7 = this.client.getWindow().getScaledHeight();
-      int var8 = MathHelper.ceil(
-         (1.0F - MathHelper.clamp((this.reloadCompleteTime > -1L ? (float)(Util.getMeasuringTimeMs() - this.reloadCompleteTime) / 1000.0F : -1.0F) - 1.0F, 0.0F, 1.0F))
-            * 255.0F
-      );
+    @Shadow
+    private static int method_35732(int i, int i2) {
+        return 0;
+    }
 
-      for (int var9 = 0; var9 < this.flag.method_492().size(); var9++) {
-         var1.fill(
-            0,
-            var9 * (var7 / this.flag.method_492().size()),
-            var6,
-            (var9 + 1) * (var7 / this.flag.method_492().size()),
-            withAlpha(this.flag.method_492().get(var9).hashCode(), var8)
-         );
-      }
-   }
+    @Inject(method = {"render"}, at = {@At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;disableDepthTest()V", ordinal = 0, shift = At.Shift.BEFORE, remap = false)})
+    private void renderHook(DrawContext drawContext, int i, int i2, float f, CallbackInfo callbackInfo) {
+        int scaledWidth = this.field_18217.getWindow().getScaledWidth();
+        int scaledHeight = this.field_18217.getWindow().getScaledHeight();
+        int ceil = MathHelper.ceil((1.0f - MathHelper.clamp((this.field_17771 > -1 ? ((float) (Util.getMeasuringTimeMs() - this.field_17771)) / 1000.0f : -1.0f) - 1.0f, 0.0f, 1.0f)) * 255.0f);
+        for (int i3 = 0; i3 < this.flag.getList685().size(); i3++) {
+            drawContext.fill(0, i3 * (scaledHeight / this.flag.getList685().size()), scaledWidth, (i3 + 1) * (scaledHeight / this.flag.getList685().size()), method_35732(this.flag.getList685().get(i3).hashCode(), ceil));
+        }
+    }
 }

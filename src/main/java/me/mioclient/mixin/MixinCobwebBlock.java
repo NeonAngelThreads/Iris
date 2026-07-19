@@ -1,7 +1,7 @@
 package me.mioclient.mixin;
 
-import me.mioclient.Hub;
-import me.mioclient.module.movement.FastWebModule;
+import me.mioclient.BaritoneHelper_3;
+import me.mioclient.module.movement.FastWeb;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CobwebBlock;
 import net.minecraft.entity.Entity;
@@ -12,22 +12,16 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+/* compiled from: 0.java */
 @Mixin({CobwebBlock.class})
+/* loaded from: mio-yarn.jar:me/mioclient/mixin/MixinCobwebBlock.class */
 public class MixinCobwebBlock {
-   private static final FastWebModule fastweb = Hub.field_2595.method_78(FastWebModule.class);
+    private static final FastWeb fastweb = (FastWeb) BaritoneHelper_3.baritoneHelper_4.getModule117(FastWeb.class);
 
-   public MixinCobwebBlock() {
-      super();
-   }
-
-   @Inject(
-      method = {"onEntityCollision"},
-      at = {@At("HEAD")},
-      cancellable = true
-   )
-   private void onEntityCollisionHook(BlockState var1, World var2, BlockPos var3, Entity var4, CallbackInfo var5) {
-      if (fastweb.method_726()) {
-         var5.cancel();
-      }
-   }
+    @Inject(method = {"onEntityCollision"}, at = {@At("HEAD")}, cancellable = true)
+    private void onEntityCollisionHook(BlockState blockState, World world, BlockPos blockPos, Entity entity, CallbackInfo callbackInfo) {
+        if (fastweb.is1534()) {
+            callbackInfo.cancel();
+        }
+    }
 }

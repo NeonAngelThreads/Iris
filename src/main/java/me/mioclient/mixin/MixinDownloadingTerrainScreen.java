@@ -6,18 +6,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+/* compiled from: 0.java */
 @Mixin({DownloadingTerrainScreen.class})
+/* loaded from: mio-yarn.jar:me/mioclient/mixin/MixinDownloadingTerrainScreen.class */
 public class MixinDownloadingTerrainScreen {
-   public MixinDownloadingTerrainScreen() {
-      super();
-   }
-
-   @Inject(
-      method = {"shouldCloseOnEsc"},
-      at = {@At("HEAD")},
-      cancellable = true
-   )
-   private void shouldCloseOnEscHook(CallbackInfoReturnable<Boolean> var1) {
-      var1.setReturnValue(true);
-   }
+    @Inject(method = {"shouldCloseOnEsc"}, at = {@At("HEAD")}, cancellable = true)
+    private void shouldCloseOnEscHook(CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
+        callbackInfoReturnable.setReturnValue(true);
+    }
 }

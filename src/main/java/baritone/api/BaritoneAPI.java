@@ -1,14 +1,8 @@
 package baritone.api;
-
-public class BaritoneAPI {
+/** Minimal stub of the Baritone API surface used by this mod (Baritone is not bundled). */
+public final class BaritoneAPI {
+    private static final IBaritoneProvider PROVIDER = null;
     private static final Settings SETTINGS = new Settings();
-    private static final IBaritoneProvider PROVIDER = new IBaritoneProvider() {
-        @Override public IBaritone getPrimaryBaritone() { return null; }
-    };
     public static IBaritoneProvider getProvider() { return PROVIDER; }
     public static Settings getSettings() { return SETTINGS; }
-
-    public interface IBaritoneProvider {
-        IBaritone getPrimaryBaritone();
-    }
 }

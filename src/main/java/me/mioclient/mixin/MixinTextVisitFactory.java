@@ -1,40 +1,24 @@
 package me.mioclient.mixin;
 
-import me.mioclient.Hub;
-import me.mioclient.module.player.NameProtectModule;
+import me.mioclient.BaritoneHelper_3;
+import me.mioclient.module.player.NameProtect;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.TextVisitFactory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
+/* compiled from: 0.java */
 @Mixin({TextVisitFactory.class})
+/* loaded from: mio-yarn.jar:me/mioclient/mixin/MixinTextVisitFactory.class */
 public class MixinTextVisitFactory {
-   private static NameProtectModule nameprotect;
+    private static NameProtect nameprotect = (NameProtect) BaritoneHelper_3.baritoneHelper_4.getModule117(NameProtect.class);
 
-   public MixinTextVisitFactory() {
-      super();
-   }
-
-   @ModifyArg(
-      method = {"visitFormatted(Ljava/lang/String;ILnet/minecraft/text/Style;Lnet/minecraft/text/CharacterVisitor;)Z"},
-      at = @At(
-         value = "INVOKE",
-         target = "Lnet/minecraft/text/TextVisitFactory;visitFormatted(Ljava/lang/String;ILnet/minecraft/text/Style;Lnet/minecraft/text/Style;Lnet/minecraft/text/CharacterVisitor;)Z",
-         ordinal = 0
-      ),
-      index = 0
-   )
-   private static String adjustText(String var0) {
-      if (nameprotect == null) {
-         if (Hub.field_2595 == null) return var0;
-         nameprotect = Hub.field_2595.method_78(NameProtectModule.class);
-         if (nameprotect == null) return var0;
-      }
-      if (nameprotect.isToggled() && MinecraftClient.getInstance().world != null) {
-         var0 = var0.replace(MinecraftClient.getInstance().getSession().getUsername(), nameprotect.field_1851.getValue());
-      }
-
-      return var0;
-   }
+    @ModifyArg(method = {"visitFormatted(Ljava/lang/String;ILnet/minecraft/text/Style;Lnet/minecraft/text/CharacterVisitor;)Z"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/text/TextVisitFactory;visitFormatted(Ljava/lang/String;ILnet/minecraft/text/Style;Lnet/minecraft/text/Style;Lnet/minecraft/text/CharacterVisitor;)Z", ordinal = 0), index = 0)
+    private static String adjustText(String str) {
+        if (nameprotect.isToggled() && MinecraftClient.getInstance().world != null) {
+            str = str.replace(MinecraftClient.getInstance().getSession().getUsername(), nameprotect.name.getValue());
+        }
+        return str;
+    }
 }

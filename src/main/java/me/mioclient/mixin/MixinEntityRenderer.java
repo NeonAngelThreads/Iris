@@ -1,12 +1,11 @@
 package me.mioclient.mixin;
 
-import me.mioclient.Hub;
-import me.mioclient.api.MioAPI;
-import me.mioclient.enum_.Class_0574;
-import me.mioclient.event.Event_27;
-import me.mioclient.internal.Class_1355;
-import me.mioclient.module.render.AmbienceModule;
-import me.mioclient.module.render.NameTagsModule;
+import me.mioclient.BaritoneHelper_3;
+import me.mioclient.SearchHelper_4;
+import me.mioclient.ShaderSearchHelper4;
+import me.mioclient.event.RenderLabelEvent;
+import me.mioclient.module.render.Ambience;
+import me.mioclient.module.render.NameTags;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -19,52 +18,38 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+/* compiled from: 0.java */
 @Mixin({EntityRenderer.class})
+/* loaded from: mio-yarn.jar:me/mioclient/mixin/MixinEntityRenderer.class */
 public abstract class MixinEntityRenderer<T extends Entity> {
-   private static NameTagsModule nametags = Hub.field_2595.method_78(NameTagsModule.class);
-   private static AmbienceModule ambience = Hub.field_2595.method_78(AmbienceModule.class);
+    private static NameTags nametags = (NameTags) BaritoneHelper_3.baritoneHelper_4.getModule117(NameTags.class);
+    private static Ambience ambience = (Ambience) BaritoneHelper_3.baritoneHelper_4.getModule117(Ambience.class);
 
-   public MixinEntityRenderer() {
-      super();
-   }
+    @Inject(method = {"renderLabelIfPresent"}, at = {@At("HEAD")}, cancellable = true)
+    private void onRenderLabel(T t, Text text, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, float f, CallbackInfo callbackInfo) {
+        if (ShaderSearchHelper4.flag) {
+            callbackInfo.cancel();
+            return;
+        }
+        RenderLabelEvent renderLabelEvent = new RenderLabelEvent(matrixStack, t);
+        SearchHelper_4.baritoneHelper.getObject1794(renderLabelEvent);
+        if (renderLabelEvent.is2403()) {
+            callbackInfo.cancel();
+        }
+    }
 
-   @Inject(
-      method = {"renderLabelIfPresent"},
-      at = {@At("HEAD")},
-      cancellable = true
-   )
-   private void onRenderLabel(T var1, Text var2, MatrixStack var3, VertexConsumerProvider var4, int var5, float var6, CallbackInfo var7) {
-      if (Class_1355.field_4422) {
-         var7.cancel();
-      } else {
-         Event_27 var8 = new Event_27(var3, var1);
-         MioAPI.field_4220.method_36(var8);
-         if (var8.method_464()) {
-            var7.cancel();
-         }
-      }
-   }
+    @Inject(method = {"hasLabel"}, at = {@At("HEAD")}, cancellable = true)
+    private void hasLabelHook(T t, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
+        if ((t instanceof PlayerEntity) && nametags.isToggled()) {
+            callbackInfoReturnable.cancel();
+            callbackInfoReturnable.setReturnValue(Boolean.valueOf(t.hasCustomName()));
+        }
+    }
 
-   @Inject(
-      method = {"hasLabel"},
-      at = {@At("HEAD")},
-      cancellable = true
-   )
-   private void hasLabelHook(T var1, CallbackInfoReturnable<Boolean> var2) {
-      if (var1 instanceof PlayerEntity && nametags.isToggled()) {
-         var2.cancel();
-         var2.setReturnValue(var1.hasCustomName());
-      }
-   }
-
-   @Inject(
-      method = {"getSkyLight"},
-      at = {@At("RETURN")},
-      cancellable = true
-   )
-   private void getSkyLightHook(CallbackInfoReturnable<Integer> var1) {
-      if (ambience.isToggled() && ambience.field_207.getValue() == Class_0574.SKY) {
-         var1.setReturnValue(Math.max(ambience.field_209.getValue(), var1.getReturnValueI()));
-      }
-   }
+    @Inject(method = {"getSkyLight"}, at = {@At("RETURN")}, cancellable = true)
+    private void getSkyLightHook(CallbackInfoReturnable<Integer> callbackInfoReturnable) {
+        if (ambience.isToggled() && ambience.brightness.getValue() == Ambience.MixinEntityRendererMode.SKY) {
+            callbackInfoReturnable.setReturnValue(Integer.valueOf(Math.max(ambience.lightLevel.getValue().intValue(), callbackInfoReturnable.getReturnValueI())));
+        }
+    }
 }

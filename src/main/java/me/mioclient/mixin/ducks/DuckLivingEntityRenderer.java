@@ -7,14 +7,16 @@ import net.minecraft.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
+/* compiled from: 0.java */
 @Mixin({LivingEntityRenderer.class})
+/* loaded from: mio-yarn.jar:me/mioclient/mixin/ducks/DuckLivingEntityRenderer.class */
 public interface DuckLivingEntityRenderer<T extends LivingEntity, M extends EntityModel<T>> {
-   @Invoker("setupTransforms")
-   void mio$setupTransforms(T var1, MatrixStack var2, float var3, float var4, float var5, float var6);
+    @Invoker("setupTransforms")
+    void mio$setupTransforms(T t, MatrixStack matrixStack, float f, float f2, float f3, float f4);
 
-   @Invoker("scale")
-   void mio$scale(T var1, MatrixStack var2, float var3);
+    @Invoker("scale")
+    void mio$scale(T t, MatrixStack matrixStack, float f);
 
-   @Invoker("getAnimationProgress")
-   float mio$getAnimationProgress(T var1, float var2);
+    @Invoker("getAnimationProgress")
+    float mio$getAnimationProgress(T t, float f);
 }
