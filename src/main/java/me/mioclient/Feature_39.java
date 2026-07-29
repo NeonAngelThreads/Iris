@@ -20,7 +20,7 @@ public final class Feature_39 extends Feature {
             do3097(BlockPos.ofFloored((Vec3d) commandContext.getArgument("pos", Vec3d.class)));
             return 1;
         })).executes(commandContext2 -> {
-            BlockHitResult blockHitResult = (BlockHitResult)(minecraftClient.crosshairTarget);
+            BlockHitResult blockHitResult = (minecraftClient.crosshairTarget) instanceof BlockHitResult ? (BlockHitResult) (minecraftClient.crosshairTarget) : null;
             if (!(blockHitResult instanceof BlockHitResult)) {
                 return 1;
             }

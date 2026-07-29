@@ -105,7 +105,7 @@ public final class FireworksHelperSearchHelper4 implements SearchHelper_4 {
         if ((sendImmediatelyEvent.getPacket904() instanceof CloseHandledScreenC2SPacket) || (sendImmediatelyEvent.getPacket904() instanceof DisconnectS2CPacket)) {
             this.flag = false;
         }
-        UpdateSelectedSlotC2SPacket packet904 = (UpdateSelectedSlotC2SPacket)(sendImmediatelyEvent.getPacket904());
+        UpdateSelectedSlotC2SPacket packet904 = (sendImmediatelyEvent.getPacket904()) instanceof UpdateSelectedSlotC2SPacket ? (UpdateSelectedSlotC2SPacket) (sendImmediatelyEvent.getPacket904()) : null;
         if (packet904 instanceof UpdateSelectedSlotC2SPacket) {
             UpdateSelectedSlotC2SPacket updateSelectedSlotC2SPacket = packet904;
             if (updateSelectedSlotC2SPacket.getSelectedSlot() != this.num) {
@@ -128,7 +128,7 @@ public final class FireworksHelperSearchHelper4 implements SearchHelper_4 {
         if (channelRead0Event.getPacket904() instanceof InventoryS2CPacket) {
             this.map.clear();
         }
-        ScreenHandlerSlotUpdateS2CPacket packet904 = (ScreenHandlerSlotUpdateS2CPacket)(channelRead0Event.getPacket904());
+        ScreenHandlerSlotUpdateS2CPacket packet904 = (channelRead0Event.getPacket904()) instanceof ScreenHandlerSlotUpdateS2CPacket ? (ScreenHandlerSlotUpdateS2CPacket) (channelRead0Event.getPacket904()) : null;
         if (packet904 instanceof ScreenHandlerSlotUpdateS2CPacket) {
             ScreenHandlerSlotUpdateS2CPacket screenHandlerSlotUpdateS2CPacket = packet904;
             if (SearchHelper4_8.is724()) {
@@ -144,7 +144,7 @@ public final class FireworksHelperSearchHelper4 implements SearchHelper_4 {
                 }
             }
         }
-        EntityStatusS2CPacket packet9042 = (EntityStatusS2CPacket)(channelRead0Event.getPacket904());
+        EntityStatusS2CPacket packet9042 = (channelRead0Event.getPacket904()) instanceof EntityStatusS2CPacket ? (EntityStatusS2CPacket) (channelRead0Event.getPacket904()) : null;
         if (packet9042 instanceof EntityStatusS2CPacket) {
             EntityStatusS2CPacket entityStatusS2CPacket = packet9042;
             if (entityStatusS2CPacket.getStatus() == 35 && entityStatusS2CPacket.getEntity(minecraftClient.world) == minecraftClient.player) {

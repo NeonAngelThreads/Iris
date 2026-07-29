@@ -46,7 +46,7 @@ public final class HoleSnapSearchHelper4_4 implements SearchHelper_4 {
     @Listen
     public void do29(ChannelRead0Event channelRead0Event) {
         this.num = System.currentTimeMillis();
-        PlayerPositionLookS2CPacket packet904 = (PlayerPositionLookS2CPacket)(channelRead0Event.getPacket904());
+        PlayerPositionLookS2CPacket packet904 = (channelRead0Event.getPacket904()) instanceof PlayerPositionLookS2CPacket ? (PlayerPositionLookS2CPacket) (channelRead0Event.getPacket904()) : null;
         if (packet904 instanceof PlayerPositionLookS2CPacket) {
             this.num3 = packet904.getTeleportId();
             if (this.stopwatch2.is419(50L)) {
@@ -73,14 +73,14 @@ public final class HoleSnapSearchHelper4_4 implements SearchHelper_4 {
             }
             this.num2 = System.currentTimeMillis();
         }
-        BundleS2CPacket packet9042 = (BundleS2CPacket)(channelRead0Event.getPacket904());
+        BundleS2CPacket packet9042 = (channelRead0Event.getPacket904()) instanceof BundleS2CPacket ? (BundleS2CPacket) (channelRead0Event.getPacket904()) : null;
         if (packet9042 instanceof BundleS2CPacket) {
             Iterator it2 = packet9042.getPackets().iterator();
             while (it2.hasNext()) {
                 baritoneHelper.getObject1794(new ChannelRead0Event((Packet) it2.next()));
             }
         }
-        PlayerListHeaderS2CPacket packet9043 = (PlayerListHeaderS2CPacket)(channelRead0Event.getPacket904());
+        PlayerListHeaderS2CPacket packet9043 = (channelRead0Event.getPacket904()) instanceof PlayerListHeaderS2CPacket ? (PlayerListHeaderS2CPacket) (channelRead0Event.getPacket904()) : null;
         if (packet9043 instanceof PlayerListHeaderS2CPacket) {
             PlayerListHeaderS2CPacket playerListHeaderS2CPacket = packet9043;
             if (minecraftClient.player.networkHandler.getServerInfo() == null) {
@@ -99,7 +99,7 @@ public final class HoleSnapSearchHelper4_4 implements SearchHelper_4 {
 
     @Listen(get219= Helper_7.num)
     public void do30(SendImmediatelyEvent sendImmediatelyEvent) {
-        ClientCommandC2SPacket packet904 = (ClientCommandC2SPacket)(sendImmediatelyEvent.getPacket904());
+        ClientCommandC2SPacket packet904 = (sendImmediatelyEvent.getPacket904()) instanceof ClientCommandC2SPacket ? (ClientCommandC2SPacket) (sendImmediatelyEvent.getPacket904()) : null;
         if (packet904 instanceof ClientCommandC2SPacket) {
             ClientCommandC2SPacket clientCommandC2SPacket = packet904;
             if (clientCommandC2SPacket.getMode() == ClientCommandC2SPacket.Mode.START_SPRINTING) {

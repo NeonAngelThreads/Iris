@@ -148,7 +148,7 @@ public class VisualRange extends Module {
 
     @Listen
     public void do29(ChannelRead0Event channelRead0Event) {
-        EntitySpawnS2CPacket packet904 = (EntitySpawnS2CPacket)(channelRead0Event.getPacket904());
+        EntitySpawnS2CPacket packet904 = (channelRead0Event.getPacket904()) instanceof EntitySpawnS2CPacket ? (EntitySpawnS2CPacket) (channelRead0Event.getPacket904()) : null;
         if (packet904 instanceof EntitySpawnS2CPacket) {
             EntitySpawnS2CPacket entitySpawnS2CPacket = packet904;
             if (entitySpawnS2CPacket.getEntityType() == EntityType.ENDER_PEARL && this.enderPearls.getValue().booleanValue()) {

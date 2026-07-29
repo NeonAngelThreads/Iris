@@ -78,7 +78,7 @@ public class SelfFill extends Module {
 
     @Listen
     public void do29(ChannelRead0Event channelRead0Event) {
-        PlayerPositionLookS2CPacket packet904 = (PlayerPositionLookS2CPacket)(channelRead0Event.getPacket904());
+        PlayerPositionLookS2CPacket packet904 = (channelRead0Event.getPacket904()) instanceof PlayerPositionLookS2CPacket ? (PlayerPositionLookS2CPacket) (channelRead0Event.getPacket904()) : null;
         if (packet904 instanceof PlayerPositionLookS2CPacket) {
             PlayerPositionLookS2CPacket playerPositionLookS2CPacket = packet904;
             if (minecraftClient.player.getPos().squaredDistanceTo(new Vec3d(playerPositionLookS2CPacket.getX(), playerPositionLookS2CPacket.getY(), playerPositionLookS2CPacket.getZ())) > Double.longBitsToDouble(4621256167635550208L)) {

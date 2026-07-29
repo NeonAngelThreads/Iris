@@ -296,7 +296,7 @@ public abstract class Delay extends Module {
     @Listen
     public void onChannelRead0(ChannelRead0Event channelRead0Event) {
         if (this.setting7.getValue().booleanValue()) {
-            EntitySpawnS2CPacket packet904 = (EntitySpawnS2CPacket)(channelRead0Event.getPacket904());
+            EntitySpawnS2CPacket packet904 = (channelRead0Event.getPacket904()) instanceof EntitySpawnS2CPacket ? (EntitySpawnS2CPacket) (channelRead0Event.getPacket904()) : null;
             if (packet904 instanceof EntitySpawnS2CPacket) {
                 EntitySpawnS2CPacket entitySpawnS2CPacket = packet904;
                 if (entitySpawnS2CPacket.getEntityType() == EntityType.END_CRYSTAL) {
@@ -325,7 +325,7 @@ public abstract class Delay extends Module {
                 }
             }
         }
-        PlayerPositionLookS2CPacket packet9042 = (PlayerPositionLookS2CPacket)(channelRead0Event.getPacket904());
+        PlayerPositionLookS2CPacket packet9042 = (channelRead0Event.getPacket904()) instanceof PlayerPositionLookS2CPacket ? (PlayerPositionLookS2CPacket) (channelRead0Event.getPacket904()) : null;
         if (packet9042 instanceof PlayerPositionLookS2CPacket) {
             PlayerPositionLookS2CPacket playerPositionLookS2CPacket = packet9042;
             this.val = playerPositionLookS2CPacket.getY();
@@ -337,7 +337,7 @@ public abstract class Delay extends Module {
         if ((channelRead0Event.getPacket904() instanceof PlayerRespawnS2CPacket) && this.flag2) {
             disable();
         }
-        OpenScreenS2CPacket packet9043 = (OpenScreenS2CPacket)(channelRead0Event.getPacket904());
+        OpenScreenS2CPacket packet9043 = (channelRead0Event.getPacket904()) instanceof OpenScreenS2CPacket ? (OpenScreenS2CPacket) (channelRead0Event.getPacket904()) : null;
         if (packet9043 instanceof OpenScreenS2CPacket) {
             OpenScreenS2CPacket openScreenS2CPacket = packet9043;
             if (this.stopwatch.is419(100L)) {

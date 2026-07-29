@@ -136,7 +136,7 @@ public class AntiCyrillic extends Module {
 
     @Listen
     public void do30(SendImmediatelyEvent sendImmediatelyEvent) {
-        CommandExecutionC2SPacket packet904 = (CommandExecutionC2SPacket)(sendImmediatelyEvent.getPacket904());
+        CommandExecutionC2SPacket packet904 = (sendImmediatelyEvent.getPacket904()) instanceof CommandExecutionC2SPacket ? (CommandExecutionC2SPacket) (sendImmediatelyEvent.getPacket904()) : null;
         if (packet904 instanceof CommandExecutionC2SPacket) {
             CommandExecutionC2SPacket commandExecutionC2SPacket = packet904;
             if (this.mode.getValue() != AntiCyrillicMode.CHAT) {

@@ -16,12 +16,14 @@ public abstract class FramebufferHelper implements SearchHelper_4 {
     public void do753(String str) {
         this.outlineVertexConsumerProvider = new OutlineVertexConsumerProvider(minecraftClient.getBufferBuilders().getEntityVertexConsumers());
         this.framebuffer = new SimpleFramebuffer(minecraftClient.getWindow().getFramebufferWidth(), minecraftClient.getWindow().getFramebufferHeight(), false, MinecraftClient.IS_SYSTEM_MAC);
+        this.framebuffer.setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         this.framebufferHelper_3 = new FramebufferHelper_3("/base.vert", new ArgumentTypeHelper().getArgumentTypeHelper2919(str).getString2921("/\u0001.frag"));
     }
 
     public void do754(String str, String str2) {
         this.outlineVertexConsumerProvider = new OutlineVertexConsumerProvider(minecraftClient.getBufferBuilders().getEntityVertexConsumers());
         this.framebuffer = new SimpleFramebuffer(minecraftClient.getWindow().getFramebufferWidth(), minecraftClient.getWindow().getFramebufferHeight(), false, MinecraftClient.IS_SYSTEM_MAC);
+        this.framebuffer.setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         this.framebufferHelper_3 = new FramebufferHelper_3(new ArgumentTypeHelper().getArgumentTypeHelper2919(str).getString2921("/\u0001.vert"), new ArgumentTypeHelper().getArgumentTypeHelper2919(str2).getString2921("/\u0001.frag"));
     }
 

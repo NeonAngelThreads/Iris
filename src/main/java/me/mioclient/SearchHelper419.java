@@ -8,12 +8,12 @@ import net.minecraft.client.util.math.MatrixStack;
 public class SearchHelper419 extends SearchHelper4_19 {
     public final PresetSettingSearchHelper419 presetSettingSearchHelper419;
     public final String string;
-    public final int num;
+    public final int index;
 
     public SearchHelper419(PresetSettingSearchHelper419 presetSettingSearchHelper419, String str, int i, int i2) {
         super(presetSettingSearchHelper419.getPresetEnumSettingHelper1394(), i);
         this.string = str;
-        this.num = i2;
+        this.index = i2;
         this.presetSettingSearchHelper419 = presetSettingSearchHelper419;
     }
 
@@ -32,7 +32,7 @@ public class SearchHelper419 extends SearchHelper4_19 {
                 for (Object obj : (Enum[]) this.presetSettingSearchHelper419.getSetting1668().getValue().getDeclaringClass().getEnumConstants()) {
                     if ((obj instanceof EnumSettingHelper) && ((EnumSettingHelper) obj).getName().equalsIgnoreCase(this.string)) {
                         ((me.mioclient.api.Setting) this.presetSettingSearchHelper419.getSetting1668()).do2333(obj);
-                        this.presetSettingSearchHelper419.do1297(this.num);
+                        this.presetSettingSearchHelper419.do1297(this.index);
                     }
                 }
             }

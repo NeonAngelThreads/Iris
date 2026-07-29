@@ -41,7 +41,7 @@ public class SettingFontsSearchHelper42 extends FontsSearchHelper4_2 {
 
         @Override // me.mioclient.SearchHelper4_19, me.mioclient.PresetHelper_5
         public void do20(double d, double d2, int i) {
-            if (this.flag) {
+            if (is92(d, d2)) {
                 if (i == 0) {
                     SettingFontsSearchHelper42.this.setting.do2333(this.searchIdentifier);
                     SettingFontsSearchHelper42.this.do1714();

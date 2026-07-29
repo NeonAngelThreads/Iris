@@ -31,11 +31,11 @@ public final class LogoutSpotsHelper implements SearchHelper_4 {
         if (is1469()) {
             return;
         }
-        EntityStatusS2CPacket packet904 = (EntityStatusS2CPacket)(channelRead0Event.getPacket904());
+        EntityStatusS2CPacket packet904 = (channelRead0Event.getPacket904()) instanceof EntityStatusS2CPacket ? (EntityStatusS2CPacket) (channelRead0Event.getPacket904()) : null;
         if (packet904 instanceof EntityStatusS2CPacket) {
             EntityStatusS2CPacket entityStatusS2CPacket = packet904;
             if (entityStatusS2CPacket.getStatus() == 35) {
-                PlayerEntity entity = (PlayerEntity)(entityStatusS2CPacket.getEntity(minecraftClient.world));
+                PlayerEntity entity = (entityStatusS2CPacket.getEntity(minecraftClient.world)) instanceof PlayerEntity ? (PlayerEntity) (entityStatusS2CPacket.getEntity(minecraftClient.world)) : null;
                 if (entity instanceof PlayerEntity) {
                     PlayerEntity playerEntity = entity;
                     String name = playerEntity.getGameProfile().getName();
@@ -46,13 +46,13 @@ public final class LogoutSpotsHelper implements SearchHelper_4 {
                 }
             }
         }
-        PlayerListS2CPacket packet9042 = (PlayerListS2CPacket)(channelRead0Event.getPacket904());
+        PlayerListS2CPacket packet9042 = (channelRead0Event.getPacket904()) instanceof PlayerListS2CPacket ? (PlayerListS2CPacket) (channelRead0Event.getPacket904()) : null;
         if (packet9042 instanceof PlayerListS2CPacket) {
             for (PlayerListS2CPacket.Entry entry : packet9042.getPlayerAdditionEntries()) {
                 this.map2.remove(entry.profile().getName());
             }
         }
-        PlayerRemoveS2CPacket packet9043 = (PlayerRemoveS2CPacket)(channelRead0Event.getPacket904());
+        PlayerRemoveS2CPacket packet9043 = (channelRead0Event.getPacket904()) instanceof PlayerRemoveS2CPacket ? (PlayerRemoveS2CPacket) (channelRead0Event.getPacket904()) : null;
         if (packet9043 instanceof PlayerRemoveS2CPacket) {
             Iterator it = packet9043.profileIds().iterator();
             while (it.hasNext()) {

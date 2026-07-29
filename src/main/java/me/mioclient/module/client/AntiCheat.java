@@ -72,7 +72,7 @@ public class AntiCheat extends KeybindModule {
 
     @Listen(get219= 999)
     public void do30(SendImmediatelyEvent sendImmediatelyEvent) {
-        PlayerActionC2SPacket packet904 = (PlayerActionC2SPacket)(sendImmediatelyEvent.getPacket904());
+        PlayerActionC2SPacket packet904 = (sendImmediatelyEvent.getPacket904()) instanceof PlayerActionC2SPacket ? (PlayerActionC2SPacket) (sendImmediatelyEvent.getPacket904()) : null;
         if (packet904 instanceof PlayerActionC2SPacket) {
             PlayerActionC2SPacket playerActionC2SPacket = packet904;
             if (is238() && playerActionC2SPacket.getAction() == PlayerActionC2SPacket.Action.START_DESTROY_BLOCK) {
@@ -84,7 +84,7 @@ public class AntiCheat extends KeybindModule {
     @Listen
     public void do29(ChannelRead0Event channelRead0Event) {
         if (is238()) {
-            CloseScreenS2CPacket packet904 = (CloseScreenS2CPacket)(channelRead0Event.getPacket904());
+            CloseScreenS2CPacket packet904 = (channelRead0Event.getPacket904()) instanceof CloseScreenS2CPacket ? (CloseScreenS2CPacket) (channelRead0Event.getPacket904()) : null;
             if ((packet904 instanceof CloseScreenS2CPacket) && packet904.getSyncId() == 0) {
                 channelRead0Event.do1162();
             }

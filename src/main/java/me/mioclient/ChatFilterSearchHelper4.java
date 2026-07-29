@@ -134,7 +134,7 @@ public class ChatFilterSearchHelper4 implements SearchHelper_4, PresetHelper_7 {
         if (jsonElement instanceof JsonObject) {
             JsonObject jsonObject = (JsonObject) jsonElement;
             if (jsonObject.has("filters")) {
-                JsonArray jsonArray = (JsonArray)(jsonObject.get("filters"));
+                JsonArray jsonArray = (jsonObject.get("filters")) instanceof JsonArray ? (JsonArray) (jsonObject.get("filters")) : null;
                 if (jsonArray instanceof JsonArray) {
                     JsonArray jsonArray2 = jsonArray;
                     for (int i = 0; i < jsonArray2.size(); i++) {

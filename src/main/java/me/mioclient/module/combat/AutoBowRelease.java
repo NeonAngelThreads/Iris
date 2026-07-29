@@ -10,6 +10,7 @@ import me.mioclient.event.TickPostEvent;
 import me.mioclient.module.Module;
 import net.minecraft.item.ArrowItem;
 import net.minecraft.item.CrossbowItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.RangedWeaponItem;
 import net.minecraft.network.packet.c2s.play.PlayerInteractItemC2SPacket;
 
@@ -31,9 +32,9 @@ public class AutoBowRelease extends Module {
             return;
         }
         if (minecraftClient.player.getItemUseTime() >= this.delay.getValue().intValue()) {
-            CrossbowItem item = (CrossbowItem)(minecraftClient.player.getActiveItem().getItem());
+            Item item = minecraftClient.player.getActiveItem().getItem();
             if (item instanceof RangedWeaponItem) {
-                CrossbowItem crossbowItem = (CrossbowItem)((RangedWeaponItem) item);
+                CrossbowItem crossbowItem = item instanceof CrossbowItem ? (CrossbowItem) item : null;
                 if (minecraftClient.player.isUsingItem()) {
                     if (!(crossbowItem instanceof CrossbowItem) || crossbowItem.charged) {
                         minecraftClient.interactionManager.stopUsingItem(minecraftClient.player);

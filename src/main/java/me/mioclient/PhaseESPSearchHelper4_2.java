@@ -177,7 +177,7 @@ public class PhaseESPSearchHelper4_2 implements SearchHelper_4 {
             if (!z) {
                 return false;
             }
-            BlockHitResult blockHitResult = (BlockHitResult)(minecraftClient.crosshairTarget);
+            BlockHitResult blockHitResult = (minecraftClient.crosshairTarget) instanceof BlockHitResult ? (BlockHitResult) (minecraftClient.crosshairTarget) : null;
             direction = blockHitResult instanceof BlockHitResult ? blockHitResult.getSide() : Direction.DOWN;
         }
         BlockPos offset = z2 ? blockPos : blockPos.offset(direction);

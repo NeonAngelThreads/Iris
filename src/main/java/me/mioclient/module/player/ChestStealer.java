@@ -111,7 +111,7 @@ public class ChestStealer extends Module {
                 ScreenHandler screenHandler = minecraftClient.player.currentScreenHandler;
                 int i = 0;
                 int i2 = screenHandler.syncId;
-                GenericContainerScreen genericContainerScreen = (GenericContainerScreen)(minecraftClient.currentScreen);
+                GenericContainerScreen genericContainerScreen = (minecraftClient.currentScreen) instanceof GenericContainerScreen ? (GenericContainerScreen) (minecraftClient.currentScreen) : null;
                 int rows = genericContainerScreen instanceof GenericContainerScreen ? 9 * genericContainerScreen.getScreenHandler().getRows() : 27;
                 DuckHandledScreen duckHandledScreen = (DuckHandledScreen)(minecraftClient.currentScreen);
                 Map<ChestStealerData, List<ChestStealerHelper>> map2360 = getMap2360(rows);

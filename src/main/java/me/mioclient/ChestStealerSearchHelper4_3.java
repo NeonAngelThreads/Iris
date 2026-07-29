@@ -61,14 +61,14 @@ public final class ChestStealerSearchHelper4_3 extends StashFinderModuleListHelp
                             JsonObject asJsonObject2 = jsonElement2.getAsJsonObject();
                             if (asJsonObject2.has("slot") && asJsonObject2.has("item")) {
                                 ChestStealerEnumSettingHelper.Record record = null;
-                                JsonObject jsonObject = (JsonObject)(asJsonObject2.get("item"));
+                                JsonObject jsonObject = (asJsonObject2.get("item")) instanceof JsonObject ? (JsonObject) (asJsonObject2.get("item")) : null;
                                 if (jsonObject instanceof JsonObject) {
                                     JsonObject jsonObject2 = jsonObject;
                                     if (jsonObject2.has("id")) {
                                         record = new ChestStealerEnumSettingHelper.Record(jsonObject2.get("id").getAsInt(), jsonObject2.has("data") ? jsonObject2.get("data").getAsString() : null);
                                     }
                                 }
-                                JsonPrimitive jsonPrimitive = (JsonPrimitive)(asJsonObject2.get("item"));
+                                JsonPrimitive jsonPrimitive = (asJsonObject2.get("item")) instanceof JsonPrimitive ? (JsonPrimitive) (asJsonObject2.get("item")) : null;
                                 if (jsonPrimitive instanceof JsonPrimitive) {
                                     JsonPrimitive jsonPrimitive2 = jsonPrimitive;
                                     if (jsonPrimitive2.isNumber()) {

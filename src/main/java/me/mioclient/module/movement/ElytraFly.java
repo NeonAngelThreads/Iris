@@ -244,7 +244,7 @@ public class ElytraFly extends Module {
 
     @Listen
     public void do30(SendImmediatelyEvent sendImmediatelyEvent) {
-        PlayerActionC2SPacket packet904 = (PlayerActionC2SPacket)(sendImmediatelyEvent.getPacket904());
+        PlayerActionC2SPacket packet904 = (sendImmediatelyEvent.getPacket904()) instanceof PlayerActionC2SPacket ? (PlayerActionC2SPacket) (sendImmediatelyEvent.getPacket904()) : null;
         if ((packet904 instanceof PlayerActionC2SPacket) && packet904.getAction() == PlayerActionC2SPacket.Action.RELEASE_USE_ITEM) {
             this.stopwatch3.reset();
         }
@@ -311,7 +311,7 @@ public class ElytraFly extends Module {
 
     @Listen
     public void do29(ChannelRead0Event channelRead0Event) {
-        EntitySpawnS2CPacket packet904 = (EntitySpawnS2CPacket)(channelRead0Event.getPacket904());
+        EntitySpawnS2CPacket packet904 = (channelRead0Event.getPacket904()) instanceof EntitySpawnS2CPacket ? (EntitySpawnS2CPacket) (channelRead0Event.getPacket904()) : null;
         if (packet904 instanceof EntitySpawnS2CPacket) {
             EntitySpawnS2CPacket entitySpawnS2CPacket = packet904;
             if (entitySpawnS2CPacket.getEntityType() == EntityType.FIREWORK_ROCKET) {

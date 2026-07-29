@@ -76,7 +76,7 @@ public class LegacyCrystal extends Module {
 
     @Listen
     public void do30(SendImmediatelyEvent sendImmediatelyEvent) {
-        PlayerInteractBlockC2SPacket packet904 = (PlayerInteractBlockC2SPacket)(sendImmediatelyEvent.getPacket904());
+        PlayerInteractBlockC2SPacket packet904 = (sendImmediatelyEvent.getPacket904()) instanceof PlayerInteractBlockC2SPacket ? (PlayerInteractBlockC2SPacket) (sendImmediatelyEvent.getPacket904()) : null;
         if (packet904 instanceof PlayerInteractBlockC2SPacket) {
             PlayerInteractBlockC2SPacket playerInteractBlockC2SPacket = packet904;
             if (minecraftClient.player.getStackInHand(playerInteractBlockC2SPacket.getHand()).isOf(Items.END_CRYSTAL)) {
@@ -85,7 +85,7 @@ public class LegacyCrystal extends Module {
                 });
             }
         }
-        PlayerInteractEntityC2SPacket packet9042 = (PlayerInteractEntityC2SPacket)(sendImmediatelyEvent.getPacket904());
+        PlayerInteractEntityC2SPacket packet9042 = (sendImmediatelyEvent.getPacket904()) instanceof PlayerInteractEntityC2SPacket ? (PlayerInteractEntityC2SPacket) (sendImmediatelyEvent.getPacket904()) : null;
         if (packet9042 instanceof PlayerInteractEntityC2SPacket) {
             PlayerInteractEntityC2SPacket playerInteractEntityC2SPacket = packet9042;
             if (this.setting2.getValue().booleanValue() && LegacyCrystalSearchHelper4.getLegacyCrystalMode2611(playerInteractEntityC2SPacket) == LegacyCrystalSearchHelper4.LegacyCrystalMode.ATTACK && (LegacyCrystalSearchHelper4.getEntity2610(playerInteractEntityC2SPacket) instanceof EndCrystalEntity)) {

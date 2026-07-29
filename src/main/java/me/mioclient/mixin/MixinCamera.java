@@ -86,7 +86,7 @@ public abstract class MixinCamera {
         if (norender.isToggled() && norender.newSneaking.getValue().booleanValue() && this.field_18711 != null) {
             callbackInfo.cancel();
             this.field_18722 = this.field_18721;
-            PlayerEntity playerEntity = (PlayerEntity)(this.field_18711);
+            PlayerEntity playerEntity = (this.field_18711) instanceof PlayerEntity ? (PlayerEntity) (this.field_18711) : null;
             if (playerEntity instanceof PlayerEntity) {
                 PlayerEntity playerEntity2 = playerEntity;
                 if (playerEntity2.isInPose(EntityPose.CROUCHING)) {

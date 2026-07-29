@@ -21,14 +21,14 @@ public final class SpeedMineHelper_2 {
     }
 
     public void onChannelRead0(ChannelRead0Event channelRead0Event) {
-        BlockUpdateS2CPacket packet904 = (BlockUpdateS2CPacket)(channelRead0Event.getPacket904());
+        BlockUpdateS2CPacket packet904 = (channelRead0Event.getPacket904()) instanceof BlockUpdateS2CPacket ? (BlockUpdateS2CPacket) (channelRead0Event.getPacket904()) : null;
         if (packet904 instanceof BlockUpdateS2CPacket) {
             BlockUpdateS2CPacket blockUpdateS2CPacket = packet904;
             if (blockUpdateS2CPacket.getState().isAir() && blockUpdateS2CPacket.getPos().equals(this.blockPos)) {
                 reset();
             }
         }
-        ChunkDeltaUpdateS2CPacket packet9042 = (ChunkDeltaUpdateS2CPacket)(channelRead0Event.getPacket904());
+        ChunkDeltaUpdateS2CPacket packet9042 = (channelRead0Event.getPacket904()) instanceof ChunkDeltaUpdateS2CPacket ? (ChunkDeltaUpdateS2CPacket) (channelRead0Event.getPacket904()) : null;
         if (packet9042 instanceof ChunkDeltaUpdateS2CPacket) {
             packet9042.visitUpdates((blockPos, blockState) -> {
                 if (blockPos.equals(this.blockPos) && blockState.isAir()) {

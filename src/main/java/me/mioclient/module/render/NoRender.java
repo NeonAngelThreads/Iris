@@ -171,7 +171,7 @@ public class NoRender extends Module {
     @Listen
     public void do29(ChannelRead0Event channelRead0Event) {
         if (this.fire.getValue().booleanValue() && SearchHelper4_7.getStashFinderMode2438() == StashFinderMode.THE_END) {
-            BlockUpdateS2CPacket packet904 = (BlockUpdateS2CPacket)(channelRead0Event.getPacket904());
+            BlockUpdateS2CPacket packet904 = (channelRead0Event.getPacket904()) instanceof BlockUpdateS2CPacket ? (BlockUpdateS2CPacket) (channelRead0Event.getPacket904()) : null;
             if (packet904 instanceof BlockUpdateS2CPacket) {
                 BlockUpdateS2CPacket blockUpdateS2CPacket = packet904;
                 if (this.blockPos != null) {
@@ -185,7 +185,7 @@ public class NoRender extends Module {
                     channelRead0Event.do1162();
                 }
             }
-            EntitySpawnS2CPacket packet9042 = (EntitySpawnS2CPacket)(channelRead0Event.getPacket904());
+            EntitySpawnS2CPacket packet9042 = (channelRead0Event.getPacket904()) instanceof EntitySpawnS2CPacket ? (EntitySpawnS2CPacket) (channelRead0Event.getPacket904()) : null;
             if (packet9042 instanceof EntitySpawnS2CPacket) {
                 EntitySpawnS2CPacket entitySpawnS2CPacket = packet9042;
                 if (entitySpawnS2CPacket.getEntityType() == EntityType.END_CRYSTAL) {

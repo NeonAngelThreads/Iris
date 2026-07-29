@@ -259,7 +259,7 @@ public class Aura extends Module {
 
     @Listen
     public void do30(SendImmediatelyEvent sendImmediatelyEvent) {
-        PlayerMoveC2SPacket packet904 = (PlayerMoveC2SPacket)(sendImmediatelyEvent.getPacket904());
+        PlayerMoveC2SPacket packet904 = (sendImmediatelyEvent.getPacket904()) instanceof PlayerMoveC2SPacket ? (PlayerMoveC2SPacket) (sendImmediatelyEvent.getPacket904()) : null;
         if (packet904 instanceof PlayerMoveC2SPacket) {
             PlayerMoveC2SPacket playerMoveC2SPacket = packet904;
             if (minecraftClient.player.fallDistance > Float.intBitsToFloat(1077936128)) {
@@ -338,7 +338,7 @@ public class Aura extends Module {
                 minecraftClient.player.networkHandler.sendPacket(new ClientCommandC2SPacket(minecraftClient.player, ClientCommandC2SPacket.Mode.STOP_SPRINTING));
             }
             int i3 = get2392();
-            LivingEntity livingEntity = (LivingEntity)(this.entity);
+            LivingEntity livingEntity = (this.entity) instanceof LivingEntity ? (LivingEntity) (this.entity) : null;
             if ((livingEntity instanceof LivingEntity) && !HoleSnapSearchHelper4.is2013(livingEntity)) {
                 i3 = -1;
             }

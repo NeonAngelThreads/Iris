@@ -263,7 +263,7 @@ public class ESP extends Module {
 
     @Listen
     public void do29(ChannelRead0Event channelRead0Event) {
-        PlaySoundS2CPacket packet904 = (PlaySoundS2CPacket)(channelRead0Event.getPacket904());
+        PlaySoundS2CPacket packet904 = (channelRead0Event.getPacket904()) instanceof PlaySoundS2CPacket ? (PlaySoundS2CPacket) (channelRead0Event.getPacket904()) : null;
         if (packet904 instanceof PlaySoundS2CPacket) {
             PlaySoundS2CPacket playSoundS2CPacket = packet904;
             if (((SoundEvent) playSoundS2CPacket.getSound().value()).equals(SoundEvents.ITEM_CHORUS_FRUIT_TELEPORT)) {

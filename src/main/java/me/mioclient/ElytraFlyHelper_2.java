@@ -87,7 +87,7 @@ public class ElytraFlyHelper_2 extends ElytraFlyHelper {
         if (is605()) {
             return;
         }
-        DuckPlayerMoveC2SPacket packet904 = (DuckPlayerMoveC2SPacket)(sendImmediatelyEvent.getPacket904());
+        DuckPlayerMoveC2SPacket packet904 = (sendImmediatelyEvent.getPacket904()) instanceof DuckPlayerMoveC2SPacket ? (DuckPlayerMoveC2SPacket) (sendImmediatelyEvent.getPacket904()) : null;
         if (packet904 instanceof DuckPlayerMoveC2SPacket) {
             DuckPlayerMoveC2SPacket duckPlayerMoveC2SPacket = packet904;
             if (is606() && this.elytraFly.silent.getValue().booleanValue() && this.elytraFly.pitchLock.getValue().booleanValue() && HoleSnapSearchHelper4.is955() && !this.elytraFly.is952()) {

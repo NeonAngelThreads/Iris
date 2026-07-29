@@ -57,7 +57,7 @@ public enum AutoCrystalMode_3 implements SearchHelper_4, EnumSettingHelper {
         boolean z2 = minecraftClient.player.getOffHandStack().isOf(Items.TOTEM_OF_UNDYING)
                 || minecraftClient.player.getMainHandStack().isOf(Items.TOTEM_OF_UNDYING);
         boolean equals = autoCrystalMode_7.equals(AutoCrystalMode_7.KILL);
-        if (!autoCrystal.forceSuicide.getValue().booleanValue()) {
+        if (autoCrystal.forceSuicide.getValue().booleanValue()) {
             return false;
         }
         if (autoCrystal.is1156()) {

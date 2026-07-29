@@ -64,7 +64,7 @@ public class Jesus extends Module {
     @Listen
     public void do30(SendImmediatelyEvent sendImmediatelyEvent) {
         if (this.mode.getValue() == JesusMode.SOLID && is240()) {
-            PlayerMoveC2SPacket packet904 = (PlayerMoveC2SPacket)(sendImmediatelyEvent.getPacket904());
+            PlayerMoveC2SPacket packet904 = (sendImmediatelyEvent.getPacket904()) instanceof PlayerMoveC2SPacket ? (PlayerMoveC2SPacket) (sendImmediatelyEvent.getPacket904()) : null;
             if (packet904 instanceof PlayerMoveC2SPacket) {
                 PlayerMoveC2SPacket playerMoveC2SPacket = packet904;
                 if (this.strict.getValue().booleanValue() && is241()) {

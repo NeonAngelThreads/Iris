@@ -210,11 +210,11 @@ public class AntiAim extends Module {
 
     @Listen
     public void do30(SendImmediatelyEvent sendImmediatelyEvent) {
-        PlayerInteractItemC2SPacket packet904 = (PlayerInteractItemC2SPacket)(sendImmediatelyEvent.getPacket904());
+        PlayerInteractItemC2SPacket packet904 = (sendImmediatelyEvent.getPacket904()) instanceof PlayerInteractItemC2SPacket ? (PlayerInteractItemC2SPacket) (sendImmediatelyEvent.getPacket904()) : null;
         if (packet904 instanceof PlayerInteractItemC2SPacket) {
             do854(packet904.getHand());
         }
-        PlayerInteractBlockC2SPacket packet9042 = (PlayerInteractBlockC2SPacket)(sendImmediatelyEvent.getPacket904());
+        PlayerInteractBlockC2SPacket packet9042 = (sendImmediatelyEvent.getPacket904()) instanceof PlayerInteractBlockC2SPacket ? (PlayerInteractBlockC2SPacket) (sendImmediatelyEvent.getPacket904()) : null;
         if (packet9042 instanceof PlayerInteractBlockC2SPacket) {
             do854(packet9042.getHand());
         }

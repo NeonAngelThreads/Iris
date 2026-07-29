@@ -166,7 +166,7 @@ public class Nuker extends Module {
         nukerMode_33("Crosshair") {
             @Override
             public List<BlockPos> getList437(Nuker nuker) {
-                BlockHitResult blockHitResult = (BlockHitResult)(SearchHelper_4.minecraftClient.crosshairTarget);
+                BlockHitResult blockHitResult = (SearchHelper_4.minecraftClient.crosshairTarget) instanceof BlockHitResult ? (BlockHitResult) (SearchHelper_4.minecraftClient.crosshairTarget) : null;
                 return blockHitResult instanceof BlockHitResult ? Collections.singletonList(blockHitResult.getBlockPos()) : Collections.emptyList();
             }
         };
@@ -373,7 +373,7 @@ public class Nuker extends Module {
     }
 
     public BlockHitResult getBlockHitResult2163() {
-        BlockHitResult blockHitResult = (BlockHitResult)(minecraftClient.crosshairTarget);
+        BlockHitResult blockHitResult = (minecraftClient.crosshairTarget) instanceof BlockHitResult ? (BlockHitResult) (minecraftClient.crosshairTarget) : null;
         if (!(blockHitResult instanceof BlockHitResult)) {
             return null;
         }

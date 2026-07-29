@@ -39,7 +39,7 @@ public class PresetHelperModeHelper_2 {
 
     public void do2096(JsonObject jsonObject, java.util.function.Predicate<Module> predicate) {
         for (String str : jsonObject.asMap().keySet()) {
-            JsonObject jsonObject2 = (JsonObject)(jsonObject.get(str));
+            JsonObject jsonObject2 = (jsonObject.get(str)) instanceof JsonObject ? (JsonObject) (jsonObject.get(str)) : null;
             if (jsonObject2 instanceof JsonObject) {
                 JsonObject jsonObject3 = jsonObject2;
                 Optional optional2404 = BaritoneHelper_3.keyPearlSearchHelper4.getOptional2404(module -> {

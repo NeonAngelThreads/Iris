@@ -175,7 +175,7 @@ public class FireworksHelper implements SearchHelper_4 {
     }
 
     public static float get452(ItemStack itemStack) {
-        return 100 - ((int) ((Float.intBitsToFloat(1065353216) - ((itemStack.getMaxDamage() - itemStack.getDamage()) / itemStack.getMaxDamage())) * Float.intBitsToFloat(1120403456)));
+        return 100 - ((int) ((Float.intBitsToFloat(1065353216) - ((itemStack.getMaxDamage() - itemStack.getDamage()) / (float) itemStack.getMaxDamage())) * Float.intBitsToFloat(1120403456)));
     }
 
     public static int get453(int i) {

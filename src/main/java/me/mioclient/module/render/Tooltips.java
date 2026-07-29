@@ -68,7 +68,7 @@ public class Tooltips extends Module {
 
     @Listen
     public void do29(ChannelRead0Event channelRead0Event) {
-        InventoryS2CPacket packet904 = (InventoryS2CPacket)(channelRead0Event.getPacket904());
+        InventoryS2CPacket packet904 = (channelRead0Event.getPacket904()) instanceof InventoryS2CPacket ? (InventoryS2CPacket) (channelRead0Event.getPacket904()) : null;
         if (packet904 instanceof InventoryS2CPacket) {
             InventoryS2CPacket inventoryS2CPacket = packet904;
             if (this.majorityItem.getValue().booleanValue()) {
@@ -110,7 +110,7 @@ public class Tooltips extends Module {
             List<ItemStack> ofSize = DefaultedList.ofSize(27, ItemStack.EMPTY);
             BlockItem item = (stack.getItem()) instanceof BlockItem ? (BlockItem) (stack.getItem()) : null;
             if (item instanceof BlockItem) {
-                ShulkerBoxBlock block = (ShulkerBoxBlock)(item.getBlock());
+                ShulkerBoxBlock block = (item.getBlock()) instanceof ShulkerBoxBlock ? (ShulkerBoxBlock) (item.getBlock()) : null;
                 if (block instanceof ShulkerBoxBlock) {
                     ShulkerBoxBlock shulkerBoxBlock = block;
                     if (shulkerBoxBlock.getColor() != null) {

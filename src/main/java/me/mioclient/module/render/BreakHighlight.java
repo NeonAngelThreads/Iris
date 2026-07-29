@@ -42,7 +42,7 @@ public class BreakHighlight extends Module {
                 Color value2 = this.outline.getValue();
                 VoxelShape outlineShape = minecraftClient.world.getBlockState(entityIdHelper.getBlockPos386()).getOutlineShape(minecraftClient.world, entityIdHelper.getBlockPos386());
                 float f = entityIdHelper.get2814(inner_3.get473());
-                PlayerEntity entity181 = (PlayerEntity)(entityIdHelper.getEntity181());
+                PlayerEntity entity181 = (entityIdHelper.getEntity181()) instanceof PlayerEntity ? (PlayerEntity) (entityIdHelper.getEntity181()) : null;
                 Box offset = getBox1531(outlineShape.isEmpty() ? new Box(0.0d, 0.0d, 0.0d, Double.longBitsToDouble(4607182418800017408L), Double.longBitsToDouble(4607182418800017408L), Double.longBitsToDouble(4607182418800017408L)) : outlineShape.getBoundingBox(), f).offset(entityIdHelper.getBlockPos386());
                 if (entity181 instanceof PlayerEntity) {
                     PlayerEntity playerEntity = entity181;

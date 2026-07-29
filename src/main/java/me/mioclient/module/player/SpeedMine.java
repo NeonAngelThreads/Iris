@@ -312,7 +312,7 @@ public class SpeedMine extends Module {
         if (!SearchHelper4_8.is724() || this.damage.getValue().floatValue() >= Float.intBitsToFloat(1065353216) || antiCheat.is238()) {
             return;
         }
-        PlayerActionC2SPacket packet904 = (PlayerActionC2SPacket)(sendImmediatelyEvent.getPacket904());
+        PlayerActionC2SPacket packet904 = (sendImmediatelyEvent.getPacket904()) instanceof PlayerActionC2SPacket ? (PlayerActionC2SPacket) (sendImmediatelyEvent.getPacket904()) : null;
         if (packet904 instanceof PlayerActionC2SPacket) {
             PlayerActionC2SPacket playerActionC2SPacket = packet904;
             if (playerActionC2SPacket.getAction() == PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK) {

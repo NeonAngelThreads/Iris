@@ -58,7 +58,7 @@ public class ElytraFlyHelper_5 extends ElytraFlyHelper {
 
     @Override // me.mioclient.ElytraFlyHelper
     public void do29(ChannelRead0Event channelRead0Event) {
-        HealthUpdateS2CPacket packet904 = (HealthUpdateS2CPacket)(channelRead0Event.getPacket904());
+        HealthUpdateS2CPacket packet904 = (channelRead0Event.getPacket904()) instanceof HealthUpdateS2CPacket ? (HealthUpdateS2CPacket) (channelRead0Event.getPacket904()) : null;
         if (packet904 instanceof HealthUpdateS2CPacket) {
             HealthUpdateS2CPacket healthUpdateS2CPacket = packet904;
             if (healthUpdateS2CPacket.getHealth() + healthUpdateS2CPacket.getSaturation() < SearchHelper_3.get643()) {

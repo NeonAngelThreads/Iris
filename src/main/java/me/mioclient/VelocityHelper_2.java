@@ -18,7 +18,7 @@ public class VelocityHelper_2 extends VelocityHelper {
         int intValue = this.velocity.horizontal.getValue().intValue();
         int intValue2 = this.velocity.vertical.getValue().intValue();
         int i = this.velocity.inverse.getValue().booleanValue() ? -1 : 1;
-        EntityVelocityUpdateS2CPacket packet904 = (EntityVelocityUpdateS2CPacket)(channelRead0Event.getPacket904());
+        EntityVelocityUpdateS2CPacket packet904 = (channelRead0Event.getPacket904()) instanceof EntityVelocityUpdateS2CPacket ? (EntityVelocityUpdateS2CPacket) (channelRead0Event.getPacket904()) : null;
         if (packet904 instanceof EntityVelocityUpdateS2CPacket) {
             EntityVelocityUpdateS2CPacket entityVelocityUpdateS2CPacket = packet904;
             if (entityVelocityUpdateS2CPacket.getEntityId() == minecraftClient.player.getId()) {

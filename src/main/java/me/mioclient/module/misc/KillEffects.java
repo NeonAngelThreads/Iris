@@ -139,7 +139,7 @@ public class KillEffects extends Module {
         if (attackHookPostEvent.getKeyPearlMode1472() == KeyPearlMode.Post || is1469()) {
             return;
         }
-        PlayerEntity entity181 = (PlayerEntity)(attackHookPostEvent.getEntity181());
+        PlayerEntity entity181 = (attackHookPostEvent.getEntity181()) instanceof PlayerEntity ? (PlayerEntity) (attackHookPostEvent.getEntity181()) : null;
         if (!(entity181 instanceof PlayerEntity) || (playerEntity = entity181) == minecraftClient.player) {
             return;
         }

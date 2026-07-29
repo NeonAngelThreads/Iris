@@ -314,7 +314,7 @@ public class LogoutSpots extends Module {
 
     @Listen
     public void do29(ChannelRead0Event channelRead0Event) {
-        PlayerListS2CPacket packet904 = (PlayerListS2CPacket)(channelRead0Event.getPacket904());
+        PlayerListS2CPacket packet904 = (channelRead0Event.getPacket904()) instanceof PlayerListS2CPacket ? (PlayerListS2CPacket) (channelRead0Event.getPacket904()) : null;
         if (packet904 instanceof PlayerListS2CPacket) {
             for (PlayerListS2CPacket.Entry entry : packet904.getPlayerAdditionEntries()) {
                 minecraftClient.executeSync(() -> {
@@ -338,7 +338,7 @@ public class LogoutSpots extends Module {
 
     @Listen
     public void onRemoveEntity(RemoveEntityEvent removeEntityEvent) {
-        PlayerEntity entityById = (PlayerEntity)(minecraftClient.world.getEntityById(removeEntityEvent.getId()));
+        PlayerEntity entityById = (minecraftClient.world.getEntityById(removeEntityEvent.getId())) instanceof PlayerEntity ? (PlayerEntity) (minecraftClient.world.getEntityById(removeEntityEvent.getId())) : null;
         if (entityById instanceof PlayerEntity) {
             PlayerEntity playerEntity = entityById;
             if (!(playerEntity instanceof Feature_14.OtherClientPlayerEntity) && playerEntity.deathTime <= 0 && SearchHelper_3.get644((Entity) playerEntity) > 0.0f) {

@@ -161,7 +161,7 @@ public class AnchorAura extends Module {
         if (!this.sequential.getValue().booleanValue() || this.atomicReference.get() == null) {
             return;
         }
-        BlockUpdateS2CPacket packet904 = (BlockUpdateS2CPacket)(channelRead0Event.getPacket904());
+        BlockUpdateS2CPacket packet904 = (channelRead0Event.getPacket904()) instanceof BlockUpdateS2CPacket ? (BlockUpdateS2CPacket) (channelRead0Event.getPacket904()) : null;
         if (packet904 instanceof BlockUpdateS2CPacket) {
             BlockUpdateS2CPacket blockUpdateS2CPacket = packet904;
             if (this.autoCrystalData_2 != null && blockUpdateS2CPacket.getState().isAir() && blockUpdateS2CPacket.getPos().equals(this.atomicReference.get().getBlockPos12())) {

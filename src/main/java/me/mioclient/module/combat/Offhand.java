@@ -156,7 +156,7 @@ public class Offhand extends Module {
 
     @Listen
     public void do29(ChannelRead0Event channelRead0Event) {
-        EntityStatusS2CPacket packet904 = (EntityStatusS2CPacket)(channelRead0Event.getPacket904());
+        EntityStatusS2CPacket packet904 = (channelRead0Event.getPacket904()) instanceof EntityStatusS2CPacket ? (EntityStatusS2CPacket) (channelRead0Event.getPacket904()) : null;
         if (packet904 instanceof EntityStatusS2CPacket) {
             EntityStatusS2CPacket entityStatusS2CPacket = packet904;
             if (!is2668() && is2669() && entityStatusS2CPacket.getEntity(minecraftClient.world) == minecraftClient.player && entityStatusS2CPacket.getStatus() == 35) {
@@ -170,7 +170,7 @@ public class Offhand extends Module {
                 do906();
             }
         }
-        EntitySpawnS2CPacket packet9042 = (EntitySpawnS2CPacket)(channelRead0Event.getPacket904());
+        EntitySpawnS2CPacket packet9042 = (channelRead0Event.getPacket904()) instanceof EntitySpawnS2CPacket ? (EntitySpawnS2CPacket) (channelRead0Event.getPacket904()) : null;
         if (packet9042 instanceof EntitySpawnS2CPacket) {
             EntitySpawnS2CPacket entitySpawnS2CPacket = packet9042;
             if (this.mainhandHelper.is465() && entitySpawnS2CPacket.getEntityType() == EntityType.END_CRYSTAL) {

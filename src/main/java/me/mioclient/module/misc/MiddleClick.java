@@ -53,7 +53,7 @@ public class MiddleClick extends Module {
             return;
         }
         if (entityHitResult instanceof EntityHitResult) {
-            PlayerEntity entity = (PlayerEntity)(entityHitResult.getEntity());
+            PlayerEntity entity = (entityHitResult.getEntity()) instanceof PlayerEntity ? (PlayerEntity) (entityHitResult.getEntity()) : null;
             if (entity instanceof PlayerEntity) {
                 PlayerEntity playerEntity = entity;
                 if (this.friends.getValue().booleanValue()) {

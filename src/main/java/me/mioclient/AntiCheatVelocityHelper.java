@@ -32,7 +32,7 @@ public class AntiCheatVelocityHelper extends VelocityHelper {
 
     @Override // me.mioclient.VelocityHelper
     public void do29(ChannelRead0Event channelRead0Event) {
-        EntityVelocityUpdateS2CPacket packet904 = (EntityVelocityUpdateS2CPacket)(channelRead0Event.getPacket904());
+        EntityVelocityUpdateS2CPacket packet904 = (channelRead0Event.getPacket904()) instanceof EntityVelocityUpdateS2CPacket ? (EntityVelocityUpdateS2CPacket) (channelRead0Event.getPacket904()) : null;
         if (packet904 instanceof EntityVelocityUpdateS2CPacket) {
             EntityVelocityUpdateS2CPacket entityVelocityUpdateS2CPacket = packet904;
             if (entityVelocityUpdateS2CPacket.getEntityId() == minecraftClient.player.getId() && is951()) {

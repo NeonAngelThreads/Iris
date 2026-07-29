@@ -38,7 +38,7 @@ public class VelocityHelper_3 extends VelocityHelper {
 
     @Override // me.mioclient.VelocityHelper
     public void do29(ChannelRead0Event channelRead0Event) {
-        EntityVelocityUpdateS2CPacket packet904 = (EntityVelocityUpdateS2CPacket)(channelRead0Event.getPacket904());
+        EntityVelocityUpdateS2CPacket packet904 = (channelRead0Event.getPacket904()) instanceof EntityVelocityUpdateS2CPacket ? (EntityVelocityUpdateS2CPacket) (channelRead0Event.getPacket904()) : null;
         if ((packet904 instanceof EntityVelocityUpdateS2CPacket) && packet904.getEntityId() == minecraftClient.player.getId() && !is715()) {
             channelRead0Event.do1162();
         }
@@ -49,7 +49,7 @@ public class VelocityHelper_3 extends VelocityHelper {
 
     @Override // me.mioclient.VelocityHelper
     public void do30(SendImmediatelyEvent sendImmediatelyEvent) {
-        PlayerMoveC2SPacket packet904 = (PlayerMoveC2SPacket)(sendImmediatelyEvent.getPacket904());
+        PlayerMoveC2SPacket packet904 = (sendImmediatelyEvent.getPacket904()) instanceof PlayerMoveC2SPacket ? (PlayerMoveC2SPacket) (sendImmediatelyEvent.getPacket904()) : null;
         if (packet904 instanceof PlayerMoveC2SPacket) {
             PlayerMoveC2SPacket playerMoveC2SPacket = packet904;
             if (playerMoveC2SPacket.changesLook()) {

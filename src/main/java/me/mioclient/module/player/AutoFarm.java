@@ -210,7 +210,7 @@ public class AutoFarm extends Module {
         if (blockState.getBlock() instanceof SaplingBlock) {
             return false;
         }
-        CropBlock block = (CropBlock)(blockState.getBlock());
+        CropBlock block = (blockState.getBlock()) instanceof CropBlock ? (CropBlock) (blockState.getBlock()) : null;
         if (block instanceof CropBlock) {
             CropBlock cropBlock = block;
             return cropBlock.getAge(blockState) == cropBlock.getMaxAge();

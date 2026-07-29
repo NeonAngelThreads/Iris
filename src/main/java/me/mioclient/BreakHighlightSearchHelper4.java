@@ -53,7 +53,7 @@ public final class BreakHighlightSearchHelper4 implements SearchHelper_4 {
 
     @Listen
     public void do29(ChannelRead0Event channelRead0Event) {
-        BlockBreakingProgressS2CPacket packet904 = (BlockBreakingProgressS2CPacket)(channelRead0Event.getPacket904());
+        BlockBreakingProgressS2CPacket packet904 = (channelRead0Event.getPacket904()) instanceof BlockBreakingProgressS2CPacket ? (BlockBreakingProgressS2CPacket) (channelRead0Event.getPacket904()) : null;
         if (packet904 instanceof BlockBreakingProgressS2CPacket) {
             BlockBreakingProgressS2CPacket blockBreakingProgressS2CPacket = packet904;
             minecraftClient.execute(() -> {
@@ -63,14 +63,14 @@ public final class BreakHighlightSearchHelper4 implements SearchHelper_4 {
                 do1515(blockBreakingProgressS2CPacket.getPos(), blockBreakingProgressS2CPacket.getEntityId());
             });
         }
-        BlockUpdateS2CPacket packet9042 = (BlockUpdateS2CPacket)(channelRead0Event.getPacket904());
+        BlockUpdateS2CPacket packet9042 = (channelRead0Event.getPacket904()) instanceof BlockUpdateS2CPacket ? (BlockUpdateS2CPacket) (channelRead0Event.getPacket904()) : null;
         if (packet9042 instanceof BlockUpdateS2CPacket) {
             BlockUpdateS2CPacket blockUpdateS2CPacket = packet9042;
             if (blockUpdateS2CPacket.getState().isAir()) {
                 do1514(blockUpdateS2CPacket.getPos());
             }
         }
-        ChunkDeltaUpdateS2CPacket packet9043 = (ChunkDeltaUpdateS2CPacket)(channelRead0Event.getPacket904());
+        ChunkDeltaUpdateS2CPacket packet9043 = (channelRead0Event.getPacket904()) instanceof ChunkDeltaUpdateS2CPacket ? (ChunkDeltaUpdateS2CPacket) (channelRead0Event.getPacket904()) : null;
         if (packet9043 instanceof ChunkDeltaUpdateS2CPacket) {
             packet9043.visitUpdates((blockPos, blockState) -> {
                 if (blockState.isAir()) {

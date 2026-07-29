@@ -165,7 +165,7 @@ public class AutoExp extends Module {
             if (minecraftClient.crosshairTarget.getType() == HitResult.Type.MISS) {
                 return true;
             }
-            BlockHitResult blockHitResult = (BlockHitResult)(minecraftClient.crosshairTarget);
+            BlockHitResult blockHitResult = (minecraftClient.crosshairTarget) instanceof BlockHitResult ? (BlockHitResult) (minecraftClient.crosshairTarget) : null;
             if (blockHitResult instanceof BlockHitResult) {
                 BlockHitResult blockHitResult2 = blockHitResult;
                 if (minecraftClient.world.getBlockState(blockHitResult2.getBlockPos()).isReplaceable()) {

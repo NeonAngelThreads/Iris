@@ -29,7 +29,7 @@ public class AutoSign extends Module {
 
     @Listen
     public void onChannelRead0(ChannelRead0Event channelRead0Event) {
-        SignEditorOpenS2CPacket packet904 = (SignEditorOpenS2CPacket)(channelRead0Event.getPacket904());
+        SignEditorOpenS2CPacket packet904 = (channelRead0Event.getPacket904()) instanceof SignEditorOpenS2CPacket ? (SignEditorOpenS2CPacket) (channelRead0Event.getPacket904()) : null;
         if (packet904 instanceof SignEditorOpenS2CPacket) {
             SignEditorOpenS2CPacket signEditorOpenS2CPacket = packet904;
             AutoSignSearchHelper4.do2571(new UpdateSignC2SPacket(signEditorOpenS2CPacket.getPos(), signEditorOpenS2CPacket.isFront(), getString126(this.line1), getString126(this.line2), getString126(this.line3), getString126(this.line4)));

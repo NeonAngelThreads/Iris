@@ -173,7 +173,7 @@ public class Module extends Feature implements SearchHelper_4, HUDHelper, Helper
         if (jsonElement instanceof JsonObject) {
             JsonObject jsonObject = (JsonObject) jsonElement;
             if (jsonObject.has("settings")) {
-                JsonObject jsonObject2 = (JsonObject)(jsonObject.get("settings"));
+                JsonObject jsonObject2 = (jsonObject.get("settings")) instanceof JsonObject ? (JsonObject) (jsonObject.get("settings")) : null;
                 if (jsonObject2 instanceof JsonObject) {
                     JsonObject jsonObject3 = jsonObject2;
                     for (Setting<?> setting : getRegistry()) {

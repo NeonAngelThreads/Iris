@@ -62,7 +62,7 @@ public class KeyPearl extends Module {
             disable();
             return;
         }
-        BlockHitResult blockHitResult = (BlockHitResult)(minecraftClient.crosshairTarget);
+        BlockHitResult blockHitResult = (minecraftClient.crosshairTarget) instanceof BlockHitResult ? (BlockHitResult) (minecraftClient.crosshairTarget) : null;
         if (blockHitResult instanceof BlockHitResult) {
             BlockHitResult blockHitResult2 = blockHitResult;
             if (!minecraftClient.world.getBlockState(blockHitResult2.getBlockPos()).isReplaceable() && blockHitResult2.getType() != HitResult.Type.MISS && !this.solid.getValue().booleanValue()) {

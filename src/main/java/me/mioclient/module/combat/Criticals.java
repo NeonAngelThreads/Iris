@@ -64,7 +64,7 @@ public class Criticals extends Module {
     @Listen
     public void do30(SendImmediatelyEvent sendImmediatelyEvent) {
         Entity entity2610;
-        PlayerInteractEntityC2SPacket packet904 = (PlayerInteractEntityC2SPacket)(sendImmediatelyEvent.getPacket904());
+        PlayerInteractEntityC2SPacket packet904 = (sendImmediatelyEvent.getPacket904()) instanceof PlayerInteractEntityC2SPacket ? (PlayerInteractEntityC2SPacket) (sendImmediatelyEvent.getPacket904()) : null;
         if (packet904 instanceof PlayerInteractEntityC2SPacket) {
             PlayerInteractEntityC2SPacket playerInteractEntityC2SPacket = packet904;
             if (!is909(playerInteractEntityC2SPacket) || (entity2610 = LegacyCrystalSearchHelper4.getEntity2610(playerInteractEntityC2SPacket)) == null) {

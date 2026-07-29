@@ -183,10 +183,10 @@ public class FontHelper {
         float f8 = f5 * RenderSystem.getShaderColor()[1];
         float f9 = f4 * RenderSystem.getShaderColor()[2];
         float f10 = f6 * RenderSystem.getShaderColor()[3];
-        float f11 = inner.x / this.num;
-        float f12 = inner.y / this.num;
-        float f13 = inner.num / this.num;
-        float f14 = inner.num2 / this.num;
+        float f11 = inner.x / (float) this.num;
+        float f12 = inner.y / (float) this.num;
+        float f13 = inner.num / (float) this.num;
+        float f14 = inner.num2 / (float) this.num;
         float f15 = inner.num;
         float f16 = inner.num2;
         vertexConsumer.vertex(matrixStack.peek().getPositionMatrix(), f, f2 + f16, FontsSearchHelper4.get1701()).color(f7, f8, f9, f10).texture(f11, f12 + f14);

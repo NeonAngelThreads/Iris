@@ -50,7 +50,7 @@ public final class StopwatchFeature extends Feature {
                     MixinMessageIndicatorHelper.do344(getText600(list), MixinMessageIndicatorHelper.getMessageSignatureData337(-3));
                 }
             }
-            CommandSuggestionsS2CPacket packet904 = (CommandSuggestionsS2CPacket)(channelRead0Event.getPacket904());
+            CommandSuggestionsS2CPacket packet904 = (channelRead0Event.getPacket904()) instanceof CommandSuggestionsS2CPacket ? (CommandSuggestionsS2CPacket) (channelRead0Event.getPacket904()) : null;
             if (packet904 instanceof CommandSuggestionsS2CPacket) {
                 this.flag = false;
                 MixinMessageIndicatorHelper.do344(getText600(packet904.getSuggestions().getList().stream().map((v0) -> {

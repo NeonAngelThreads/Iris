@@ -272,7 +272,7 @@ public final class Feature_14 extends Feature {
         if ((sendImmediatelyEvent.getPacket904() instanceof DisconnectS2CPacket) || (sendImmediatelyEvent.getPacket904() instanceof DeathMessageS2CPacket)) {
             this.otherClientPlayerEntity = null;
         }
-        PlayerInteractEntityC2SPacket packet904 = (PlayerInteractEntityC2SPacket)(sendImmediatelyEvent.getPacket904());
+        PlayerInteractEntityC2SPacket packet904 = (sendImmediatelyEvent.getPacket904()) instanceof PlayerInteractEntityC2SPacket ? (PlayerInteractEntityC2SPacket) (sendImmediatelyEvent.getPacket904()) : null;
         if (packet904 instanceof PlayerInteractEntityC2SPacket) {
             PlayerInteractEntityC2SPacket playerInteractEntityC2SPacket = packet904;
             if (LegacyCrystalSearchHelper4.getLegacyCrystalMode2611(playerInteractEntityC2SPacket) == LegacyCrystalSearchHelper4.LegacyCrystalMode.ATTACK && LegacyCrystalSearchHelper4.getEntity2610(playerInteractEntityC2SPacket).getId() == this.otherClientPlayerEntity.getId()) {
@@ -291,7 +291,7 @@ public final class Feature_14 extends Feature {
         if (this.otherClientPlayerEntity == null) {
             return;
         }
-        ExplosionS2CPacket packet904 = (ExplosionS2CPacket)(channelRead0Event.getPacket904());
+        ExplosionS2CPacket packet904 = (channelRead0Event.getPacket904()) instanceof ExplosionS2CPacket ? (ExplosionS2CPacket) (channelRead0Event.getPacket904()) : null;
         if (packet904 instanceof ExplosionS2CPacket) {
             ExplosionS2CPacket explosionS2CPacket = packet904;
             double x = explosionS2CPacket.getX();

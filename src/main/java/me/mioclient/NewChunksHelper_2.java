@@ -91,7 +91,7 @@ public final class NewChunksHelper_2 {
         if (sectionArray.length == 0) {
             return Mode.NO_PLAINS;
         }
-        PalettedContainer biomeContainer = (PalettedContainer)(sectionArray[0].getBiomeContainer());
+        PalettedContainer biomeContainer = (sectionArray[0].getBiomeContainer()) instanceof PalettedContainer ? (PalettedContainer) (sectionArray[0].getBiomeContainer()) : null;
         if (biomeContainer instanceof PalettedContainer) {
             PalettedContainer palettedContainer = biomeContainer;
             Palette palette2722 = MixinPalettedContainerHelper.getPalette2722(palettedContainer);

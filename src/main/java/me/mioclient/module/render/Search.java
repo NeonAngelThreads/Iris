@@ -227,7 +227,7 @@ public class Search extends Module {
             return new Color(125, 40, 180);
         }
         int renderColor = blockState.getMapColor(minecraftClient.world, blockPos).getRenderColor(MapColor.Brightness.HIGH);
-        BedBlock block = (BedBlock)(blockState.getBlock());
+        BedBlock block = (blockState.getBlock()) instanceof BedBlock ? (BedBlock) (blockState.getBlock()) : null;
         if (block instanceof BedBlock) {
             renderColor = block.getColor().getMapColor().getRenderColor(MapColor.Brightness.HIGH);
         }

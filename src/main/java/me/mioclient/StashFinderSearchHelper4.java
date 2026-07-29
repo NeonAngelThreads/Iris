@@ -116,7 +116,7 @@ public class StashFinderSearchHelper4 implements SearchHelper_4 {
 
     @Listen
     public void do30(SendImmediatelyEvent sendImmediatelyEvent) {
-        PlayerInteractBlockC2SPacket packet904 = (PlayerInteractBlockC2SPacket)(sendImmediatelyEvent.getPacket904());
+        PlayerInteractBlockC2SPacket packet904 = (sendImmediatelyEvent.getPacket904()) instanceof PlayerInteractBlockC2SPacket ? (PlayerInteractBlockC2SPacket) (sendImmediatelyEvent.getPacket904()) : null;
         if (packet904 instanceof PlayerInteractBlockC2SPacket) {
             PlayerInteractBlockC2SPacket playerInteractBlockC2SPacket = packet904;
             BlockItem item = (getItemStack1553(playerInteractBlockC2SPacket.getHand()).getItem()) instanceof BlockItem ? (BlockItem) (getItemStack1553(playerInteractBlockC2SPacket.getHand()).getItem()) : null;
@@ -138,7 +138,7 @@ public class StashFinderSearchHelper4 implements SearchHelper_4 {
 
     @Listen
     public void do29(ChannelRead0Event channelRead0Event) {
-        BlockUpdateS2CPacket packet904 = (BlockUpdateS2CPacket)(channelRead0Event.getPacket904());
+        BlockUpdateS2CPacket packet904 = (channelRead0Event.getPacket904()) instanceof BlockUpdateS2CPacket ? (BlockUpdateS2CPacket) (channelRead0Event.getPacket904()) : null;
         if (packet904 instanceof BlockUpdateS2CPacket) {
             BlockUpdateS2CPacket blockUpdateS2CPacket = packet904;
             this.set3.removeIf(blockStateSearchHelper4 -> {
@@ -153,7 +153,7 @@ public class StashFinderSearchHelper4 implements SearchHelper_4 {
                 }
             }
         }
-        ChunkDeltaUpdateS2CPacket packet9042 = (ChunkDeltaUpdateS2CPacket)(channelRead0Event.getPacket904());
+        ChunkDeltaUpdateS2CPacket packet9042 = (channelRead0Event.getPacket904()) instanceof ChunkDeltaUpdateS2CPacket ? (ChunkDeltaUpdateS2CPacket) (channelRead0Event.getPacket904()) : null;
         if (packet9042 instanceof ChunkDeltaUpdateS2CPacket) {
             packet9042.visitUpdates((blockPos, blockState) -> {
                 this.set3.removeIf(blockStateSearchHelper42 -> {
@@ -161,11 +161,11 @@ public class StashFinderSearchHelper4 implements SearchHelper_4 {
                 });
             });
         }
-        GameJoinS2CPacket packet9043 = (GameJoinS2CPacket)(channelRead0Event.getPacket904());
+        GameJoinS2CPacket packet9043 = (channelRead0Event.getPacket904()) instanceof GameJoinS2CPacket ? (GameJoinS2CPacket) (channelRead0Event.getPacket904()) : null;
         if (packet9043 instanceof GameJoinS2CPacket) {
             this.num = packet9043.viewDistance();
         }
-        ChunkLoadDistanceS2CPacket packet9044 = (ChunkLoadDistanceS2CPacket)(channelRead0Event.getPacket904());
+        ChunkLoadDistanceS2CPacket packet9044 = (channelRead0Event.getPacket904()) instanceof ChunkLoadDistanceS2CPacket ? (ChunkLoadDistanceS2CPacket) (channelRead0Event.getPacket904()) : null;
         if (packet9044 instanceof ChunkLoadDistanceS2CPacket) {
             this.num = packet9044.getDistance();
         }

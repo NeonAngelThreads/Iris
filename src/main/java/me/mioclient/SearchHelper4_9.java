@@ -64,7 +64,7 @@ public class SearchHelper4_9 implements SearchHelper_4 {
             return;
         }
         if (this.biConsumer3 != null) {
-            BlockUpdateS2CPacket packet904 = (BlockUpdateS2CPacket)(channelRead0Event.getPacket904());
+            BlockUpdateS2CPacket packet904 = (channelRead0Event.getPacket904()) instanceof BlockUpdateS2CPacket ? (BlockUpdateS2CPacket) (channelRead0Event.getPacket904()) : null;
             if (packet904 instanceof BlockUpdateS2CPacket) {
                 BlockUpdateS2CPacket blockUpdateS2CPacket = packet904;
                 do2691(() -> {
@@ -74,7 +74,7 @@ public class SearchHelper4_9 implements SearchHelper_4 {
             }
         }
         if (this.biConsumer3 != null) {
-            ExplosionS2CPacket packet9042 = (ExplosionS2CPacket)(channelRead0Event.getPacket904());
+            ExplosionS2CPacket packet9042 = (channelRead0Event.getPacket904()) instanceof ExplosionS2CPacket ? (ExplosionS2CPacket) (channelRead0Event.getPacket904()) : null;
             if (packet9042 instanceof ExplosionS2CPacket) {
                 for (BlockPos blockPos : packet9042.getAffectedBlocks()) {
                     do2691(() -> {
@@ -85,7 +85,7 @@ public class SearchHelper4_9 implements SearchHelper_4 {
             }
         }
         if (this.biConsumer3 != null) {
-            ChunkDeltaUpdateS2CPacket packet9043 = (ChunkDeltaUpdateS2CPacket)(channelRead0Event.getPacket904());
+            ChunkDeltaUpdateS2CPacket packet9043 = (channelRead0Event.getPacket904()) instanceof ChunkDeltaUpdateS2CPacket ? (ChunkDeltaUpdateS2CPacket) (channelRead0Event.getPacket904()) : null;
             if (packet9043 instanceof ChunkDeltaUpdateS2CPacket) {
                 packet9043.visitUpdates((blockPos2, blockState) -> {
                     BlockPos immutable = blockPos2.toImmutable();
@@ -97,7 +97,7 @@ public class SearchHelper4_9 implements SearchHelper_4 {
             }
         }
         if (this.biConsumer2 != null) {
-            UnloadChunkS2CPacket packet9044 = (UnloadChunkS2CPacket)(channelRead0Event.getPacket904());
+            UnloadChunkS2CPacket packet9044 = (channelRead0Event.getPacket904()) instanceof UnloadChunkS2CPacket ? (UnloadChunkS2CPacket) (channelRead0Event.getPacket904()) : null;
             if (packet9044 instanceof UnloadChunkS2CPacket) {
                 UnloadChunkS2CPacket unloadChunkS2CPacket = packet9044;
                 ChunkPos chunkPos = new ChunkPos(unloadChunkS2CPacket.pos().x, unloadChunkS2CPacket.pos().z);

@@ -72,7 +72,7 @@ public class Announcer extends Module {
     public void do29(ChannelRead0Event channelRead0Event) {
         if (this.joins.getValue().booleanValue()) {
             if (this.stopwatch.is418(this.delay.getValue().doubleValue(), TimeUnit.SECONDS)) {
-                PlayerListS2CPacket packet904 = (PlayerListS2CPacket)(channelRead0Event.getPacket904());
+                PlayerListS2CPacket packet904 = (channelRead0Event.getPacket904()) instanceof PlayerListS2CPacket ? (PlayerListS2CPacket) (channelRead0Event.getPacket904()) : null;
                 if (packet904 instanceof PlayerListS2CPacket) {
                     for (PlayerListS2CPacket.Entry entry : packet904.getPlayerAdditionEntries()) {
                         if (entry.listed()) {
@@ -111,7 +111,7 @@ public class Announcer extends Module {
                         }
                     }
                 }
-                PlayerRemoveS2CPacket packet9042 = (PlayerRemoveS2CPacket)(channelRead0Event.getPacket904());
+                PlayerRemoveS2CPacket packet9042 = (channelRead0Event.getPacket904()) instanceof PlayerRemoveS2CPacket ? (PlayerRemoveS2CPacket) (channelRead0Event.getPacket904()) : null;
                 if (packet9042 instanceof PlayerRemoveS2CPacket) {
                     for (UUID uuid : packet9042.profileIds()) {
                         for (PlayerListEntry playerListEntry : minecraftClient.player.networkHandler.getListedPlayerListEntries()) {

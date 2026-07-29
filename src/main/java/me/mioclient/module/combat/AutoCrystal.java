@@ -333,7 +333,8 @@ public class AutoCrystal extends Module {
         synchronized (this.list) {
             Iterator<Integer> it = this.list.iterator();
             while (it.hasNext()) {
-                SpawnTimeHelper_2 entityById = (SpawnTimeHelper_2)(minecraftClient.world.getEntityById(it.next().intValue()));
+                Entity entityById2336 = minecraftClient.world.getEntityById(it.next().intValue());
+                SpawnTimeHelper_2 entityById = entityById2336 instanceof EndCrystalEntity ? (SpawnTimeHelper_2) entityById2336 : null;
                 if (entityById instanceof EndCrystalEntity) {
                     entityById.setMioAttacked(true);
                 }
@@ -401,7 +402,7 @@ public class AutoCrystal extends Module {
 
     @Listen
     public void do29(ChannelRead0Event channelRead0Event) {
-        EntitySpawnS2CPacket packet904 = (EntitySpawnS2CPacket)(channelRead0Event.getPacket904());
+        EntitySpawnS2CPacket packet904 = (channelRead0Event.getPacket904()) instanceof EntitySpawnS2CPacket ? (EntitySpawnS2CPacket) (channelRead0Event.getPacket904()) : null;
         if (packet904 instanceof EntitySpawnS2CPacket) {
             EntitySpawnS2CPacket entitySpawnS2CPacket = packet904;
             this.autoCrystalData_3 = AutoCrystalData_3.getAutoCrystalData_32406(entitySpawnS2CPacket);
@@ -543,16 +544,21 @@ public class AutoCrystal extends Module {
                                                     if (!is2432 && distanceTo > this.wallRange.getValue().floatValue()) {
                                                         autoCrystalDataMode = AutoCrystalDataMode.RAYTRACE;
                                                     }
+                                                    boolean store = true;
                                                     if (this.basePlace.getValue().booleanValue() && !is2445) {
-                                                        if (!getBox1145(autoCrystalData_41147.getPlayerEntity13()).union(autoCrystalData_41147.getPlayerEntity13().getBoundingBox()).intersects(new Box(this.mutable)) && PhaseESPSearchHelper4_2.is3041(this.mutable, false)) {
-                                                            if (!this.air.getValue().booleanValue()) {
-                                                                if (PhaseESPSearchHelper4_2.getDirection3029(this.mutable, this.strictDirection.getValue().booleanValue()) == null) {
-                                                                }
-                                                            }
+                                                        if (getBox1145(autoCrystalData_41147.getPlayerEntity13()).union(autoCrystalData_41147.getPlayerEntity13().getBoundingBox()).intersects(new Box(this.mutable))) {
+                                                            store = false;
+                                                        } else if (!PhaseESPSearchHelper4_2.is3041(this.mutable, false)) {
+                                                            store = false;
+                                                        } else if (!this.air.getValue().booleanValue() && PhaseESPSearchHelper4_2.getDirection3029(this.mutable, this.strictDirection.getValue().booleanValue()) == null) {
+                                                            store = false;
+                                                        } else {
                                                             autoCrystalDataMode = AutoCrystalDataMode.OBSIDIAN;
                                                         }
                                                     }
-                                                    autoCrystalData2 = new AutoCrystalData(this.mutable.toImmutable(), autoCrystalData_41147.getPlayerEntity13(), autoCrystalData_41147.get14(), autoCrystalDataMode).getAutoCrystalData11(autoCrystalData2);
+                                                    if (store) {
+                                                        autoCrystalData2 = new AutoCrystalData(this.mutable.toImmutable(), autoCrystalData_41147.getPlayerEntity13(), autoCrystalData_41147.get14(), autoCrystalDataMode).getAutoCrystalData11(autoCrystalData2);
+                                                    }
                                                 }
                                             }
                                         }

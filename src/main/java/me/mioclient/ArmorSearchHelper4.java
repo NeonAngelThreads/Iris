@@ -176,6 +176,6 @@ public class ArmorSearchHelper4 implements SearchHelper_4 {
     }
 
     public static int get1905(ItemStack itemStack) {
-        return MathHelper.clamp(100 - ((int) Math.ceil((Float.intBitsToFloat(1065353216) - ((itemStack.getMaxDamage() - itemStack.getDamage()) / itemStack.getMaxDamage())) * Float.intBitsToFloat(1120403456))), 1, 100);
+        return MathHelper.clamp(100 - ((int) Math.ceil((Float.intBitsToFloat(1065353216) - ((itemStack.getMaxDamage() - itemStack.getDamage()) / (float) itemStack.getMaxDamage())) * Float.intBitsToFloat(1120403456))), 1, 100);
     }
 }

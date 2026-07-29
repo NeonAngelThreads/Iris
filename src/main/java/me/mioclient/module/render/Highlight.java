@@ -85,13 +85,13 @@ public class Highlight extends Module {
             return reach.getBlockHitResult1232().getBlockPos();
         }
         if (is408()) {
-            BlockHitResult hitResult1229 = (BlockHitResult)(Reach.getHitResult1229());
+            BlockHitResult hitResult1229 = (Reach.getHitResult1229()) instanceof BlockHitResult ? (BlockHitResult) (Reach.getHitResult1229()) : null;
             if (hitResult1229 instanceof BlockHitResult) {
                 return hitResult1229.getBlockPos();
             }
             return null;
         }
-        BlockHitResult blockHitResult = (BlockHitResult)(minecraftClient.crosshairTarget);
+        BlockHitResult blockHitResult = (minecraftClient.crosshairTarget) instanceof BlockHitResult ? (BlockHitResult) (minecraftClient.crosshairTarget) : null;
         if (!(blockHitResult instanceof BlockHitResult)) {
             return null;
         }

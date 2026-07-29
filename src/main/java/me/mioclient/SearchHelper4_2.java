@@ -56,7 +56,7 @@ public class SearchHelper4_2 implements SearchHelper_4, Helper_6<LivingEntity> {
             }
             float f2 = lerpAngleDegrees2 - lerpAngleDegrees;
             if (livingEntity.hasVehicle()) {
-                LivingEntity vehicle = (LivingEntity)(livingEntity.getVehicle());
+                LivingEntity vehicle = (livingEntity.getVehicle()) instanceof LivingEntity ? (LivingEntity) (livingEntity.getVehicle()) : null;
                 if (vehicle instanceof LivingEntity) {
                     LivingEntity livingEntity2 = vehicle;
                     float clamp = MathHelper.clamp(MathHelper.wrapDegrees(lerpAngleDegrees2 - (this.flag ? MathHelper.lerpAngleDegrees(f, rotations().get2500(), rotations().get2497()) : MathHelper.lerpAngleDegrees(f, livingEntity2.prevBodyYaw, livingEntity2.bodyYaw))), -85.0f, 85.0f);

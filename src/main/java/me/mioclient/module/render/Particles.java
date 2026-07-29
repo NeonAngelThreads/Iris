@@ -53,7 +53,7 @@ public class Particles extends Module {
 
     @Listen
     public void onAddParticle(AddParticleEvent addParticleEvent) {
-        TotemParticle particle982 = (TotemParticle)(addParticleEvent.getParticle982());
+        TotemParticle particle982 = (addParticleEvent.getParticle982()) instanceof TotemParticle ? (TotemParticle) (addParticleEvent.getParticle982()) : null;
         if (particle982 instanceof TotemParticle) {
             TotemParticle totemParticle = particle982;
             if (this.ignoreSelf.getValue().booleanValue()) {
@@ -89,7 +89,7 @@ public class Particles extends Module {
             }
         }
         if (this.damage.getValue().booleanValue()) {
-            DamageParticle particle9824 = (DamageParticle)(addParticleEvent.getParticle982());
+            DamageParticle particle9824 = (addParticleEvent.getParticle982()) instanceof DamageParticle ? (DamageParticle) (addParticleEvent.getParticle982()) : null;
             if (particle9824 instanceof DamageParticle) {
                 DamageParticle damageParticle = particle9824;
                 do2580((Particle) damageParticle, this.damageColor.getValue().hashCode());
@@ -98,7 +98,7 @@ public class Particles extends Module {
             }
         }
         if (this.portal.getValue().booleanValue()) {
-            PortalParticle particle9825 = (PortalParticle)(addParticleEvent.getParticle982());
+            PortalParticle particle9825 = (addParticleEvent.getParticle982()) instanceof PortalParticle ? (PortalParticle) (addParticleEvent.getParticle982()) : null;
             if (particle9825 instanceof PortalParticle) {
                 PortalParticle portalParticle = particle9825;
                 do2580((Particle) portalParticle, this.portalColor.getValue().hashCode());

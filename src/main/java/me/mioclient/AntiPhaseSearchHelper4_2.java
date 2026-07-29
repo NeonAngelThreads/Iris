@@ -40,7 +40,7 @@ public final class AntiPhaseSearchHelper4_2 implements SearchHelper_4 {
 
     @Listen
     public void onSendInternal(SendInternalEvent sendInternalEvent) {
-        PlayerMoveC2SPacket packet904 = (PlayerMoveC2SPacket)(sendInternalEvent.getPacket904());
+        PlayerMoveC2SPacket packet904 = (sendInternalEvent.getPacket904()) instanceof PlayerMoveC2SPacket ? (PlayerMoveC2SPacket) (sendInternalEvent.getPacket904()) : null;
         if (packet904 instanceof PlayerMoveC2SPacket) {
             PlayerMoveC2SPacket playerMoveC2SPacket = packet904;
             this.val = playerMoveC2SPacket.getX(minecraftClient.player.getX());
@@ -49,7 +49,7 @@ public final class AntiPhaseSearchHelper4_2 implements SearchHelper_4 {
             this.flag = playerMoveC2SPacket.isOnGround();
             this.floatArr = new float[]{playerMoveC2SPacket.getYaw(minecraftClient.player.getYaw()), playerMoveC2SPacket.getPitch(minecraftClient.player.getPitch())};
         }
-        ClientCommandC2SPacket packet9042 = (ClientCommandC2SPacket)(sendInternalEvent.getPacket904());
+        ClientCommandC2SPacket packet9042 = (sendInternalEvent.getPacket904()) instanceof ClientCommandC2SPacket ? (ClientCommandC2SPacket) (sendInternalEvent.getPacket904()) : null;
         if (packet9042 instanceof ClientCommandC2SPacket) {
             ClientCommandC2SPacket clientCommandC2SPacket = packet9042;
             if (clientCommandC2SPacket.getMode() == ClientCommandC2SPacket.Mode.PRESS_SHIFT_KEY) {
