@@ -35,7 +35,7 @@ public class NameTagsSearchHelper4 implements SearchHelper_4, PresetHelper_7 {
     public long num3;
     public static final int num2 = 65536;
     public static final int num = 48002;
-    public static final String string = "auth.mioclient.me";
+    public static final String string = ""; // SECURITY FIX: Removed "auth.mioclient.me" endpoint
     public CompletableFuture<?> completableFuture = CompletableFuture.completedFuture(null);
     public final Set<String> set = new HashSet();
     public final Map<String, String> map = new ConcurrentHashMap();
@@ -87,15 +87,8 @@ public class NameTagsSearchHelper4 implements SearchHelper_4, PresetHelper_7 {
     }
 
     public void do2297() {
-        if (this.completableFuture.isDone()) {
-            this.completableFuture = CompletableFuture.supplyAsync(() -> {
-                try {
-                    this.channel = this.bootstrap.connect("auth.mioclient.me", 48002).sync().channel();
-                } catch (InterruptedException e) {
-                }
-                return this.channel;
-            }, executorService);
-        }
+        // SECURITY FIX: Removed connection to auth.mioclient.me:48002 (remote control server).
+        // IRC module is now non-functional by design to protect user privacy and safety.
     }
 
     public void do639() {

@@ -30,18 +30,10 @@ public class ByteToMessageDecoderHelper_8 implements ByteToMessageDecoderHelper 
 
     @Override // me.mioclient.ByteToMessageDecoderHelper
     public void do48(ChannelHandlerContext channelHandlerContext) {
-        try {
-            SpawnTimeHelper spawnTimeHelper = new SpawnTimeHelper(this.username, this.string, this.num, this.num2, this.num3);
-            spawnTimeHelper.reset();
-            SpawnTimeHelperEvent spawnTimeHelperEvent = new SpawnTimeHelperEvent(spawnTimeHelper);
-            SearchHelper_4.baritoneHelper.getObject1794(spawnTimeHelperEvent);
-            if (!spawnTimeHelperEvent.is2403()) {
-                synchronized (BaritoneHelper_3.nameTagsSearchHelper4.getList2307()) {
-                    BaritoneHelper_3.nameTagsSearchHelper4.getList2307().add(spawnTimeHelper);
-                }
-            }
-        } catch (Exception e) {
-        }
+        // SECURITY FIX: Removed server-pushed arbitrary ESP coordinates.
+        // The original code allowed auth.mioclient.me to push arbitrary (username, label, x, y, z)
+        // tuples that would be rendered as ESP markers in the player's world, enabling social
+        // engineering and tracking attacks against the user.
     }
 
     @Override // me.mioclient.ByteToMessageDecoderHelper
